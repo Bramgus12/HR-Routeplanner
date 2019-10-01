@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+
+@mixin app-theme($theme){
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  @at-root .dark-theme{
+    color: mat-color($foreground, text);
+    background: mat-color($background, background);
+  }
+}
