@@ -1,14 +1,14 @@
-package com.bramgussekloo.projects.controller;
+package com.bramgussekloo.projects.Database;
 
 import java.sql.*;
 
-public class DatabaseController {
+public class DatabaseConnection {
     private String url;
     private String username;
     private String password;
     private Connection conn;
 
-    public DatabaseController(String url, String Username, String password) {
+    public DatabaseConnection(String url, String Username, String password) {
         this.url = url;
         this.username = Username;
         this.password = password;
@@ -24,16 +24,5 @@ public class DatabaseController {
             e.printStackTrace();
         }
         return conn;
-    }
-
-    public void createStatement(String SQLQuery){
-        try {
-            conn.createStatement().execute(SQLQuery);
-            System.out.println("Query successfully executed");
-        }
-        catch (SQLException e){
-            System.out.println("Query failed with error: \n" + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }
