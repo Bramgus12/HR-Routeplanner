@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.DataClasses;
 
 public class Address {
     private Integer id;
