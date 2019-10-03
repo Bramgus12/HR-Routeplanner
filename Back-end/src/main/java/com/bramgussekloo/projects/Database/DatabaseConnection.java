@@ -1,21 +1,16 @@
 package com.bramgussekloo.projects.Database;
 
 import java.sql.*;
+class DatabaseConnection {
+    private String url = "jdbc:postgresql://projects.bramgussekloo.com/Test:5432";
+    private String username = "postgres";
+    private String password = "*enter password here*";
+    private Connection conn = null;
 
-public class DatabaseConnection {
-    private String url;
-    private String username;
-    private String password;
-    private Connection conn;
-
-    public DatabaseConnection(String url, String Username, String password) {
-        this.url = url;
-        this.username = Username;
-        this.password = password;
-        this.conn = null;
+    DatabaseConnection() {
     }
 
-    public Connection getConnection(){
+    Connection getConnection(){
         try {
             this.conn = DriverManager.getConnection(this.url, this.username, this.password);
         }
