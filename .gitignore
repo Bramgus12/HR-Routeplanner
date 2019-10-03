@@ -275,7 +275,3 @@ dmypy.json
 .gitignore
 build/generated/
 build/tmp/
-
-# Blender
-*.pyc
-*.blend[1-9]

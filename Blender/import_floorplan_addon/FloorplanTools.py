@@ -19,6 +19,9 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.hide_reference_images', text="Hide Refs")
         row.operator('floorplan.show_reference_images', text="Show Refs")
 
+        row = layout.row()
+        row.operator('floorplan.create_walls', text="Create Walls")
+
 class AlignFloors(Operator):
     bl_idname = "floorplan.align_floors"
     bl_label = "Align Floors"
@@ -43,3 +46,11 @@ class ShowReferenceImages(Operator):
 
     def execute(self, context):
         return showReferenceImages(True)
+
+class CreateWalls(Operator):
+    bl_idname = "floorplan.create_walls"
+    bl_label = "Create Walls"
+    bl_description = "Create walls for floors."
+
+    def execute(self, context):
+        return createWalls()
