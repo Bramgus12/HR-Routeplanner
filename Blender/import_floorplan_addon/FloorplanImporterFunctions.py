@@ -148,7 +148,7 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
     x = ( ((room['x1']+room['x2'])/2) / floorplan['width'] ) * 0.42 * floorplan['scale']
     y = ( ((room['y1']+room['y2'])/2) / floorplan['height'] ) * 0.297 * floorplan['scale']
 
-    color = (1.0, 0.0, 0.0, 1.0)
+    color = (0.0, 1.0, 0.0, 1.0)
     material = bpy.data.materials.get("[{}]".format(part))
     if material == None:
         material = bpy.data.materials.new(name="[{}]".format(part))

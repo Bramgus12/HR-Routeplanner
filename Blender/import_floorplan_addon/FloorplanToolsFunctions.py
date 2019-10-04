@@ -73,8 +73,8 @@ def createNodeVisual():
         bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, radius=0.15, enter_editmode=False, location=(0,0,0))
         nodeVisual = bpy.context.view_layer.objects.active
         nodeVisual.name = '[{}]'.format(part)
-        nodeVisual.hide_viewport = True
-        nodeVisual.hide_render = True
+        # nodeVisual.hide_viewport = True
+        # nodeVisual.hide_render = True
         color = (1.0, 0.0, 0.0, 1.0)
         material = bpy.data.materials.get("[{}]".format(part))
         if material == None:
@@ -98,10 +98,10 @@ def createNode():
         nodeNetwork.lock_location[2] = True
         bpy.context.scene.collection.objects.link(nodeNetwork)
         nodeNetwork.show_in_front = True
-        # nodeVisual = createNodeVisual()
-        # nodeVisual.parent = nodeNetwork
-        # nodeVisual.matrix_parent_inverse = nodeVisual.matrix_basis.inverted()
-        # nodeNetwork.instance_type = 'VERTS'
+        nodeVisual = createNodeVisual()
+        nodeVisual.parent = nodeNetwork
+        nodeVisual.matrix_parent_inverse = nodeVisual.matrix_basis.inverted()
+        nodeNetwork.instance_type = 'VERTS'
 
     elif nodeNetwork == bpy.context.view_layer.objects.active:
         bpy.ops.object.mode_set(mode='OBJECT')
