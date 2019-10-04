@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import math
+from . FloorplanImporterFunctions import linkToFloorCollection
 
 def getReferenceImages():
     return filter(lambda obj: obj.type == 'EMPTY' and obj.get('buildingPart') == 'ReferenceImage', bpy.context.scene.objects)
@@ -29,41 +30,71 @@ def createWalls():
     part = 'Wall'
     floors = list(filter(lambda obj: obj.type == 'MESH' and obj.get('buildingPart') == 'Floor', bpy.context.scene.objects))
     for floor in floors:
+        if bpy.context.view_layer.objects.active != None and bpy.context.view_layer.objects.active.mode != 'OBJECT':
+            bpy.ops.object.mode_set(mode='OBJECT')
         name = '[{}] {}'.format(part, floor.get('floorName'))
-        if bpy.context.scene.objects.get(name) != None:
-            bpy.ops.object.delete({"selected_objects": [bpy.context.scene.objects.get(name)]})
+        wall = bpy.context.scene.objects.get(name)
+        if wall != None:
+            bpy.ops.object.delete({"selected_objects": [wall]})
         wall = floor.copy()
         wall.data = floor.data.copy()
         wall.name = name
         wall.data.name = name
         wall['buildingPart'] = part
 
-        bpy.context.scene.collection.objects.link(wall)
+        # bpy.context.scene.collection.objects.link(wall)
+        linkToFloorCollection(wall, wall['buildingName'], wall['floorNumber'])
+        
         bpy.ops.object.select_all(action='DESELECT')
         bpy.context.view_layer.objects.active = wall
         wall.select_set(True)
+
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_all(action='DESELECT')
+        bpy.ops.mesh.select_mode(type="VERT")
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+        ignoreVertegGroup = wall.vertex_groups.get('Ignore')
+        if ignoreVertegGroup != None:
+            for vertex in wall.data.vertices:
+                for vertexGroup in vertex.groups:
+                    if vertexGroup.group == ignoreVertegGroup.index:
+                        vertex.select = True
+        bpy.ops.object.mode_set(mode='EDIT')
+        # return {'FINISHED'}
+        bpy.ops.mesh.delete(type='EDGE')
+
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.delete(type='ONLY_FACE')
+        bpy.ops.mesh.select_mode(type="VERT")
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, (2/3)*wall.get('floorHeight')), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
         bpy.ops.object.mode_set(mode='OBJECT')
 
         doorsVertexGroup = wall.vertex_groups.get('Doors')
+        doorVertexIndexes = []
         if doorsVertexGroup != None:
             for vertex in wall.data.vertices:
-                vertex.select = False
                 for vertexGroup in vertex.groups:
                     if vertexGroup.group == doorsVertexGroup.index:
-                        vertex.select = True
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.select_mode(type="VERT")
-        bpy.ops.mesh.delete(type='EDGE')
-        bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.delete(type='ONLY_FACE')
-        bpy.ops.mesh.select_mode(type="EDGE")
-        bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, wall.get('floorHeight')), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
-        bpy.ops.mesh.select_all(action='DESELECT')
+                        doorVertexIndexes.append(vertex.index)
 
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, (1/3)*wall.get('floorHeight')), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
+        bpy.ops.mesh.select_all(action='DESELECT')
         bpy.ops.object.mode_set(mode='OBJECT')
+
+        for vertex in wall.data.vertices:
+            vertex.select = vertex.index in doorVertexIndexes
+        
+        bpy.ops.object.mode_set(mode='EDIT')
+        bpy.ops.mesh.delete(type='ONLY_FACE')
+        bpy.ops.object.mode_set(mode='OBJECT')
+    return {'FINISHED'}
+
+def removeWalls():
+    walls = list(filter(lambda obj: obj.type == 'MESH' and obj.get('buildingPart') == 'Wall', bpy.context.scene.objects))
+    bpy.ops.object.delete({"selected_objects": walls})
     return {'FINISHED'}
 
 def createNodeVisual():
@@ -81,6 +112,9 @@ def createNodeVisual():
             material = bpy.data.materials.new(name="[{}]".format(part))
             material.diffuse_color = color
         nodeVisual.data.materials.append(material)
+        nodeVisual.lock_location[0] = True
+        nodeVisual.lock_location[1] = True
+        nodeVisual.lock_location[2] = True
     return nodeVisual
 
 def createNode():

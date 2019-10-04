@@ -5,6 +5,18 @@ import bmesh
 def pathToExtension(path, extension):
     return ".".join(path.split(".")[:-1]) + "." + extension
 
+def linkToFloorCollection(obj, buildingName ,floorNumber):
+    part = 'FloorCollection'
+    name = '[{}] {}.{}'.format(part, buildingName, floorNumber)
+    collection = bpy.data.collections.get(name)
+    if collection == None:
+        collection = bpy.data.collections.new(name)
+    if bpy.context.scene.collection.children.get(collection.name) == None:
+        bpy.context.scene.collection.children.link(collection)
+    if collection.objects.get(obj.name) == None:
+        collection.objects.link(obj)
+    
+
 def createBuildingRoot(buildingName):
     part = "BuildingRoot"
     bpy.ops.object.empty_add(type='PLAIN_AXES', location=(bpy.context.scene.cursor.location.x, bpy.context.scene.cursor.location.y, 0))
@@ -33,7 +45,8 @@ def createFloorRoot(buildingRoot, floorNumber, floorHeight):
 def createAlignPoint(referenceImage):
     part = 'AlignPoint'
     alignPoint = bpy.data.objects.new( '[{}] {}'.format(part, referenceImage['floorName']) , None )
-    bpy.context.scene.collection.objects.link( alignPoint )
+    # bpy.context.scene.collection.objects.link( alignPoint )
+    linkToFloorCollection(alignPoint, referenceImage["buildingName"], referenceImage["floorNumber"])
 
     alignPoint["buildingName"] = referenceImage["buildingName"]
     alignPoint["buildingPart"] = part
@@ -71,6 +84,8 @@ def createReferenceImage(floorplan, filepath, floorRoot):
     referenceImage.empty_image_offset[1] = 0.0
     referenceImage.empty_display_size = 0.42 * floorplan['scale']
 
+    bpy.context.scene.collection.objects.unlink(referenceImage)
+    linkToFloorCollection(referenceImage, referenceImage["buildingName"], referenceImage["floorNumber"])
     return referenceImage
 
 def createFloorPlane(floorRoot, floorplan, new=False):
@@ -100,7 +115,8 @@ def createFloorPlane(floorRoot, floorplan, new=False):
         bm.to_mesh(mesh)
         bm.free()
 
-        bpy.context.scene.collection.objects.link(floorPlane)
+        # bpy.context.scene.collection.objects.link(floorPlane)
+        linkToFloorCollection(floorPlane, floorRoot["buildingName"], floorRoot["floorNumber"])
 
         floorPlane.name = "[{}] {}".format(part, floorRoot["floorName"])
         floorPlane["buildingName"] = floorRoot["buildingName"]
@@ -113,6 +129,7 @@ def createFloorPlane(floorRoot, floorplan, new=False):
         floorPlane.matrix_parent_inverse = floorRoot.matrix_world.inverted()
 
         floorPlane.vertex_groups.new(name='Doors')
+        floorPlane.vertex_groups.new(name='Ignore')
         return floorPlane
     else:
         # Find the first existing floor object below this floor and duplicate it.
@@ -136,7 +153,8 @@ def createFloorPlane(floorRoot, floorplan, new=False):
 
                 floorPlane.parent = floorRoot
                 floorPlane.matrix_parent_inverse = floorRoot.matrix_world.inverted()
-                bpy.context.collection.objects.link(floorPlane)
+                # bpy.context.collection.objects.link(floorPlane)
+                linkToFloorCollection(floorPlane, floorPlane["buildingName"], floorPlane["floorNumber"])
 
                 return floorPlane
 
@@ -161,10 +179,12 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
         roomNode = bpy.context.view_layer.objects.active
         roomNode.data.name = '[{}]'.format(part)
         roomNode.data.materials.append(material)
+        bpy.context.scene.collection.objects.unlink(roomNode)
     else:
         roomNode = bpy.data.objects.new('[{}] {}'.format(part, room['code']), mesh)
         roomNode.location = (referenceImage.location.x + x, referenceImage.location.y + y, referenceImage.location.z)
-        bpy.context.scene.collection.objects.link(roomNode)
+    # bpy.context.scene.collection.objects.link(roomNode)
+    linkToFloorCollection(roomNode, buildingName, floorNumber)
     roomNode.color = color
 
     roomNode.name = '[{}] {}'.format(part, room['code'])
@@ -221,5 +241,7 @@ def loadFloorplan(context, filepath, buildingName, floorNumber, floorHeight, aut
     bpy.ops.object.select_all(action='DESELECT')
     bpy.context.view_layer.objects.active = alignPoint
     alignPoint.select_set(True)
+
+    floorRoot.rotation_euler = buildingRoot.rotation_euler
 
     return {'FINISHED'}

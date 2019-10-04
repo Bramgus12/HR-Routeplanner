@@ -23,6 +23,9 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.create_walls', text="Create Walls")
 
         row = layout.row()
+        row.operator('floorplan.remove_walls', text="Remove Walls")
+
+        row = layout.row()
         row.operator('floorplan.create_node', text="Create Node")
 
         row = layout.row()
@@ -60,6 +63,14 @@ class CreateWalls(Operator):
 
     def execute(self, context):
         return createWalls()
+
+class RemoveWalls(Operator):
+    bl_idname = "floorplan.remove_walls"
+    bl_label = "Remove Walls"
+    bl_description = "Remove walls for floors."
+
+    def execute(self, context):
+        return removeWalls()
 
 class CreateNode(Operator):
     bl_idname = "floorplan.create_node"
