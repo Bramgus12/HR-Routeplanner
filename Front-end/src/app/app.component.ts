@@ -19,6 +19,7 @@ export class AppComponent implements OnInit{
       map((event: ActivationEnd) => event.snapshot.data)
     ).subscribe(data => {
       this.title = data['title'];
+      this.titleService.setTitle(data['title']);
     });
   }
 }

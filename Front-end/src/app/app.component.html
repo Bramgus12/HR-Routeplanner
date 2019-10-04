@@ -1,9 +1,18 @@
-<header>
-  <app-header [title]="title"></app-header>
-</header>
-<main>
-  <router-outlet></router-outlet>
-</main>
-<footer>
-  <app-footer></app-footer>
-</footer>
+<mat-drawer-container>
+  <mat-drawer mode="over">
+    <aside>
+      <app-sidenav></app-sidenav>
+    </aside>
+  </mat-drawer>
+  <mat-drawer-content>
+    <header>
+      <app-header [title]="title"></app-header>
+    </header>
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+    <footer>
+      <app-footer></app-footer>
+    </footer>
+  </mat-drawer-content>
+</mat-drawer-container>
