@@ -277,4 +277,4 @@ build/generated/
 build/tmp/
 
 # ignore DB information file
-*.Database_config
+Database_config.properties
