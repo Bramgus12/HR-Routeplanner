@@ -41,7 +41,7 @@ public class Statements {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Address> list = new ArrayList<>();
         try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM 'address' WHERE street=" + street + "AND number=" + number);
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM 'address' WHERE street=" + street + " AND number=" + number);
             while (result.next()){
                 Integer id = result.getInt("id");
                 street = result.getString("street");
