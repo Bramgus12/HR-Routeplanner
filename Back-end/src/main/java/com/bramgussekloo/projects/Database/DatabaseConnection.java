@@ -6,7 +6,7 @@ import java.sql.*;
 class DatabaseConnection {
     private Connection conn = null;
     String propFileName = "Database_config.properties";
-    
+
     Connection getConnection() {
         try {
             getPropertiesValues prop = new getPropertiesValues();
