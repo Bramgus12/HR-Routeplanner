@@ -275,3 +275,6 @@ dmypy.json
 .gitignore
 build/generated/
 build/tmp/
+
+# ignore DB information file
+Database_config.properties
