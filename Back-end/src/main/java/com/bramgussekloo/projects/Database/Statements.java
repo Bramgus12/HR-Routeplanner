@@ -1,9 +1,6 @@
 package com.bramgussekloo.projects.Database;
 
-import com.bramgussekloo.projects.DataClasses.Address;
-import com.bramgussekloo.projects.DataClasses.EntryDest;
-import com.bramgussekloo.projects.DataClasses.Institute;
-import com.bramgussekloo.projects.DataClasses.Node;
+import com.bramgussekloo.projects.DataClasses.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -27,6 +24,7 @@ public class Statements {
             return false;
         }
     }
+
     public static Boolean createTable(String tableName, String Columns){
         Connection conn = new DatabaseConnection().getConnection();
         try {
@@ -38,6 +36,7 @@ public class Statements {
             return false;
         }
     }
+
     public static ArrayList<Address> getAddressByStreetAndNumber(String street, Integer number){
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Address> list = new ArrayList<>();
@@ -79,6 +78,7 @@ public class Statements {
         }
         return list;
     }
+
     public static ArrayList<Node> getAllNodes(){
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Node> list = new ArrayList<>();
@@ -131,6 +131,64 @@ public class Statements {
                 String name = result.getString("name");
                 EntryDest entryDest = new EntryDest(id, node_id, building_id, level, name);
                 list.add(entryDest);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static ArrayList<ConnectedNode> getAllConnectedNodes(){
+        Connection conn = new DatabaseConnection().getConnection();
+        ArrayList<ConnectedNode> list = new ArrayList<>();
+        try {
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM connected_node");
+            while (result.next()){
+                Integer id = result.getInt("id");
+                Integer node_id_1 = result.getInt("node_id_1");
+                Integer node_id_2 = result.getInt("node_id_2");
+                Integer distance = result.getInt("distance");
+                ConnectedNode connectedNode = new ConnectedNode(id, node_id_1, node_id_2, distance);
+                list.add(connectedNode);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static ArrayList<BuildingInstitute> getAllBuildingInstitutes(){
+        Connection conn = new DatabaseConnection().getConnection();
+        ArrayList<BuildingInstitute> list = new ArrayList<>();
+        try{
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute");
+            while (result.next()){
+                Integer id = result.getInt("id");
+                Integer building_id = result.getInt("building_id");
+                Integer institute_id = result.getInt("institute_id");
+                BuildingInstitute buildingInstitute = new BuildingInstitute(id, building_id, institute_id);
+                list.add(buildingInstitute);
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public static ArrayList<Building> getAllBuildings(){
+        Connection conn = new DatabaseConnection().getConnection();
+        ArrayList<Building> list = new ArrayList<>();
+        try{
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute");
+            while (result.next()){
+                Integer id = result.getInt("id");
+                Integer address_id = result.getInt("address_id");
+                String name = result.getString("name");
+                Building building = new Building(id, address_id, name);
+                list.add(building);
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());
