@@ -1,18 +1,19 @@
 package com.bramgussekloo.projects.Database;
 
 import java.sql.*;
+import java.util.ResourceBundle;
+
 class DatabaseConnection {
-    private String url = "jdbc:postgresql://projects.bramgussekloo.com/Test:5432";
-    private String username = "postgres";
-    private String password = "*enter password here*";
     private Connection conn = null;
+    private ResourceBundle reader = null;
 
     DatabaseConnection() {
     }
 
     Connection getConnection(){
         try {
-            this.conn = DriverManager.getConnection(this.url, this.username, this.password);
+            reader = ResourceBundle.getBundle("Database_config.properties");
+            this.conn = DriverManager.getConnection(reader.getString("db.url"), reader.getString("db.username"), reader.getString("db.password"));
         }
         catch (SQLException e){
             System.out.println("Connection failed with error: \n" + e.getMessage());

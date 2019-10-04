@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Statements {
 
@@ -35,7 +32,7 @@ public class Statements {
     public static void getAddressByStreetAndNumber(String street, String number){
         Connection conn = new DatabaseConnection().getConnection();
         try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM 'address' WHERE street=" + street + "AND number=" + number);
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM address WHERE street=" + street + " AND number=" + number);
         } catch (SQLException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
