@@ -1,22 +1,22 @@
 package com.bramgussekloo.projects.Database;
 
+import java.io.IOException;
 import java.sql.*;
-import java.util.ResourceBundle;
 
 class DatabaseConnection {
     private Connection conn = null;
-    private ResourceBundle reader = null;
-
-    DatabaseConnection() {
-    }
-
-    Connection getConnection(){
+    String propFileName = "Database_config.properties";
+    
+    Connection getConnection() {
         try {
-            reader = ResourceBundle.getBundle("Database_config.properties");
-            this.conn = DriverManager.getConnection(reader.getString("db.url"), reader.getString("db.username"), reader.getString("db.password"));
-        }
-        catch (SQLException e){
-            System.out.println("Connection failed with error: \n" + e.getMessage());
+            getPropertiesValues prop = new getPropertiesValues();
+            try {
+                String[] values = prop.getPropValues(propFileName);
+                this.conn = DriverManager.getConnection(values[0], values[1], values[2]);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return conn;
