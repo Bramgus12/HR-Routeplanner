@@ -30,6 +30,23 @@ def createFloorRoot(buildingRoot, floorNumber, floorHeight):
     floorRoot.matrix_parent_inverse = buildingRoot.matrix_world.inverted()
     return floorRoot
 
+def createAlignPoint(referenceImage):
+    part = 'AlignPoint'
+    alignPoint = bpy.data.objects.new( '[{}] {}'.format(part, referenceImage['floorName']) , None )
+    bpy.context.scene.collection.objects.link( alignPoint )
+
+    alignPoint["buildingName"] = referenceImage["buildingName"]
+    alignPoint["buildingPart"] = part
+    alignPoint["floorNumber"] = referenceImage["floorNumber"]
+
+    offsetX = (0.42 * referenceImage['scale'])/2
+    offsetY = (0.297 * referenceImage['scale'])/2
+    alignPoint.location = (referenceImage.location.x+offsetX, referenceImage.location.y+offsetY, referenceImage.location.z)
+    alignPoint.parent = referenceImage
+    alignPoint.matrix_parent_inverse = referenceImage.matrix_basis.inverted()
+    alignPoint.lock_location[2] = True
+    return alignPoint
+
 def createReferenceImage(floorplan, filepath, floorRoot):
     part = "ReferenceImage"
     imagePath = pathToExtension(filepath, "png")
@@ -53,6 +70,7 @@ def createReferenceImage(floorplan, filepath, floorRoot):
     referenceImage.empty_image_offset[0] = 0.0
     referenceImage.empty_image_offset[1] = 0.0
     referenceImage.empty_display_size = 0.42 * floorplan['scale']
+
     return referenceImage
 
 def createFloorPlane(floorRoot, floorplan, new=False):
@@ -80,6 +98,7 @@ def createFloorPlane(floorRoot, floorplan, new=False):
         verts.reverse()
         bm.faces.new(verts)
         bm.to_mesh(mesh)
+        bm.free()
 
         bpy.context.scene.collection.objects.link(floorPlane)
 
@@ -92,6 +111,8 @@ def createFloorPlane(floorRoot, floorplan, new=False):
 
         floorPlane.parent = floorRoot
         floorPlane.matrix_parent_inverse = floorRoot.matrix_world.inverted()
+
+        floorPlane.vertex_groups.new(name='Doors')
         return floorPlane
     else:
         # Find the first existing floor object below this floor and duplicate it.
@@ -102,6 +123,7 @@ def createFloorPlane(floorRoot, floorplan, new=False):
             if otherFloorPlane != None:
                 # Duplicate the other floor.
                 floorPlane = otherFloorPlane.copy()
+                floorPlane.data =  otherFloorPlane.data.copy()
                 floorPlane.location = floorRoot.location
 
                 floorPlane.name = "[{}] {}".format(part, floorRoot["floorName"])
@@ -121,12 +143,12 @@ def createFloorPlane(floorRoot, floorplan, new=False):
             otherFloorNum -= step
         return createFloorPlane(floorRoot, floorplan, True)
 
-def createRoomNode(floorplan, room, floorNumber, referenceImage):
+def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
     part = "RoomNode"
     x = ( ((room['x1']+room['x2'])/2) / floorplan['width'] ) * 0.42 * floorplan['scale']
     y = ( ((room['y1']+room['y2'])/2) / floorplan['height'] ) * 0.297 * floorplan['scale']
 
-    color = (0.0, 1.0, 0.0, 1.0)
+    color = (1.0, 0.0, 0.0, 1.0)
     material = bpy.data.materials.get("[{}]".format(part))
     if material == None:
         material = bpy.data.materials.new(name="[{}]".format(part))
@@ -135,7 +157,7 @@ def createRoomNode(floorplan, room, floorNumber, referenceImage):
     roomNode = None
     mesh = bpy.data.meshes.get('[{}]'.format(part))
     if mesh == None:
-        bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, radius=0.5, enter_editmode=False, location=(referenceImage.location.x + x, referenceImage.location.y + y, referenceImage.location.z))
+        bpy.ops.mesh.primitive_uv_sphere_add(segments=16, ring_count=8, radius=0.3, enter_editmode=False, location=(referenceImage.location.x + x, referenceImage.location.y + y, referenceImage.location.z))
         roomNode = bpy.context.view_layer.objects.active
         roomNode.data.name = '[{}]'.format(part)
         roomNode.data.materials.append(material)
@@ -154,6 +176,7 @@ def createRoomNode(floorplan, room, floorNumber, referenceImage):
     roomNode['y2'] = room['y2']
     roomNode["buildingPart"] = part
     roomNode['floorNumber'] = floorNumber
+    roomNode['buildingName'] = buildingName
 
     roomNode.parent = referenceImage
     roomNode.matrix_parent_inverse = referenceImage.matrix_basis.inverted()
@@ -183,12 +206,20 @@ def loadFloorplan(context, filepath, buildingName, floorNumber, floorHeight, aut
 
     # Create reference image for floor
     referenceImage = createReferenceImage(floorplan, filepath, floorRoot)
+    referenceImage.location.z += 0.01
+
+    # Create the empty object used to align different floors.
+    alignPoint = createAlignPoint(referenceImage)
 
     # Create room nodes
     for room in floorplan['rooms']:
-        createRoomNode(floorplan, room, floorNumber, referenceImage)
+        roomNode = createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage)
+        roomNode.location.z -= 0.01
 
     createFloorPlane(floorRoot, floorplan)
-    
+
+    bpy.ops.object.select_all(action='DESELECT')
+    bpy.context.view_layer.objects.active = alignPoint
+    alignPoint.select_set(True)
 
     return {'FINISHED'}

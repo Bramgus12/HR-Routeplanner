@@ -28,6 +28,8 @@ def register():
     bpy.utils.register_class(HideReferenceImages)
     bpy.utils.register_class(ShowReferenceImages)
     bpy.utils.register_class(CreateWalls)
+    bpy.utils.register_class(CreateNode)
+    bpy.utils.register_class(ConnectRoomNodes)
 
     bpy.utils.register_class(FloorplanToolsPanel)
 
@@ -40,6 +42,8 @@ def unregister():
     bpy.utils.unregister_class(HideReferenceImages)
     bpy.utils.unregister_class(ShowReferenceImages)
     bpy.utils.unregister_class(CreateWalls)
+    bpy.utils.unregister_class(CreateNode)
+    bpy.utils.unregister_class(ConnectRoomNodes)
 
     bpy.utils.unregister_class(FloorplanToolsPanel)
 

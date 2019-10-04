@@ -22,6 +22,12 @@ class FloorplanToolsPanel(Panel):
         row = layout.row()
         row.operator('floorplan.create_walls', text="Create Walls")
 
+        row = layout.row()
+        row.operator('floorplan.create_node', text="Create Node")
+
+        row = layout.row()
+        row.operator('floorplan.connect_room_nodes', text="Connect Room Nodes")
+
 class AlignFloors(Operator):
     bl_idname = "floorplan.align_floors"
     bl_label = "Align Floors"
@@ -54,3 +60,19 @@ class CreateWalls(Operator):
 
     def execute(self, context):
         return createWalls()
+
+class CreateNode(Operator):
+    bl_idname = "floorplan.create_node"
+    bl_label = "Create a node."
+    bl_description = "Create a new node in the network."
+
+    def execute(self, context):
+        return createNode()
+
+class ConnectRoomNodes(Operator):
+    bl_idname = "floorplan.connect_room_nodes"
+    bl_label = "Connect room nodes to network."
+    bl_description = "Connect each unconnected room node to the closest node in the existing node network."
+
+    def execute(self, context):
+        return connectRoomNodes()
