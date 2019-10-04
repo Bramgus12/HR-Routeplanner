@@ -8,14 +8,19 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  #{if(&, '&.app-background', '.app-background')}{
+  .app-background {
+    box-sizing: border-box;
     color: mat-color($foreground, text);
+    font-family: 'Open Sans', sans-serif;
     background: mat-color($background, background);
   }
 
-  * {
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
+  .primary-color {
+    color: mat-color($primary);
+  }
+
+  .accent-color {
+    color: mat-color($accent);
   }
 
   body {

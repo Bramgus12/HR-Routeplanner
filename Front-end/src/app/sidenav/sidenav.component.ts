@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SidenavService } from './sidenav.service';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+
+import { AppService } from '../app.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -8,12 +10,16 @@ import { SidenavService } from './sidenav.service';
 })
 export class SidenavComponent implements OnInit {
 
-  constructor(private sidenavService: SidenavService) { }
+  storedDarkmode: boolean = false;
+
+  constructor(private appService: AppService) { }
 
   ngOnInit() {
-    this.sidenavService.trigger.subscribe(() => {
-      // open sidenav
-    });
+    this.storedDarkmode = JSON.parse(localStorage.getItem("dark-theme"));
+  }
+
+  changeTheme(event: MatSlideToggleChange){
+    this.appService.setDarkmode(event.checked);
   }
 
 }

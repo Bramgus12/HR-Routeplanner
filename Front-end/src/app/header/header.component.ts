@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SidenavService } from '../sidenav/sidenav.service';
+import { AppService } from '../app.service';
 
 @Component({
   selector: 'app-header',
@@ -10,9 +10,11 @@ export class HeaderComponent implements OnInit {
 
   @Input() title = "";
 
-  constructor(private sidenavService: SidenavService) { }
+  constructor(private appService: AppService) { }
 
   ngOnInit() {
   }
+
+  triggerSidenav(){ this.appService.toggle(); }
 
 }

@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { SidenavService } from './sidenav.service';
+import { AppService } from './app.service';
 
-describe('SidenavService', () => {
+describe('AppService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: SidenavService = TestBed.get(SidenavService);
+    const service: AppService = TestBed.get(AppService);
     expect(service).toBeTruthy();
   });
 });

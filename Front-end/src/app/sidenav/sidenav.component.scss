@@ -1,0 +1,16 @@
+.title {
+  padding: 0 16px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+mat-nav-list,
+mat-list {
+  width: 256px;
+  font-weight: 600;
+
+  mat-icon {
+    padding-right: 25px;
+  }
+}
+

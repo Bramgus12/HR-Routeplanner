@@ -1,7 +1,10 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit, Output, ViewChild } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, ActivationEnd } from '@angular/router';
+import { MatDrawer } from '@angular/material/sidenav';
 import { filter, map } from 'rxjs/operators';
+
+import { AppService } from './app.service';
 
 @Component({
   selector: 'app-root',
@@ -9,9 +12,11 @@ import { filter, map } from 'rxjs/operators';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit{
-  @Output() title = 'No title';
 
-  constructor(private router: Router, private titleService: Title){}
+  @Output() title = 'No title';
+  @ViewChild('sideDrawer') sideDrawer: MatDrawer;
+
+  constructor(private router: Router, private titleService: Title, private appService: AppService){}
 
   ngOnInit(){
     this.router.events.pipe(
@@ -20,6 +25,12 @@ export class AppComponent implements OnInit{
     ).subscribe(data => {
       this.title = data['title'];
       this.titleService.setTitle(data['title']);
+    });
+
+    this.appService.setDarkmode(JSON.parse(localStorage.getItem("dark-theme")))
+
+    this.appService.trigger.subscribe(() => {
+      this.sideDrawer.toggle();
     });
   }
 }
