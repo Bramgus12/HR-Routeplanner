@@ -15,9 +15,10 @@ import java.util.ArrayList;
 public class DatabaseTest {
 
     @GetMapping("/test")
-    private String testDatabase(){
+    private Address testDatabase(){
         ArrayList<Address> list = Statements.getAllAddresses();
         Address address = list.get(0);
-        return ("city: " + address.getCity()+ "\nPostal code: " + address.getPostal() + "\nStreet: " + address.getStreet() + "\nNumber: " + address.getNumber() + "\nId: " + address.getId());
+        return address;
     }
+
 }
