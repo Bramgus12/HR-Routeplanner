@@ -157,22 +157,4 @@ public class Statements {
         return list;
     }
 
-    public static ArrayList<Building> getAllBuildings(){
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<Building> list = new ArrayList<>();
-        try{
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                Integer address_id = result.getInt("address_id");
-                String name = result.getString("name");
-                Building building = new Building(id, address_id, name);
-                list.add(building);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return list;
-    }
 }
