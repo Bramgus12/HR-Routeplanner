@@ -58,27 +58,6 @@ public class Statements {
         return list;
     }
 
-    public static ArrayList<Address> getAllAddresses(){
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<Address> list = new ArrayList<>();
-        try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM address");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                String street = result.getString("street");
-                Integer number = result.getInt("number");
-                String city = result.getString("city");
-                String postal = result.getString("postal");
-                Address address = new Address(id, street, number, city, postal);
-                list.add(address);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return list;
-    }
-
     public static ArrayList<Node> getAllNodes(){
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Node> list = new ArrayList<>();
