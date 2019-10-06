@@ -11,7 +11,7 @@ from . FloorplanImporterFunctions import loadFloorplan
 class FloorplanImporter(Operator, ImportHelper):
     """Imports a json file and png for a floor plan of Hogeschool Rotterdam."""
     bl_idname = "floorplan.import"  # important since its how bpy.ops.import_test.some_data is constructed
-    bl_label = "Import Some Data"
+    bl_label = "Import Json Floorplan"
 
     # ImportHelper mixin class uses this
     filename_ext = ".json"

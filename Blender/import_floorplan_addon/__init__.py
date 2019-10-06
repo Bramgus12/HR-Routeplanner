@@ -12,6 +12,7 @@ bl_info = {
 }
 
 from . FloorplanImporter import FloorplanImporter
+from . FloorplanExporter import FloorplanExporter
 from . FloorplanTools import *
 
 
@@ -19,17 +20,24 @@ from . FloorplanTools import *
 def menu_func_import(self, context):
     self.layout.operator(FloorplanImporter.bl_idname, text="HR Floor Plan")
 
+def menu_func_export(self, context):
+    self.layout.operator(FloorplanExporter.bl_idname, text="HR Floor Plan")
 
 def register():
     bpy.utils.register_class(FloorplanImporter)
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
+    bpy.utils.register_class(FloorplanExporter)
+    bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
 
     bpy.utils.register_class(AlignFloors)
     bpy.utils.register_class(HideReferenceImages)
     bpy.utils.register_class(ShowReferenceImages)
+    bpy.utils.register_class(HideRoomNodes)
+    bpy.utils.register_class(ShowRoomNodes)
     bpy.utils.register_class(CreateWalls)
     bpy.utils.register_class(CreateNode)
-    bpy.utils.register_class(ConnectRoomNodes)
+    bpy.utils.register_class(ConnectNodesToRooms)
+    bpy.utils.register_class(ConnectRoomsToNodes)
     bpy.utils.register_class(RemoveWalls)
 
     bpy.utils.register_class(FloorplanToolsPanel)
@@ -38,13 +46,18 @@ def register():
 def unregister():
     bpy.utils.unregister_class(FloorplanImporter)
     bpy.types.TOPBAR_MT_file_import.remove(menu_func_import)
+    bpy.utils.unregister_class(FloorplanExporter)
+    bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
 
     bpy.utils.unregister_class(AlignFloors)
     bpy.utils.unregister_class(HideReferenceImages)
     bpy.utils.unregister_class(ShowReferenceImages)
+    bpy.utils.unregister_class(HideRoomNodes)
+    bpy.utils.unregister_class(ShowRoomNodes)
     bpy.utils.unregister_class(CreateWalls)
     bpy.utils.unregister_class(CreateNode)
-    bpy.utils.unregister_class(ConnectRoomNodes)
+    bpy.utils.unregister_class(ConnectNodesToRooms)
+    bpy.utils.unregister_class(ConnectRoomsToNodes)
     bpy.utils.unregister_class(RemoveWalls)
 
     bpy.utils.unregister_class(FloorplanToolsPanel)

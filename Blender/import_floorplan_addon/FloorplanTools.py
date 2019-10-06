@@ -20,6 +20,10 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.show_reference_images', text="Show Refs")
 
         row = layout.row()
+        row.operator('floorplan.hide_room_nodes', text="Hide Rooms")
+        row.operator('floorplan.show_room_nodes', text="Show Rooms")
+
+        row = layout.row()
         row.operator('floorplan.create_walls', text="Create Walls")
 
         row = layout.row()
@@ -29,7 +33,10 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.create_node', text="Create Node")
 
         row = layout.row()
-        row.operator('floorplan.connect_room_nodes', text="Connect Room Nodes")
+        row.operator('floorplan.connect_nodes_to_rooms', text="Connect Nodes To Rooms")
+
+        row = layout.row()
+        row.operator('floorplan.connect_rooms_to_nodes', text="Connect Rooms To Nodes")
 
 class AlignFloors(Operator):
     bl_idname = "floorplan.align_floors"
@@ -56,6 +63,22 @@ class ShowReferenceImages(Operator):
     def execute(self, context):
         return showReferenceImages(True)
 
+class HideRoomNodes(Operator):
+    bl_idname = "floorplan.hide_room_nodes"
+    bl_label = "Hide Room Nodes"
+    bl_description = "Hide all room nodes."
+
+    def execute(self, context):
+        return showRoomNodes(False)
+
+class ShowRoomNodes(Operator):
+    bl_idname = "floorplan.show_room_nodes"
+    bl_label = "Show Room Nodes"
+    bl_description = "Show all room nodes."
+
+    def execute(self, context):
+        return showRoomNodes(True)
+
 class CreateWalls(Operator):
     bl_idname = "floorplan.create_walls"
     bl_label = "Create Walls"
@@ -80,10 +103,18 @@ class CreateNode(Operator):
     def execute(self, context):
         return createNode()
 
-class ConnectRoomNodes(Operator):
-    bl_idname = "floorplan.connect_room_nodes"
-    bl_label = "Connect room nodes to network."
+class ConnectNodesToRooms(Operator):
+    bl_idname = "floorplan.connect_nodes_to_rooms"
+    bl_label = "Connect nodes to rooms."
+    bl_description = "Connect nodes that are close to a room to that room."
+
+    def execute(self, context):
+        return connectRoomNodes(False)
+
+class ConnectRoomsToNodes(Operator):
+    bl_idname = "floorplan.connect_rooms_to_nodes"
+    bl_label = "Connect rooms to nodes.."
     bl_description = "Connect each unconnected room node to the closest node in the existing node network."
 
     def execute(self, context):
-        return connectRoomNodes()
+        return connectRoomNodes(True)

@@ -12,18 +12,24 @@ def showReferenceImages(visible):
         referenceImage.hide_viewport = not visible
     return {'FINISHED'}
 
+def showRoomNodes(visible):
+    roomNodes = filter(lambda obj: obj.get('buildingPart') == 'RoomNode', bpy.context.scene.objects)
+    for roomNode in roomNodes:
+        roomNode.hide_viewport = not visible
+    return {'FINISHED'}
+
 def alignFloors():
     targeAlignPoint = bpy.context.view_layer.objects.active
     if targeAlignPoint.get('buildingPart') != 'AlignPoint':
         return {'CANCELLED'}
     alignPoints = list(filter(lambda obj: obj.get('buildingPart') == 'AlignPoint' and obj.get('buildingName') == targeAlignPoint.get('buildingName') and obj != targeAlignPoint, bpy.context.scene.objects))
     for alignPoint in alignPoints:
-        offsetX = alignPoint.location.x - targeAlignPoint.location.x
-        offsetY = alignPoint.location.y - targeAlignPoint.location.y
+        offsetX = alignPoint.matrix_world.translation.x - targeAlignPoint.matrix_world.translation.x
+        offsetY = alignPoint.matrix_world.translation.y - targeAlignPoint.matrix_world.translation.y
         referenceImage = alignPoint.parent
         if referenceImage.parent != None:
-            referenceImage.location.x = referenceImage.parent.location.x - offsetX
-            referenceImage.location.y = referenceImage.parent.location.y - offsetY
+            referenceImage.matrix_world.translation.x -= offsetX
+            referenceImage.matrix_world.translation.y -= offsetY
     return {'FINISHED'}
 
 def createWalls():
@@ -167,40 +173,42 @@ def createNode():
     return {'FINISHED'}
 
 def distanceBetween2D(v1, v2):
-    return math.sqrt( (v2[0] - v1[0])**2 + (v2[1] - v1[1])**2 )
+    return math.sqrt( (v2.x - v1.x)**2 + (v2.y - v1.y)**2 )
 
-def connectRoomNodes():
+def distance(v1, v2):
+    return math.sqrt( (v2.x - v1.x)**2 + (v2.y - v1.y)**2 + (v2.z - v1.z)**2 )
+
+def isSameLocation(vector1, vector2, margin):
+    for i in range(3):
+        if abs( vector1[i] - vector2[i] ) > margin:
+            return False
+    return True
+
+def connectRoomNodes(roomsToNodes=False):
     nodeNetwork = nodeNetwork = bpy.context.scene.objects.get('[NodeNetwork]')
+    reenterEditMode = nodeNetwork.mode == 'EDIT'
     if nodeNetwork.mode != 'OBJECT':
         bpy.ops.object.mode_set(mode='OBJECT')
     if nodeNetwork == None:
         return {'CANCELLED'}
     roomNodes = list(filter(lambda obj: obj.get('buildingPart') == 'RoomNode' and obj.parent != nodeNetwork , bpy.context.scene.objects))
     for roomNode in roomNodes:
-        vertices = list(filter(lambda vertex: abs(vertex.co.z - roomNode.location.z) <= 0.5 and distanceBetween2D(roomNode.location, vertex.co) <= 1.0 , nodeNetwork.data.vertices))
+        vertices = list(filter(lambda vertex: abs(vertex.co.z - roomNode.matrix_world.translation.z) <= 0.5 and distanceBetween2D(roomNode.matrix_world.translation, vertex.co) <= 1.0 , nodeNetwork.data.vertices))
         if len(vertices) > 0:
             closestVertex = vertices[0]
-            closestVertexDistance = distanceBetween2D(roomNode.location, closestVertex.co)
+            closestVertexDistance = distanceBetween2D(roomNode.matrix_world.translation, closestVertex.co)
             for vertex in vertices:
-                distance = distanceBetween2D(roomNode.location, vertex.co)
+                distance = distanceBetween2D(roomNode.matrix_world.translation, vertex.co)
                 if distance < closestVertexDistance:
                     closestVertex = vertex
                     closestVertexDistance = distance
-            closestVertex.co = roomNode.location
-
-            # Make the vertex the parent of the room node.
-            # bpy.ops.object.select_all(action='DESELECT')
-            # roomNode.select_set(True)
-            # nodeNetwork.select_set(True)
-            # bpy.context.view_layer.objects.active = nodeNetwork
-            # for vertex in nodeNetwork.data.vertices:
-            #     vertex.select = False
-            # closestVertex.select = True
-            # bpy.ops.object.mode_set(mode='EDIT')
-            # bpy.ops.object.vertex_parent_set()
-            # bpy.ops.object.mode_set(mode='OBJECT')
-            # roomNode.lock_location[0] = True
-            # roomNode.lock_location[1] = True
-            # roomNode.lock_location[2] = True
+            if not isSameLocation(roomNode.matrix_world.translation, closestVertex.co, 0.001):
+                if roomsToNodes:
+                    roomNode.matrix_world.translation = closestVertex.co
+                else:
+                    closestVertex.co = roomNode.matrix_world.translation
+    
+    if reenterEditMode:
+        bpy.ops.object.mode_set(mode='EDIT')
 
     return {'FINISHED'}
