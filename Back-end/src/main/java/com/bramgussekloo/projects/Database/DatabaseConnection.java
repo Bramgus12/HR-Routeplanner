@@ -3,11 +3,11 @@ package com.bramgussekloo.projects.Database;
 import java.io.IOException;
 import java.sql.*;
 
-class DatabaseConnection {
+public class DatabaseConnection {
     private Connection conn = null;
     String propFileName = "Database_config.properties";
 
-    Connection getConnection() {
+    public Connection getConnection() {
         try {
             getPropertiesValues prop = new getPropertiesValues();
             try {

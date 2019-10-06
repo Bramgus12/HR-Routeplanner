@@ -1,6 +1,7 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.Statements;
 
 import com.bramgussekloo.projects.DataClasses.*;
+import com.bramgussekloo.projects.Database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -117,44 +118,4 @@ public class Statements {
         }
         return list;
     }
-
-    public static ArrayList<ConnectedNode> getAllConnectedNodes(){
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<ConnectedNode> list = new ArrayList<>();
-        try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM connected_node");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                Integer node_id_1 = result.getInt("node_id_1");
-                Integer node_id_2 = result.getInt("node_id_2");
-                Integer distance = result.getInt("distance");
-                ConnectedNode connectedNode = new ConnectedNode(id, node_id_1, node_id_2, distance);
-                list.add(connectedNode);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public static ArrayList<BuildingInstitute> getAllBuildingInstitutes(){
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<BuildingInstitute> list = new ArrayList<>();
-        try{
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                Integer building_id = result.getInt("building_id");
-                Integer institute_id = result.getInt("institute_id");
-                BuildingInstitute buildingInstitute = new BuildingInstitute(id, building_id, institute_id);
-                list.add(buildingInstitute);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return list;
-    }
-
 }

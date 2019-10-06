@@ -1,6 +1,7 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.Statements;
 
 import com.bramgussekloo.projects.DataClasses.Building;
+import com.bramgussekloo.projects.Database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -21,7 +22,6 @@ public class BuildingStatements {
                 list.add(building);
             }
         } catch (SQLException e){
-            System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return list;

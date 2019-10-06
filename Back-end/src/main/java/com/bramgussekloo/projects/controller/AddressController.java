@@ -2,7 +2,7 @@ package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.DataClasses.Address;
 import com.bramgussekloo.projects.DataClasses.Error;
-import com.bramgussekloo.projects.Database.AddressStatements;
+import com.bramgussekloo.projects.Statements.AddressStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

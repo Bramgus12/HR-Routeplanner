@@ -10,22 +10,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/API/Building/")
-public class BuildingController {
+@RequestMapping("/API/BuildingInstitute/")
+public class BuildingInstituteController {
 
     @GetMapping("GET")
-    private ArrayList<Building> getBuildings(){
+    private ArrayList<Building> getBuildingsInstitute() {
         ArrayList<Building> list = BuildingStatements.getAllBuildings();
         return list;
     }
 
     @PostMapping("POST")
-    private ResponseEntity CreateBuilding(@RequestBody Building building){
-        String output =  BuildingStatements.createBuilding(building);
-        if (output.equals("yes")){
+    private ResponseEntity CreateBuildingInstitute(@RequestBody Building building) {
+        String output = BuildingStatements.createBuilding(building);
+        if (output.equals("yes")) {
             return new ResponseEntity(HttpStatus.CREATED);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
         }
     }
 }
+

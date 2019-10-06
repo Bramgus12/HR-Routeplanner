@@ -1,7 +1,8 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.Statements;
 
 import com.bramgussekloo.projects.DataClasses.Address;
 import com.bramgussekloo.projects.DataClasses.Error;
+import com.bramgussekloo.projects.Database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -25,7 +26,6 @@ public class AddressStatements {
             }
         } catch (SQLException e){
             e.printStackTrace();
-            ArrayList<Error> errors = new ArrayList<>();
         }
         return list;
     }
