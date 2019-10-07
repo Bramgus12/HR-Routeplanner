@@ -44,4 +44,15 @@ public class AddressStatements {
             return e.getMessage();
         }
     }
+
+    public static String deleteAddress(Integer id){
+        Connection conn = new DatabaseConnection().getConnection();
+        try{
+            conn.createStatement().execute("DELETE FROM address WHERE id=" + id);
+            return "yes";
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
 }

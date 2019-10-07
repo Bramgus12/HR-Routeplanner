@@ -42,5 +42,16 @@ public class ConnectedNodeStatements {
             return e.getMessage();
         }
     }
+
+    public static String deleteConnectedNode(Integer id){
+        Connection conn = new DatabaseConnection().getConnection();
+        try{
+            conn.createStatement().execute("DELETE FROM connected_node WHERE id=" + id);
+            return "yes";
+        } catch (SQLException e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
 }
 

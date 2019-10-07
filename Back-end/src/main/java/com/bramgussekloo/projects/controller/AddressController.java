@@ -20,7 +20,7 @@ public class AddressController {
     }
 
     @PostMapping("POST")
-    private ResponseEntity CreateAddress(@RequestBody Address address){
+    private ResponseEntity createAddress(@RequestBody Address address){
         String output =  AddressStatements.createAddress(address);
         if (output.equals("yes")){
             return new ResponseEntity(HttpStatus.CREATED);
@@ -28,5 +28,14 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
         }
     }
-
+    
+    @DeleteMapping("DEL")
+    private ResponseEntity deleteAddress(@RequestParam Integer id){
+        String output = AddressStatements.deleteAddress(id);
+        if (output.equals("yes")){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        }
+    }
 }

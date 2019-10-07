@@ -21,9 +21,19 @@ public class BuildingController {
 
     @PostMapping("POST")
     private ResponseEntity CreateBuilding(@RequestBody Building building){
-        String output =  BuildingStatements.createBuilding(building);
+        String output =  BuildingStatements.CreateBuilding(building);
         if (output.equals("yes")){
             return new ResponseEntity(HttpStatus.CREATED);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        }
+    }
+
+    @DeleteMapping("DEL")
+    private ResponseEntity CreateBuilding(@RequestParam Integer id){
+        String output = BuildingStatements.deleteBuilding(id);
+        if (output.equals("yes")){
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
         }

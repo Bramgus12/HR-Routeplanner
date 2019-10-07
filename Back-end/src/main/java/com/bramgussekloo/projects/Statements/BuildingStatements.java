@@ -26,13 +26,24 @@ public class BuildingStatements {
         }
         return list;
     }
-    public static String createBuilding(Building building){
+    public static String CreateBuilding(Building building){
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = building.getId();
         Integer address_id = building.getAddress_id();
         String name = building.getName();
         try{
             conn.createStatement().execute("INSERT INTO building VALUES (" + id + ", " + address_id + ", '" + name + "');");
+            return "yes";
+        } catch (SQLException e){
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    public static String deleteBuilding(Integer id){
+        Connection conn = new DatabaseConnection().getConnection();
+        try{
+            conn.createStatement().execute("DELETE FROM building WHERE id=" + id);
             return "yes";
         } catch (SQLException e){
             e.printStackTrace();
