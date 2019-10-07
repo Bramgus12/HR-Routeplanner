@@ -28,7 +28,7 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
         }
     }
-    
+
     @DeleteMapping("DEL")
     private ResponseEntity deleteAddress(@RequestParam Integer id){
         String output = AddressStatements.deleteAddress(id);
@@ -38,4 +38,5 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
         }
     }
+
 }
