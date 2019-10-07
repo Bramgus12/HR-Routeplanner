@@ -5,6 +5,7 @@ from . FloorplanToolsFunctions import *
 def exportFloorplan(context, filepath):
     # Object for all data to export
     floorplan = {
+        'name': bpy.context.scene.name,
         'nodes': []
     }
 
