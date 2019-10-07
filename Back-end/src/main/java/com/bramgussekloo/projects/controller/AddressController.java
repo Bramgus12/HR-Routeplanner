@@ -39,4 +39,13 @@ public class AddressController {
         }
     }
 
+    @PatchMapping("PAT")
+    private ResponseEntity updateAddress(@RequestBody Address address){
+        String output = AddressStatements.updateAddress(address);
+        if (output.equals("yes")){
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        }
+    }
 }

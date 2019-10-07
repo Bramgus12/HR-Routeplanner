@@ -3,6 +3,7 @@ package com.bramgussekloo.projects.Statements;
 import com.bramgussekloo.projects.DataClasses.Address;
 import com.bramgussekloo.projects.DataClasses.Error;
 import com.bramgussekloo.projects.Database.DatabaseConnection;
+import org.graalvm.compiler.code.DataSection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,5 +55,55 @@ public class AddressStatements {
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+    public static String updateAddress(Address address){
+        Connection conn = new DatabaseConnection().getConnection();
+        Integer id = address.getId();
+        Integer number = address.getNumber();
+        String street = address.getStreet();
+        String postal = address.getPostal();
+        String city = address.getCity();
+        String output = "";
+
+        if (id != null){
+            if (number != null){
+                try {
+                    conn.createStatement().execute("UPDATE address SET number=" + number + " WHERE id=" + id);
+                } catch (SQLException e){
+                    e.printStackTrace();
+                    output = output + e.getMessage() + ", ";
+                }
+            }
+            if (street != null){
+                try {
+                    conn.createStatement().execute("UPDATE address SET street='" + street + "' WHERE id=" + id);
+                } catch (SQLException e){
+                    e.printStackTrace();
+                    output = output + e.getMessage() + ", ";
+                }
+            }
+            if (postal != null){
+                try {
+                    conn.createStatement().execute("UPDATE address SET postal='" + postal + "' WHERE id=" + id);
+                } catch (SQLException e){
+                    e.printStackTrace();
+                    output = output + e.getMessage() + ", ";
+                }
+            }
+            if (city != null){
+                try {
+                    conn.createStatement().execute("UPDATE address SET city='" + city + "' WHERE id=" + id);
+                } catch (SQLException e){
+                    e.printStackTrace();
+                    output = output + e.getMessage() + ", ";
+                }
+            }
+            if (output.equals("")){
+                output = output + "yes";
+            }
+        } else {
+            output = output + "id can't be empty";
+        }
+        return output;
     }
 }
