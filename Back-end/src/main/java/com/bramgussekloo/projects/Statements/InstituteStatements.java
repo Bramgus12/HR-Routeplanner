@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class InstitueStatements {
+public class InstituteStatements {
     public static ArrayList<Institute> getAllInstitutes(){
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Institute> list = new ArrayList<>();
@@ -31,8 +31,7 @@ public class InstitueStatements {
         Integer id = institute.getId();
         String institute_name = institute.getName();
         try{
-            conn.createStatement().execute("INSERT INTO institute VALUES (" + id + ", " + id");");
-            return "yes";
+            conn.createStatement().execute("INSERT INTO institute VALUES (" + id + ", " + id + ");");            return "yes";
         } catch (SQLException e){
             e.printStackTrace();
             return e.getMessage();

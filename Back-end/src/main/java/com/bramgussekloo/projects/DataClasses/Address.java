@@ -15,6 +15,10 @@ public class Address {
         this.postal = postal;
     }
 
+    public Address(){
+    }
+
+
     public Integer getId() {
         return id;
     }
@@ -34,4 +38,9 @@ public class Address {
     public String getStreet() {
         return street;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
+

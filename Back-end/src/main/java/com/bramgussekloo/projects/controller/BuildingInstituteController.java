@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/API/BuildingInstitute/")
+@RequestMapping("/api/buildinginstitute/")
 public class BuildingInstituteController {
 
     @GetMapping("GET")

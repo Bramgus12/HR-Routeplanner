@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
-@RequestMapping("/API/ConnectedNode/")
+@RequestMapping("/api/connectednode/")
 public class ConnectedNodeController {
     @GetMapping("GET")
     private ArrayList<ConnectedNode> getConnectedNode() {

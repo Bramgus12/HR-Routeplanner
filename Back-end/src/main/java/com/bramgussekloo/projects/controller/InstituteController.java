@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/institute")
 public class InstituteController {
 
-    @RequestMapping(value = "/institute", method = RequestMethod.GET)
+    @GetMapping
     private ArrayList<BuildingInstitute> getInstituteList(){
         ArrayList<BuildingInstitute> list = BuildingInstituteStatements.getAllABuildingInstitutes();
         return list;
