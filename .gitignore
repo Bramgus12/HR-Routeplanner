@@ -269,4 +269,4 @@ dmypy.json
 
 build/generated/
 build/tmp/
-/src/main/resources/Database_config.properties
+Database_config.properties
