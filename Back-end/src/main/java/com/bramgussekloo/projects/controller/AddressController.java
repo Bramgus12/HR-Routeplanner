@@ -20,7 +20,7 @@ public class AddressController {
     }
 
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     private Address getAddress(@PathVariable Integer id){
         return AddressStatements.getAddress(id);
     }

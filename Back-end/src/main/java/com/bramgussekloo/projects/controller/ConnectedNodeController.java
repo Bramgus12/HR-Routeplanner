@@ -9,31 +9,53 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
-@RequestMapping("/api/connectednode/")
+@RequestMapping("/api/connectednode")
 public class ConnectedNodeController {
-    @GetMapping("GET")
-    private ArrayList<ConnectedNode> getConnectedNode() {
+
+    @GetMapping
+    private ArrayList<ConnectedNode> getAllConnectedNode() {
         ArrayList<ConnectedNode> list = ConnectedNodeStatements.getAllConnectedNodes();
         return list;
     }
 
-    @PostMapping("POST")
-    private ResponseEntity CreateConnectedNode(@RequestBody ConnectedNode connectedNode) {
-        String output = ConnectedNodeStatements.createConnectedNodes(connectedNode);
-        if (output.equals("yes")) {
-            return new ResponseEntity(HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    private ConnectedNode getConnectedNode(@PathVariable Integer id){ return ConnectedNodeStatements.getConnectedNode(id); }
+
+    @PostMapping("/{id}")
+    private ResponseEntity createConnectedNode(@PathVariable Integer id, @RequestBody ConnectedNode connectedNode) {
+        if (id.equals(connectedNode.getId())) {
+            String output = ConnectedNodeStatements.createConnectedNode(connectedNode);
+            if (output.equals("yes")) {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    private ResponseEntity deleteConnectedNode(@PathVariable Integer id){
+        String output = ConnectedNodeStatements.deleteConnectedNode(id);
+        if (output.equals("yes")){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
         }
     }
 
-    @DeleteMapping("DEL")
-    private ResponseEntity deleteConnectedNode(@RequestParam Integer id){
-        String output = ConnectedNodeStatements.deleteConnectedNode(id);
-        if (output.equals("yes")){
-            return ResponseEntity.status(HttpStatus.OK).build();
+    @PutMapping("/{id}")
+    private ResponseEntity updateConnectedNode(@PathVariable Integer id, @RequestBody ConnectedNode connectedNode) {
+        if (id.equals(connectedNode.getId())) {
+            String output = ConnectedNodeStatements.updateConnectedNode(connectedNode);
+            if (output.equals("yes")) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+            }
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
         }
     }
 }

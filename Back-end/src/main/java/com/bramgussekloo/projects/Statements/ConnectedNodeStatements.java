@@ -28,7 +28,23 @@ public class ConnectedNodeStatements {
         return list;
     }
 
-    public static String createConnectedNodes(ConnectedNode connectedNode) {
+    public static ConnectedNode getConnectedNode(Integer id){
+        Connection conn = new DatabaseConnection().getConnection();
+        try{
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM connected_node WHERE id=" + id);
+            while (result.next()){
+                Integer node_id_1 = result.getInt("node_id_1");
+                Integer node_id_2 = result.getInt("node_id_2");
+                Integer distance = result.getInt("distance");
+                return new ConnectedNode(id, node_id_1, node_id_2, distance);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return new ConnectedNode();
+    }
+
+    public static String createConnectedNode(ConnectedNode connectedNode) {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = connectedNode.getId();
         Integer node_id_1 = connectedNode.getNode_id_1();
@@ -52,6 +68,24 @@ public class ConnectedNodeStatements {
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    public static String updateConnectedNode(ConnectedNode connectedNode){
+        Connection conn = new DatabaseConnection().getConnection();
+        Integer id = connectedNode.getId();
+        Integer node_id_1 = connectedNode.getNode_id_1();
+        Integer node_id_2 = connectedNode.getNode_id_2();
+        Integer distance = connectedNode.getDistance();
+        String output;
+
+        try{
+            conn.createStatement().execute("UPDATE connected_node SET node_id_1=" + node_id_1 + ", node_id_2='" + node_id_2 + ", distance='" + distance + "' WHERE id=" + id );
+            output = "yes";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            output = e.getMessage();
+        }
+        return output;
     }
 }
 

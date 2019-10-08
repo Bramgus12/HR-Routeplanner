@@ -9,6 +9,8 @@ public class ConnectedNode {
         this.node_id_2 = node_id_2;
         this.distance = distance;
     }
+    
+    public ConnectedNode(){}
 
     public Integer getId() {
         return id;

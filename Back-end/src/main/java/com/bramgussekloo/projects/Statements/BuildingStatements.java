@@ -26,7 +26,22 @@ public class BuildingStatements {
         }
         return list;
     }
-    public static String CreateBuilding(Building building){
+
+    public static Building getBuilding(Integer id){
+        Connection conn = new DatabaseConnection().getConnection();
+        try{
+            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
+            while (result.next()){
+                Integer address_id = result.getInt("address_id");
+                String name = result.getString("name");
+                return new Building(id, address_id, name);
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return new Building();
+    }
+    public static String createBuilding(Building building){
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = building.getId();
         Integer address_id = building.getAddress_id();
@@ -49,5 +64,22 @@ public class BuildingStatements {
             e.printStackTrace();
             return e.getMessage();
         }
+    }
+
+    public static String updateBuilding(Building building){
+        Connection conn = new DatabaseConnection().getConnection();
+        Integer id = building.getId();
+        Integer address_id = building.getAddress_id();
+        String name = building.getName();
+        String output;
+
+        try{
+            conn.createStatement().execute("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id );
+            output = "yes";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            output = e.getMessage();
+        }
+        return output;
     }
 }

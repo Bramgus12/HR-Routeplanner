@@ -12,7 +12,7 @@ public class InstituteController {
 
     @GetMapping
     private ArrayList<BuildingInstitute> getInstituteList(){
-        ArrayList<BuildingInstitute> list = BuildingInstituteStatements.getAllABuildingInstitutes();
+        ArrayList<BuildingInstitute> list = BuildingInstituteStatements.getAllBuildingInstitutes();
         return list;
     }
 

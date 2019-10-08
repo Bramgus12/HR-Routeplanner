@@ -10,6 +10,8 @@ public class Building {
         this.name = name;
     }
 
+    public Building(){}
+
     public Integer getId() {
         return id;
     }
