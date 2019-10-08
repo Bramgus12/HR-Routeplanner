@@ -84,7 +84,8 @@ def createReferenceImage(floorplan, filepath, floorRoot):
     referenceImage.empty_image_offset[1] = 0.0
     referenceImage.empty_display_size = 0.42 * floorplan['scale']
 
-    bpy.context.scene.collection.objects.unlink(referenceImage)
+    if bpy.context.scene.collection.objects.get(referenceImage.name) != None:
+        bpy.context.scene.collection.objects.unlink(referenceImage)
     linkToFloorCollection(referenceImage, referenceImage["buildingName"], referenceImage["floorNumber"])
     return referenceImage
 
