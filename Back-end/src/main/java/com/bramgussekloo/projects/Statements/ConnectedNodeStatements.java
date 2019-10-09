@@ -3,6 +3,7 @@ package com.bramgussekloo.projects.Statements;
 import com.bramgussekloo.projects.DataClasses.ConnectedNode;
 import com.bramgussekloo.projects.Database.DatabaseConnection;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +19,7 @@ public class ConnectedNodeStatements {
                 Integer id = result.getInt("id");
                 Integer node_id_1 = result.getInt("node_id_1");
                 Integer node_id_2 = result.getInt("node_id_2");
-                Integer distance = result.getInt("distance");
+                BigDecimal distance = result.getBigDecimal("distance");
                 ConnectedNode connectedNode = new ConnectedNode(id, node_id_1, node_id_2, distance);
                 list.add(connectedNode);
             }
@@ -35,7 +36,7 @@ public class ConnectedNodeStatements {
             while (result.next()){
                 Integer node_id_1 = result.getInt("node_id_1");
                 Integer node_id_2 = result.getInt("node_id_2");
-                Integer distance = result.getInt("distance");
+                BigDecimal distance = result.getBigDecimal("distance");
                 return new ConnectedNode(id, node_id_1, node_id_2, distance);
             }
         } catch (SQLException e){
@@ -47,11 +48,11 @@ public class ConnectedNodeStatements {
     public static String createConnectedNode(ConnectedNode connectedNode) {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = connectedNode.getId();
-        Integer node_id_1 = connectedNode.getNode_id_1();
-        Integer node_id_2 = connectedNode.getNode_id_2();
-        Integer distance = connectedNode.getDistance();
+        Integer node_id_1 = connectedNode.getNode1();
+        Integer node_id_2 = connectedNode.getNode2();
+        BigDecimal distance = connectedNode.getDistance();
         try {
-            conn.createStatement().execute("INSERT INTO connected_node VALUES (" + id + ", " + node_id_1 + ", " + node_id_2 + ", " + distance + ");");
+            conn.createStatement().execute("INSERT INTO connected_node VALUES (DEFAULT, " + node_id_1 + ", " + node_id_2 + ", " + distance + ");");
             return "yes";
         } catch (SQLException e) {
             e.printStackTrace();
@@ -73,9 +74,9 @@ public class ConnectedNodeStatements {
     public static String updateConnectedNode(ConnectedNode connectedNode){
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = connectedNode.getId();
-        Integer node_id_1 = connectedNode.getNode_id_1();
-        Integer node_id_2 = connectedNode.getNode_id_2();
-        Integer distance = connectedNode.getDistance();
+        Integer node_id_1 = connectedNode.getNode1();
+        Integer node_id_2 = connectedNode.getNode2();
+        BigDecimal distance = connectedNode.getDistance();
         String output;
 
         try{

@@ -22,6 +22,16 @@ public class ConnectedNodeController {
     @GetMapping("/{id}")
     private ConnectedNode getConnectedNode(@PathVariable Integer id){ return ConnectedNodeStatements.getConnectedNode(id); }
 
+    @PostMapping
+    private ResponseEntity create(@RequestBody ConnectedNode connectedNode){
+        String output = ConnectedNodeStatements.createConnectedNode(connectedNode);
+        if (output.equals("yes")){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        }
+    }
+
     @PostMapping("/{id}")
     private ResponseEntity createConnectedNode(@PathVariable Integer id, @RequestBody ConnectedNode connectedNode) {
         if (id.equals(connectedNode.getId())) {

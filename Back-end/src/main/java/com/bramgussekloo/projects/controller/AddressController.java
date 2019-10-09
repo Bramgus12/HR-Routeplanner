@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.PastOrPresent;
 import java.util.ArrayList;
 
 @RestController
@@ -23,6 +24,17 @@ public class AddressController {
     @GetMapping("/{id}")
     private Address getAddress(@PathVariable Integer id){
         return AddressStatements.getAddress(id);
+    }
+
+
+    @PostMapping
+    private ResponseEntity create(@RequestBody Address address){
+        String output = AddressStatements.createAddress(address);
+        if (output.equals("yes")){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        }
     }
 
     @PostMapping("/{id}")

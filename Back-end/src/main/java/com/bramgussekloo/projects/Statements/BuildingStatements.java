@@ -47,7 +47,7 @@ public class BuildingStatements {
         Integer address_id = building.getAddress_id();
         String name = building.getName();
         try{
-            conn.createStatement().execute("INSERT INTO building VALUES (" + id + ", " + address_id + ", '" + name + "');");
+            conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + address_id + ", '" + name + "');");
             return "yes";
         } catch (SQLException e){
             e.printStackTrace();

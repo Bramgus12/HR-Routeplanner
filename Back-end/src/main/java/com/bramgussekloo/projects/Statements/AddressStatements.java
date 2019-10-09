@@ -56,7 +56,7 @@ public class AddressStatements {
         String postal = address.getPostal();
         String city = address.getCity();
         try{
-            conn.createStatement().execute("INSERT INTO address VALUES (" + id + ", '" + street + "', " + number + ", '" + city + "', '" + postal + "');");
+            conn.createStatement().execute("INSERT INTO address VALUES (DEFAULT , '" + street + "', " + number + ", '" + city + "', '" + postal + "');");
             return "yes";
         } catch (SQLException e){
             e.printStackTrace();

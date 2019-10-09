@@ -1,12 +1,15 @@
 package com.bramgussekloo.projects.DataClasses;
 
-public class ConnectedNode {
-    private Integer id, node_id_1, node_id_2, distance;
+import java.math.BigDecimal;
 
-    public ConnectedNode (Integer id, Integer node_id_1, Integer node_id_2, Integer distance){
+public class ConnectedNode {
+    private Integer id, node1, node2;
+    private BigDecimal distance;
+
+    public ConnectedNode (Integer id, Integer node1, Integer node2, BigDecimal distance){
         this.id = id;
-        this.node_id_1 = node_id_1;
-        this.node_id_2 = node_id_2;
+        this.node1 = node1;
+        this.node2 = node2;
         this.distance = distance;
     }
     
@@ -16,15 +19,15 @@ public class ConnectedNode {
         return id;
     }
 
-    public Integer getDistance() {
+    public BigDecimal getDistance() {
         return distance;
     }
 
-    public Integer getNode_id_1() {
-        return node_id_1;
+    public Integer getNode1() {
+        return node1;
     }
 
-    public Integer getNode_id_2() {
-        return node_id_2;
+    public Integer getNode2() {
+        return node2;
     }
 }

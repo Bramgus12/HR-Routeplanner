@@ -59,26 +59,6 @@ public class Statements {
         return list;
     }
 
-    public static ArrayList<Node> getAllNodes(){
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<Node> list = new ArrayList<>();
-        try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM node");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                Integer x = result.getInt("x");
-                Integer y = result.getInt("y");
-                Integer z = result.getInt("z");
-                String type = result.getString("type");
-                Node node = new Node(id, x, y, z, type);
-                list.add(node);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return list;
-    }
 
     public static ArrayList<Institute> getAllInstitutes(){
         Connection conn = new DatabaseConnection().getConnection();
@@ -90,27 +70,6 @@ public class Statements {
                 String name = result.getString("name");
                 Institute institute = new Institute(id, name);
                 list.add(institute);
-            }
-        } catch (SQLException e){
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public static ArrayList<EntryDest> getAllEntryDest(){
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<EntryDest> list = new ArrayList<>();
-        try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM entry_dest");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                Integer node_id = result.getInt("node_id");
-                Integer building_id = result.getInt("building_id");
-                Integer level = result.getInt("level");
-                String name = result.getString("name");
-                EntryDest entryDest = new EntryDest(id, node_id, building_id, level, name);
-                list.add(entryDest);
             }
         } catch (SQLException e){
             System.out.println(e.getMessage());

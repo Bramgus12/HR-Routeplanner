@@ -50,7 +50,7 @@ public class BuildingInstituteStatements {
         Integer building_id = buildingInstitute.getBuilding_id();
         Integer institute_id = buildingInstitute.getInstitute_id();
         try{
-            conn.createStatement().execute("INSERT INTO building_institute VALUES (" + id + ", " + building_id + ", " + institute_id + ");");
+            conn.createStatement().execute("INSERT INTO building_institute VALUES (DEFAULT , " + building_id + ", " + institute_id + ");");
             return "yes";
         } catch (SQLException e){
             e.printStackTrace();
