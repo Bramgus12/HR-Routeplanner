@@ -1,0 +1,45 @@
+@import 'helpers';
+
+table {
+  margin: 5px 0;
+  width: 100%;
+
+  tr.example-detail-row {
+    height: 0;
+  }  
+
+  .example-element-row td {
+    border-bottom-width: 0;
+  }
+
+  .example-element-detail {
+    overflow: hidden;
+    display: flex;
+  }
+
+  mat-form-field {
+    padding: 0 5px;
+  }
+
+  form {
+    margin: 5px 0;
+  }
+
+  .btn-delete {
+    color: red;
+  }
+}
+
+@include media-tablet(){
+  table {
+    margin: 20px auto;
+    width: 90vw;
+  }
+}
+
+@include media-desktop(){
+  table {
+    margin: 50px auto;
+    width: 70vw;
+  }
+}

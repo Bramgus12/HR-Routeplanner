@@ -41,6 +41,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ```
 import { ... } from '@angular/core';
 import * as THREE from 'three';
+// or
+import { ... } from 'three';
 
 @Component({ ... })
 export class ...Component implements OnInit {
@@ -48,7 +50,7 @@ export class ...Component implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    const scene = new THREE.Scene
+    const scene = new THREE.Scene;
     ...
   }
   
