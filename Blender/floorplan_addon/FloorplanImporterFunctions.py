@@ -7,7 +7,7 @@ def pathToExtension(path, extension):
 
 def linkToFloorCollection(obj, buildingName ,floorNumber):
     part = 'FloorCollection'
-    name = '[{}] {}.{}'.format(part, buildingName, floorNumber)
+    name = '[{}] {}'.format(part, floorNumber)
     collection = bpy.data.collections.get(name)
     if collection == None:
         collection = bpy.data.collections.new(name)
@@ -40,6 +40,7 @@ def createFloorRoot(buildingRoot, floorNumber, floorHeight):
 
     floorRoot.parent = buildingRoot
     floorRoot.matrix_parent_inverse = buildingRoot.matrix_world.inverted()
+    linkToFloorCollection(floorRoot, floorRoot["buildingName"], floorNumber)
     return floorRoot
 
 def createAlignPoint(referenceImage):
