@@ -15,7 +15,11 @@ def linkToFloorCollection(obj, buildingName ,floorNumber):
         bpy.context.scene.collection.children.link(collection)
     if collection.objects.get(obj.name) == None:
         collection.objects.link(obj)
-    
+
+def unlinkFromCollections(obj):
+    for collection in bpy.data.collections:
+        if collection.objects.get(obj.name) != None:
+            collection.objects.unlink(obj)
 
 def createBuildingRoot(buildingName):
     part = "BuildingRoot"
@@ -40,6 +44,9 @@ def createFloorRoot(buildingRoot, floorNumber, floorHeight):
 
     floorRoot.parent = buildingRoot
     floorRoot.matrix_parent_inverse = buildingRoot.matrix_world.inverted()
+    unlinkFromCollections(floorRoot)
+    if bpy.context.scene.collection.objects.get(floorRoot.name) != None:
+        bpy.context.scene.collection.objects.unlink(floorRoot)
     linkToFloorCollection(floorRoot, floorRoot["buildingName"], floorNumber)
     return floorRoot
 
@@ -85,6 +92,7 @@ def createReferenceImage(floorplan, filepath, floorRoot):
     referenceImage.empty_image_offset[1] = 0.0
     referenceImage.empty_display_size = 0.42 * floorplan['scale']
 
+    unlinkFromCollections(referenceImage)
     if bpy.context.scene.collection.objects.get(referenceImage.name) != None:
         bpy.context.scene.collection.objects.unlink(referenceImage)
     linkToFloorCollection(referenceImage, referenceImage["buildingName"], referenceImage["floorNumber"])
