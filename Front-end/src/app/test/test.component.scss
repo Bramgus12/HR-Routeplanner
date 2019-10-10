@@ -1,44 +1,52 @@
 @import 'helpers';
 
-table {
+section {
   margin: 5px 0;
   width: 100%;
 
-  tr.example-detail-row {
-    height: 0;
-  }  
-
-  .example-element-row td {
-    border-bottom-width: 0;
+  button.create {
+    margin: 10px 0;
   }
 
-  .example-element-detail {
-    overflow: hidden;
-    display: flex;
-  }
+  table {
+    width: 100%;
 
-  mat-form-field {
-    padding: 0 5px;
-  }
+    tr.example-detail-row {
+      height: 0;
+    }  
 
-  form {
-    margin: 5px 0;
-  }
+    .example-element-row td {
+      border-bottom-width: 0;
+    }
 
-  .btn-delete {
-    color: red;
+    .example-element-detail {
+      overflow: hidden;
+      display: flex;
+    }
+
+    mat-form-field {
+      padding: 0 5px;
+    }
+
+    form {
+      margin: 5px 0;
+    }
+
+    .btn-delete {
+      color: red;
+    }
   }
 }
 
 @include media-tablet(){
-  table {
+  section {
     margin: 20px auto;
     width: 90vw;
   }
 }
 
 @include media-desktop(){
-  table {
+  section {
     margin: 50px auto;
     width: 70vw;
   }

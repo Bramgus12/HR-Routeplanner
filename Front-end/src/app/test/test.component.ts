@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { MatDialog, MatDialogRef } from '@angular/material';
 
 import { TestService } from './test.service';
 import { Address } from '../shared/dataclasses';
@@ -22,7 +23,7 @@ export class TestComponent implements OnInit {
   columnsToDisplay = ['street', 'number', 'city', 'postal'];
   expandedElement: Address | null;
 
-  constructor(private service: TestService) { }
+  constructor(private service: TestService, private dialog: MatDialog) { }
 
   ngOnInit() {
     // Temp
@@ -45,6 +46,16 @@ export class TestComponent implements OnInit {
     this.get()
   }
 
+  create(){
+    const dialogRef = this.dialog.open(TestCreateDialog);
+    dialogRef.afterClosed().subscribe((data: Address | undefined) => {
+      if(data){
+        console.log(data);
+        this.service.createAddress(data).subscribe(() => this.get());
+      }
+    });
+  }
+
   get(){
     this.service.getAddresses().subscribe(res => {
       this.addresses = res;
@@ -59,9 +70,40 @@ export class TestComponent implements OnInit {
   }
 
   delete(id: number){
-    this.service.deleteAddress(id).subscribe(() => {
-      this.get(); // Live data from the database (incase anyone else edited something)
+    const dialogRef = this.dialog.open(TestDeleteDialog);
+    dialogRef.afterClosed().subscribe((data: number | undefined) => {
+      if(data){
+        console.log("id", data);
+        this.service.deleteAddress(id).subscribe(() => this.get());
+      }
     });
   }
 
+}
+
+@Component({
+  selector: 'test-create-dialog',
+  templateUrl: 'test-create-dialog.html'
+})
+export class TestCreateDialog {
+
+  newAddress: Address = {
+    street: "",
+    number: 0,
+    city: "",
+    postal: ""
+  }
+
+  constructor() {}
+
+}
+
+@Component({
+  selector: 'test-delete-dialog',
+  templateUrl: 'test-delete-dialog.html'
+})
+export class TestDeleteDialog {
+
+  constructor() {}
+  
 }

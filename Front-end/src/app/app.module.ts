@@ -10,18 +10,10 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
-import { TestComponent } from './test/test.component';
+import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    FooterComponent,
-    HomepageComponent,
-    TestComponent,
-    SidenavComponent
-  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -29,6 +21,20 @@ import { SidenavComponent } from './sidenav/sidenav.component';
     FormsModule,
     RoutingModule,
     MaterialModule
+  ],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    FooterComponent,
+    HomepageComponent,
+    TestComponent,
+    TestCreateDialog,
+    TestDeleteDialog,
+    SidenavComponent
+  ],
+  entryComponents: [
+    TestCreateDialog,
+    TestDeleteDialog
   ],
   providers: [],
   bootstrap: [AppComponent]
