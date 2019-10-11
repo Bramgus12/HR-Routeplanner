@@ -3,11 +3,11 @@
 Navigation:
 1. [Install instructions](#Install)
 2. [Address](#Address)
-    1. [Get all addresses](#GET-/api/address)
-    2. [Get a certain address](#GET-/api/address/{id})
-    3. [Post](#POST-/api/address)
-    4. [Delete](#DELETE-/api/address/{id})
-    5. [Update](#PUT-/api/address/{id})
+    1. [Get all addresses](#get-apiaddress)
+    2. [Get a certain address](#get-apiaddressid)
+    3. [Post](#post-apiaddress)
+    4. [Delete](#delete-apiaddressid)
+    5. [Update](#put-apiaddressid)
     
 
 
