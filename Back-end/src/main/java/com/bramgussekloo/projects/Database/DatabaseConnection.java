@@ -1,21 +1,22 @@
 package com.bramgussekloo.projects.Database;
 
+import java.io.IOException;
 import java.sql.*;
-class DatabaseConnection {
-    private String url = "jdbc:postgresql://projects.bramgussekloo.com/Test:5432";
-    private String username = "postgres";
-    private String password = "*enter password here*";
+
+public class DatabaseConnection {
     private Connection conn = null;
+    String propFileName = "Database_config.properties";
 
-    DatabaseConnection() {
-    }
-
-    Connection getConnection(){
+    public Connection getConnection() {
         try {
-            this.conn = DriverManager.getConnection(this.url, this.username, this.password);
-        }
-        catch (SQLException e){
-            System.out.println("Connection failed with error: \n" + e.getMessage());
+            getPropertiesValues prop = new getPropertiesValues();
+            try {
+                String[] values = prop.getPropValues(propFileName);
+                this.conn = DriverManager.getConnection(values[0], values[1], values[2]);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return conn;

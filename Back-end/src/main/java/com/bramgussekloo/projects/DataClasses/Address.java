@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.DataClasses;
 
 public class Address {
     private Integer id;
@@ -14,6 +14,10 @@ public class Address {
         this.city = city;
         this.postal = postal;
     }
+
+    public Address(){
+    }
+
 
     public Integer getId() {
         return id;
@@ -34,4 +38,9 @@ public class Address {
     public String getStreet() {
         return street;
     }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }
+
