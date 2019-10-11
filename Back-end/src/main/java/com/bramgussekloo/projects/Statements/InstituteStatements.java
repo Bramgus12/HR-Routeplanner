@@ -31,7 +31,8 @@ public class InstituteStatements {
         Integer id = institute.getId();
         String institute_name = institute.getName();
         try{
-            conn.createStatement().execute("INSERT INTO institute VALUES (" + id + ", " + id + ");");            return "yes";
+            conn.createStatement().execute("INSERT INTO institute VALUES (" + id + ", " + id + ");");
+            return "yes";
         } catch (SQLException e){
             e.printStackTrace();
             return e.getMessage();

@@ -10,10 +10,10 @@ public class Institute {
     }
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 }
