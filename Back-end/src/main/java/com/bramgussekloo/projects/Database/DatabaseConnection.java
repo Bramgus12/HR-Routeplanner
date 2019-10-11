@@ -10,12 +10,8 @@ public class DatabaseConnection {
     public Connection getConnection() {
         try {
             getPropertiesValues prop = new getPropertiesValues();
-            try {
-                String[] values = prop.getPropValues(propFileName);
-                this.conn = DriverManager.getConnection(values[0], values[1], values[2]);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
+            String[] values = prop.getPropValues(propFileName);
+            this.conn = DriverManager.getConnection(values[0], values[1], values[2]);
         } catch (SQLException e) {
             e.printStackTrace();
         }
