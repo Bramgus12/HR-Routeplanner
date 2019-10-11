@@ -16,7 +16,7 @@ public class getPropertiesValues {
      * Get values from properties file
      * Resource: https://crunchify.com/java-properties-file-how-to-read-config-properties-values-in-java/
      */
-    public String[] getPropValues(String propFileName) throws IOException {
+    public String[] getPropValues(String propFileName) {
         String[] result = {"", "", ""};
         try {
             Properties prop = new Properties();
@@ -37,7 +37,13 @@ public class getPropertiesValues {
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         } finally {
-            inputStream.close();
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }
