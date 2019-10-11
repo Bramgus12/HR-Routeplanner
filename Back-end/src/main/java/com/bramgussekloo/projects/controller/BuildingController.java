@@ -30,6 +30,7 @@ public class BuildingController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.getBuilding(id));
         } catch (SQLException e){
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
         }
     }
@@ -39,6 +40,7 @@ public class BuildingController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.createBuilding(building));
         } catch (SQLException e){
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
         }
     }
@@ -46,8 +48,10 @@ public class BuildingController {
     @DeleteMapping("/{id}")
     private ResponseEntity deleteBuilding(@PathVariable Integer id){
          try {
-             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.deleteBuilding(id));
+             BuildingStatements.deleteBuilding(id);
+             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
          } catch (SQLException e){
+             e.printStackTrace();
              return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
          }
     }
@@ -61,6 +65,7 @@ public class BuildingController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
             }
         } catch (SQLException e){
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
         }
     }

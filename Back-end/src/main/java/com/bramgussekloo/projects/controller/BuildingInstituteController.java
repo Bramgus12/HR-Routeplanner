@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 @RestController
@@ -14,42 +15,54 @@ import java.util.ArrayList;
 public class BuildingInstituteController {
 
     @GetMapping
-    private ArrayList<BuildingInstitute> getBuildingInstitutes() {
-        ArrayList<BuildingInstitute> list = BuildingInstituteStatements.getAllBuildingInstitutes();
-        return list;
+    private ResponseEntity getAllBuildingInstitutes() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getAllBuildingInstitutes());
+        } catch (SQLException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+        }
     }
 
-    @PostMapping("/{id}")
+    @GetMapping("/{id}")
+    private ResponseEntity getBuildingInstitute(@PathVariable Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getBuildingInstitute(id));
+        } catch (SQLException e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+        }
+    }
+
+    @PostMapping
     private ResponseEntity createBuildingInstitute(@PathVariable Integer id, @RequestBody BuildingInstitute buildingInstitute) {
-        if (id.equals(buildingInstitute.getId())) {
-            String output = BuildingInstituteStatements.createBuildingInstitute(buildingInstitute);
-            if (output.equals("yes")) {
-                return new ResponseEntity(HttpStatus.NO_CONTENT);
+        try {
+            if (id.equals(buildingInstitute.getId())) {
+                return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.createBuildingInstitute(buildingInstitute));
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different."));
             }
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
+        } catch (SQLException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
         }
     }
 
     @DeleteMapping("/{id}")
     private ResponseEntity DeleteBuildingInstitute(@PathVariable Integer id){
-        String output = BuildingInstituteStatements.deleteBuildingInstitute(id);
-        if (output.equals("yes")){
-            return ResponseEntity.status(HttpStatus.OK).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        try {
+            BuildingInstituteStatements.deleteBuildingInstitute(id);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (SQLException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
         }
     }
     @PutMapping("/{id}")
     private ResponseEntity updateBuildingInstitute(@PathVariable Integer id, @RequestBody BuildingInstitute buildingInstitute) {
         if (id.equals(buildingInstitute.getId())) {
-            String output = BuildingInstituteStatements.updateBuildingInstitute(buildingInstitute);
-            if (output.equals("yes")) {
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+            try {
+                return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.updateBuildingInstitute(buildingInstitute));
+            } catch (SQLException e){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
             }
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
