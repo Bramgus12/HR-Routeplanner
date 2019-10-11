@@ -12,7 +12,7 @@ public class ConnectedNode {
         this.node2 = node2;
         this.distance = distance;
     }
-    
+
     public ConnectedNode(){}
 
     public Integer getId() {

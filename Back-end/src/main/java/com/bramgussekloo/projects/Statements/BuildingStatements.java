@@ -9,77 +9,53 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class BuildingStatements {
-    public static ArrayList<Building> getAllBuildings(){
+    public static ArrayList<Building> getAllBuildings() throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Building> list = new ArrayList<>();
-        try{
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                Integer address_id = result.getInt("address_id");
-                String name = result.getString("name");
-                Building building = new Building(id, address_id, name);
-                list.add(building);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building");
+        while (result.next()){
+            Integer id = result.getInt("id");
+            Integer address_id = result.getInt("address_id");
+            String name = result.getString("name");
+            Building building = new Building(id, address_id, name);
+            list.add(building);
         }
         return list;
     }
 
-    public static Building getBuilding(Integer id){
+    public static Building getBuilding(Integer id) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
-        try{
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
-            while (result.next()){
-                Integer address_id = result.getInt("address_id");
-                String name = result.getString("name");
-                return new Building(id, address_id, name);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return new Building();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
+        result.next();
+        Integer address_id = result.getInt("address_id");
+        String name = result.getString("name");
+        return new Building(id, address_id, name);
     }
-    public static String createBuilding(Building building){
+
+    public static Building createBuilding(Building building) throws SQLException{
+        Connection conn = new DatabaseConnection().getConnection();
+        Integer addressId = building.getAddress_id();
+        String name = building.getName();
+        conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + addressId + ", '" + name + "'); ");
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
+        resultSet.next();
+        return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
+    }
+
+    public static Boolean deleteBuilding(Integer id) throws SQLException{
+        Connection conn = new DatabaseConnection().getConnection();
+        conn.createStatement().execute("DELETE FROM building WHERE id=" + id);
+        return true;
+    }
+
+    public static Building updateBuilding(Building building) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = building.getId();
         Integer address_id = building.getAddress_id();
         String name = building.getName();
-        try{
-            conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + address_id + ", '" + name + "');");
-            return "yes";
-        } catch (SQLException e){
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    }
-
-    public static String deleteBuilding(Integer id){
-        Connection conn = new DatabaseConnection().getConnection();
-        try{
-            conn.createStatement().execute("DELETE FROM building WHERE id=" + id);
-            return "yes";
-        } catch (SQLException e){
-            e.printStackTrace();
-            return e.getMessage();
-        }
-    }
-
-    public static String updateBuilding(Building building){
-        Connection conn = new DatabaseConnection().getConnection();
-        Integer id = building.getId();
-        Integer address_id = building.getAddress_id();
-        String name = building.getName();
-        String output;
-
-        try{
-            conn.createStatement().execute("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id );
-            output = "yes";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            output = e.getMessage();
-        }
-        return output;
+        conn.createStatement().executeQuery("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id + "; ");
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
+        resultSet.next();
+        return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
     }
 }

@@ -9,8 +9,7 @@ public class Building {
         this.id = id;
         this.name = name;
     }
-
-    public Building(){}
+    
 
     public Integer getId() {
         return id;

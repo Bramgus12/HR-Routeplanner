@@ -45,8 +45,10 @@ public class AddressStatements {
         String street = address.getStreet();
         String postal = address.getPostal();
         String city = address.getCity();
-        conn.createStatement().execute("INSERT INTO address VALUES (DEFAULT , '" + street + "', " + number + ", '" + city + "', '" + postal + "');");
-        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE street='" + street + "' AND number=" + number + " AND postal='" + postal + "' AND city='" + city + "';");
+        conn.createStatement().execute("INSERT INTO address VALUES (DEFAULT , '" + street +
+                "', " + number + ", '" + city + "', '" + postal + "'); ");
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE street='" +
+                street + "' AND number=" + number + " AND postal='" + postal + "' AND city='" + city + "';");
         resultSet.next();
         return new Address(resultSet.getInt("id"), street, number, city, postal);
     }
@@ -70,6 +72,6 @@ public class AddressStatements {
         Integer numberResult = resultSet.getInt("number");
         String cityResult = resultSet.getString("city");
         String postalResult = resultSet.getString("postal");
-        return new Address(id, street, number, city, postal);
+        return new Address(id, streetResult, numberResult, cityResult, postalResult);
     }
 }

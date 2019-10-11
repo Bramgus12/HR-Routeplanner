@@ -15,8 +15,7 @@ public class Address {
         this.postal = postal;
     }
 
-    public Address(){
-    }
+    public Address(){}
 
 
     public Integer getId() {
