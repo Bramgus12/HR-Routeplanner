@@ -1,4 +1,5 @@
 @import '~@angular/material/theming';
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&display=swap');
 
 @mixin app-theme($theme){
   $primary: map-get($theme, primary);
@@ -7,8 +8,42 @@
   $background: map-get($theme, background);
   $foreground: map-get($theme, foreground);
 
-  @at-root .dark-theme{
+  .app-background {
+    box-sizing: border-box;
     color: mat-color($foreground, text);
+    font-family: 'Open Sans', sans-serif;
     background: mat-color($background, background);
   }
+
+  .primary-color {
+    color: mat-color($primary);
+  }
+
+  .accent-color {
+    color: mat-color($accent);
+  }
+
+  body {
+    margin: 0;
+  }
+
+  a {
+    color: inherit;
+    transition: .2s;
+
+    &:hover {
+      color: mat-color($primary);
+    }
+  }
+
+  mat-drawer-content {
+    display: flex !important;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+  
 }

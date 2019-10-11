@@ -1,0 +1,36 @@
+@import 'helpers';
+
+.credit {
+  display: block;
+  flex-direction: row;
+  padding: 5px;
+  background-color: rgba(0,0,0,.2);
+  font-size: 10pt;
+  font-weight: lighter;
+
+  span {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .filler {
+    flex: 1 1 auto;
+  }
+}
+
+@include media-tablet(){
+  .credit{
+    display: flex;
+    padding: 15px;
+
+    span {
+      display: inline;
+    }
+  }
+}
+
+@include media-desktop(){
+  .credit{
+    display: flex;
+  }
+}

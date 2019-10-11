@@ -30,6 +30,11 @@
               "src/styles.scss",
               "src/themes/hro-theme.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src/sass"
+              ]
+            },
             "scripts": [],
             "es5BrowserSupport": true
           },

@@ -1,20 +1,40 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule }   from '@angular/forms';
 
-import { AppRoutingModule } from './app-routing.module';
+import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
 import { AppComponent } from './app.component';
+import { HeaderComponent } from './header/header.component';
+import { FooterComponent } from './footer/footer.component';
+import { HomepageComponent } from './homepage/homepage.component';
+import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
+import { SidenavComponent } from './sidenav/sidenav.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
+    HttpClientModule,
+    FormsModule,
+    RoutingModule,
     MaterialModule
+  ],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    FooterComponent,
+    HomepageComponent,
+    TestComponent,
+    TestCreateDialog,
+    TestDeleteDialog,
+    SidenavComponent
+  ],
+  entryComponents: [
+    TestCreateDialog,
+    TestDeleteDialog
   ],
   providers: [],
   bootstrap: [AppComponent]
