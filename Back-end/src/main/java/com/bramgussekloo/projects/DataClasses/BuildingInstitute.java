@@ -1,12 +1,12 @@
 package com.bramgussekloo.projects.DataClasses;
 
 public class BuildingInstitute {
-    private Integer id, building_id, institute_id;
+    private Integer id, buildingId, instituteId;
 
-    public BuildingInstitute(Integer id, Integer building_id, Integer institute_id) {
+    public BuildingInstitute(Integer id, Integer buildingId, Integer instituteId) {
         this.id = id;
-        this.building_id = building_id;
-        this.institute_id = institute_id;
+        this.buildingId = buildingId;
+        this.instituteId = instituteId;
     }
 
     public BuildingInstitute(){}
@@ -16,10 +16,10 @@ public class BuildingInstitute {
     }
 
     public Integer getBuilding_id() {
-        return building_id;
+        return buildingId;
     }
 
-    public Integer getInstitute_id() {
-        return institute_id;
+    public Integer getInstituteId() {
+        return instituteId;
     }
 }

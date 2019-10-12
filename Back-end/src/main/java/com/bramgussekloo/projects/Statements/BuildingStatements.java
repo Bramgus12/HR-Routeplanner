@@ -34,7 +34,7 @@ public class BuildingStatements {
 
     public static Building createBuilding(Building building) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
-        Integer addressId = building.getAddress_id();
+        Integer addressId = building.getAddressId();
         String name = building.getName();
         conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + addressId + ", '" + name + "'); ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
@@ -51,7 +51,7 @@ public class BuildingStatements {
     public static Building updateBuilding(Building building) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = building.getId();
-        Integer address_id = building.getAddress_id();
+        Integer address_id = building.getAddressId();
         String name = building.getName();
         conn.createStatement().executeQuery("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id + "; ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);

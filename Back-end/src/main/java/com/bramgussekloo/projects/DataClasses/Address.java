@@ -17,7 +17,6 @@ public class Address {
 
     public Address(){}
 
-
     public Integer getId() {
         return id;
     }

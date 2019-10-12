@@ -6,8 +6,11 @@ import com.bramgussekloo.projects.Statements.AddressStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.PastOrPresent;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,7 +24,7 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAllAddresses());
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -32,7 +35,7 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddress(id));
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -43,18 +46,17 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
     private ResponseEntity deleteAddress(@PathVariable Integer id){
         try{
-            AddressStatements.deleteAddress(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.deleteAddress(id));
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -65,11 +67,16 @@ public class AddressController {
                 Address result = AddressStatements.updateAddress(address);
                 return ResponseEntity.status(HttpStatus.OK).body(result);
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
+                throw new IllegalArgumentException("ID's are different");
             }
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

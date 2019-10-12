@@ -53,10 +53,13 @@ public class AddressStatements {
         return new Address(resultSet.getInt("id"), street, number, city, postal);
     }
 
-    public static Boolean deleteAddress(Integer id) throws SQLException{
+    public static Address deleteAddress(Integer id) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=" + id + ";");
+        resultSet.next();
+        Address address = new Address(resultSet.getInt("id"), resultSet.getString("street"), resultSet.getInt("number"), resultSet.getString("city"), resultSet.getString("postal"));
         conn.createStatement().execute("DELETE FROM address WHERE id=" + id);
-        return true;
+        return address;
     }
     public static Address updateAddress(Address address) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();

@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,7 +23,7 @@ public class BuildingController {
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -31,7 +33,7 @@ public class BuildingController {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.getBuilding(id));
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -41,7 +43,7 @@ public class BuildingController {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.createBuilding(building));
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -52,7 +54,7 @@ public class BuildingController {
              return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
          } catch (SQLException e){
              e.printStackTrace();
-             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+             throw new IllegalArgumentException(e.getMessage());
          }
     }
 
@@ -62,12 +64,18 @@ public class BuildingController {
             if (id.equals(building.getId())) {
                 return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.updateBuilding(building));
             } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
+                throw new IllegalArgumentException("Id's are different");
             }
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
+    }
+
 
 }

@@ -1,14 +1,14 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.DataClasses.BuildingInstitute;
-import com.bramgussekloo.projects.DataClasses.Error;
 import com.bramgussekloo.projects.Statements.BuildingInstituteStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/buildinginstitute")
@@ -20,7 +20,7 @@ public class BuildingInstituteController {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getAllBuildingInstitutes());
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -30,20 +30,16 @@ public class BuildingInstituteController {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getBuildingInstitute(id));
         } catch (SQLException e){
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @PostMapping
-    private ResponseEntity createBuildingInstitute(@PathVariable Integer id, @RequestBody BuildingInstitute buildingInstitute) {
+    private ResponseEntity createBuildingInstitute(@RequestBody BuildingInstitute buildingInstitute) {
         try {
-            if (id.equals(buildingInstitute.getId())) {
-                return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.createBuildingInstitute(buildingInstitute));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different."));
-            }
+            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.createBuildingInstitute(buildingInstitute));
         } catch (SQLException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -53,7 +49,7 @@ public class BuildingInstituteController {
             BuildingInstituteStatements.deleteBuildingInstitute(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (SQLException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
     @PutMapping("/{id}")
@@ -62,11 +58,16 @@ public class BuildingInstituteController {
             try {
                 return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.updateBuildingInstitute(buildingInstitute));
             } catch (SQLException e){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, e.getMessage()));
+                throw new IllegalArgumentException(e.getMessage());
             }
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, "ID's are different"));
+            throw new IllegalArgumentException("Id's are different");
         }
+    }
+
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
 

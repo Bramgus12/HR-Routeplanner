@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class InstituteController {
 
     @GetMapping
-    private ArrayList<BuildingInstitute> getInstituteList(){
-        ArrayList<BuildingInstitute> list = BuildingInstituteStatements.getAllBuildingInstitutes();
+    private ArrayList<Institute> getInstituteList(){
+        ArrayList<Institute> list = InstituteStatements.getAllInstitutes();
         return list;
     }
 
