@@ -12,6 +12,7 @@ import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
+import { BuildingNavigationComponent } from './building-navigation/building-navigation.component';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { SidenavComponent } from './sidenav/sidenav.component';
     TestComponent,
     TestCreateDialog,
     TestDeleteDialog,
-    SidenavComponent
+    SidenavComponent,
+    BuildingNavigationComponent
   ],
   entryComponents: [
     TestCreateDialog,
