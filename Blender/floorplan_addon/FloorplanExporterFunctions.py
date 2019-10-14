@@ -62,7 +62,7 @@ def exportFloorplan(context, filePath):
     glbFilePath = pathToExtension(jsonFilepath, 'glb')
     bpy.ops.object.select_all(action='DESELECT')
     
-    exportParts = ['BuildingRoot', 'FloorRoot', 'Floor']
+    exportParts = ['BuildingRoot', 'FloorRoot', 'Floor', 'Wall']
     exportObjects = []
     for part in exportParts:
         exportObjects.extend( getObjectsByBuildingPart(part) )

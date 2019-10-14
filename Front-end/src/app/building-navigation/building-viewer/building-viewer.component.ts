@@ -69,6 +69,16 @@ export class BuildingViewerComponent implements OnInit {
           floorMesh.material = material;
           
         });
+
+        const wallMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Wall");
+        wallMeshes.forEach(wallMesh => {
+          wallMesh.castShadow = true;
+          wallMesh.receiveShadow = true;
+          const material: THREE.MeshStandardMaterial = new MeshStandardMaterial();
+          material.roughness = 1;
+          wallMesh.material = material;
+          
+        });
         
         this.scene.add(gltf.scene);
       },
