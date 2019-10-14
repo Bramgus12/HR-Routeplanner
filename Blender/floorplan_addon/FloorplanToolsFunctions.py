@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import math
+from mathutils import Vector
 from . FloorplanImporterFunctions import linkToFloorCollection
 
 def getReferenceImages():
@@ -42,6 +43,7 @@ def createWalls():
         if bpy.context.view_layer.objects.active != None and bpy.context.view_layer.objects.active.mode != 'OBJECT':
             bpy.ops.object.mode_set(mode='OBJECT')
         name = '[{}] {}'.format(part, floor.get('floorName'))
+        # Create a wall object by copying the floor mesh.
         wall = bpy.context.scene.objects.get(name)
         if wall != None:
             bpy.ops.object.delete({"selected_objects": [wall]})
@@ -51,18 +53,24 @@ def createWalls():
         wall.data.name = name
         wall['buildingPart'] = part
 
-        # bpy.context.scene.collection.objects.link(wall)
+        # Add wall object to scene.
         linkToFloorCollection(wall, wall['buildingName'], wall['floorNumber'])
+
+        # Remove solidify modifier from object, might be on there from the floor object.
+        removeModifier(wall, 'SOLIDIFY')
         
+        # Select the wall object
         bpy.ops.object.select_all(action='DESELECT')
         bpy.context.view_layer.objects.active = wall
         wall.select_set(True)
 
+        # Switch to edit mode and deselect al vertices.
         bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_all(action='DESELECT')
         bpy.ops.mesh.select_mode(type="VERT")
         bpy.ops.object.mode_set(mode='OBJECT')
 
+        # Delete all vertices that shouldn't be extruded.
         ignoreVertegGroup = wall.vertex_groups.get('Ignore')
         if ignoreVertegGroup != None:
             for vertex in wall.data.vertices:
@@ -70,35 +78,65 @@ def createWalls():
                     if vertexGroup.group == ignoreVertegGroup.index:
                         vertex.select = True
         bpy.ops.object.mode_set(mode='EDIT')
-        # return {'FINISHED'}
         bpy.ops.mesh.delete(type='EDGE')
+        bpy.ops.object.mode_set(mode='OBJECT')
 
+        # Check where edges intersect with the node network to create doorways.
+        for wallEdge in wall.data.edges:
+            nodeNetwork = nodeNetwork = bpy.context.scene.objects.get('[NodeNetwork]')
+            # Calculate global locations of edge vectors
+            wallEdgeVector1 = wall.matrix_world @ wall.data.vertices[wallEdge.vertices[0]].co
+            wallEdgeVector2 = wall.matrix_world @ wall.data.vertices[wallEdge.vertices[1]].co
+            minZ = min(wallEdgeVector1.z, wallEdgeVector2.z) - 0.1
+            maxZ = max(wallEdgeVector1.z, wallEdgeVector2.z) + 0.1
+            wallLine = (wallEdgeVector1 , wallEdgeVector2)
+
+            for networkEdge in nodeNetwork.data.edges:
+                networkEdgeVector1 = nodeNetwork.data.vertices[networkEdge.vertices[0]].co
+                networkEdgeVector2 = nodeNetwork.data.vertices[networkEdge.vertices[1]].co
+                # Only check network edge if it's close to the same height as the wall edge
+                if not(networkEdgeVector1.z >= minZ and networkEdgeVector1.z <= maxZ or networkEdgeVector2.z >= minZ and networkEdgeVector2.z <= maxZ):
+                    continue
+                networkLine = ( networkEdgeVector1, networkEdgeVector2 )
+
+                intersection = lineIntersection( wallLine, networkLine )
+                if intersection != None:
+                    intersectionVector = Vector( (intersection[0], intersection[1], 0) )
+                    bpy.context.scene.cursor.location = intersectionVector
+                    # TODO Create a doorway at the location where the node network intersects with the wall.
+
+        # Switch to edit mode and extrude the walls upward.
+        bpy.ops.object.mode_set(mode='EDIT')
         bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.mesh.delete(type='ONLY_FACE')
         bpy.ops.mesh.select_mode(type="VERT")
         bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, ((2/3)*wall.get('floorHeight'))-0.3 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
-        bpy.ops.object.mode_set(mode='OBJECT')
+        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, wall.get('floorHeight')-0.3 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
+        bpy.ops.object.mode_set(mode='OBJECT')      
 
-        doorsVertexGroup = wall.vertex_groups.get('Doors')
-        doorVertexIndexes = []
-        if doorsVertexGroup != None:
-            for vertex in wall.data.vertices:
-                for vertexGroup in vertex.groups:
-                    if vertexGroup.group == doorsVertexGroup.index:
-                        doorVertexIndexes.append(vertex.index)
+        # Add solidify modifier
+        solidifyObject(wall, 0.01)
 
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, (1/3)*wall.get('floorHeight')), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
-        bpy.ops.mesh.select_all(action='DESELECT')
-        bpy.ops.object.mode_set(mode='OBJECT')
 
-        for vertex in wall.data.vertices:
-            vertex.select = vertex.index in doorVertexIndexes
+        # doorsVertexGroup = wall.vertex_groups.get('Doors')
+        # doorVertexIndexes = []
+        # if doorsVertexGroup != None:
+        #     for vertex in wall.data.vertices:
+        #         for vertexGroup in vertex.groups:
+        #             if vertexGroup.group == doorsVertexGroup.index:
+        #                 doorVertexIndexes.append(vertex.index)
+
+        # bpy.ops.object.mode_set(mode='EDIT')
+        # bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, ((1/3)*wall.get('floorHeight'))-0.3 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
+        # bpy.ops.mesh.select_all(action='DESELECT')
+        # bpy.ops.object.mode_set(mode='OBJECT')
+
+        # for vertex in wall.data.vertices:
+        #     vertex.select = vertex.index in doorVertexIndexes
         
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.delete(type='ONLY_FACE')
-        bpy.ops.object.mode_set(mode='OBJECT')
+        # bpy.ops.object.mode_set(mode='EDIT')
+        # bpy.ops.mesh.delete(type='ONLY_FACE')
+        # bpy.ops.object.mode_set(mode='OBJECT')
     return {'FINISHED'}
 
 def removeWalls():
@@ -216,16 +254,52 @@ def connectRoomNodes(roomsToNodes=False):
 
     return {'FINISHED'}
 
+def removeModifier(obj, modifierType):
+    for modifier in obj.modifiers:
+        if modifier.type == modifierType:
+            obj.modifiers.remove(modifier)
+
+def solidifyObject(obj, thickness=0.1):
+    # Remove existing solidify modifiers
+    removeModifier(obj, 'SOLIDIFY')
+    # Add new solidify modifier
+    modifier = obj.modifiers.new(name='Solidify', type='SOLIDIFY')
+    modifier.thickness = thickness
+    return modifier
+
 def solidifyFloors(solidify=True):
     floors = getObjectsByBuildingPart('Floor')
     for floor in floors:
-        # Remove existing solidify modifiers
-        for modifier in floor.modifiers:
-            if modifier.type == 'SOLIDIFY':
-                floor.modifiers.remove(modifier)
-        # Add new solidify modifier
         if solidify:
-            modifier = floor.modifiers.new(name='Solidify', type='SOLIDIFY')
-            modifier.thickness = 0.3
+            solidifyObject(floor, 0.3)
+        else:
+            removeModifier(floor, 'SOLIDIFY')
 
     return {'FINISHED'}
+
+def lineIntersection(line1, line2, infinite=False):
+    '''Calculate the point where two 2D lines cross.
+    Returns None if the lines don't intersect.
+    Source: https://stackoverflow.com/a/20677983'''
+    xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+    ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+       return None
+
+    d = (det(*line1), det(*line2))
+    x = det(d, xdiff) / div
+    y = det(d, ydiff) / div
+    if not infinite:
+        for line in (line1, line2):
+            minX = min( (line[0][0], line[1][0]) )
+            maxX = max( (line[0][0], line[1][0]) )
+            minY = min( (line[0][1], line[1][1]) )
+            maxY = max( (line[0][1], line[1][1]) )
+            if x < minX or x > maxX or y < minY or y > maxY:
+                return None
+    return x, y
