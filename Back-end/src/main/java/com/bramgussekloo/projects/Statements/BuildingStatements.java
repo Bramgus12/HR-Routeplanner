@@ -34,7 +34,7 @@ public class BuildingStatements {
 
     public static Building createBuilding(Building building) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
-        Integer addressId = building.getAddressId();
+        Integer addressId = building.getAddress_id();
         String name = building.getName();
         conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + addressId + ", '" + name + "'); ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
@@ -42,16 +42,18 @@ public class BuildingStatements {
         return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
     }
 
-    public static Boolean deleteBuilding(Integer id) throws SQLException{
+    public static Building deleteBuilding(Integer id) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id + ";");
         conn.createStatement().execute("DELETE FROM building WHERE id=" + id);
-        return true;
+        resultSet.next();
+        return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
     }
 
     public static Building updateBuilding(Building building) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = building.getId();
-        Integer address_id = building.getAddressId();
+        Integer address_id = building.getAddress_id();
         String name = building.getName();
         conn.createStatement().executeQuery("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id + "; ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);

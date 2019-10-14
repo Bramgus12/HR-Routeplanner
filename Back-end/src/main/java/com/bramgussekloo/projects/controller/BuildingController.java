@@ -12,10 +12,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
+// Controller for building
 @RestController
 @RequestMapping("/api/building")
 public class BuildingController {
 
+    // Get all Buildings as a Json list
     @GetMapping
     private ResponseEntity getAllBuildings(){
         try{
@@ -27,6 +30,7 @@ public class BuildingController {
         }
     }
 
+    // Get a certain building by id
     @GetMapping("/{id}")
     private ResponseEntity getBuilding(@PathVariable Integer id){
         try {
@@ -37,6 +41,7 @@ public class BuildingController {
         }
     }
 
+    // create a building and give the created building back with an id.
     @PostMapping
     private ResponseEntity createBuilding( @RequestBody Building building) {
         try {
@@ -47,17 +52,18 @@ public class BuildingController {
         }
     }
 
+    //Delete an item by id and send the item back.
     @DeleteMapping("/{id}")
     private ResponseEntity deleteBuilding(@PathVariable Integer id){
          try {
-             BuildingStatements.deleteBuilding(id);
-             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.deleteBuilding(id));
          } catch (SQLException e){
              e.printStackTrace();
              throw new IllegalArgumentException(e.getMessage());
          }
     }
 
+    //Update a building and send the updated building back
     @PutMapping("/{id}")
     private ResponseEntity updateAddress(@PathVariable Integer id, @RequestBody Building building) {
         try {
@@ -72,6 +78,7 @@ public class BuildingController {
         }
     }
 
+    // Handles exceptions and puts extra information on it.
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value());

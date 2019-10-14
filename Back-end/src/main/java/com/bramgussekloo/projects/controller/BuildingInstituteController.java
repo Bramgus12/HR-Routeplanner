@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
+// Makes it a REST-controller
 @RestController
 @RequestMapping("/api/buildinginstitute")
 public class BuildingInstituteController {
 
+    // Get all the buildingInstitute objects in a list
     @GetMapping
     private ResponseEntity getAllBuildingInstitutes() {
         try {
@@ -24,6 +26,7 @@ public class BuildingInstituteController {
         }
     }
 
+    // Get a certain buildingInstitute object
     @GetMapping("/{id}")
     private ResponseEntity getBuildingInstitute(@PathVariable Integer id){
         try {
@@ -34,6 +37,7 @@ public class BuildingInstituteController {
         }
     }
 
+    // Create a new BuildingInstitute object
     @PostMapping
     private ResponseEntity createBuildingInstitute(@RequestBody BuildingInstitute buildingInstitute) {
         try {
@@ -43,15 +47,17 @@ public class BuildingInstituteController {
         }
     }
 
+    // Delete a certain buildingInstitute object
     @DeleteMapping("/{id}")
     private ResponseEntity DeleteBuildingInstitute(@PathVariable Integer id){
         try {
-            BuildingInstituteStatements.deleteBuildingInstitute(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.deleteBuildingInstitute(id));
         } catch (SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+    // Update a certain buildingInstitute
     @PutMapping("/{id}")
     private ResponseEntity updateBuildingInstitute(@PathVariable Integer id, @RequestBody BuildingInstitute buildingInstitute) {
         if (id.equals(buildingInstitute.getId())) {
@@ -65,6 +71,7 @@ public class BuildingInstituteController {
         }
     }
 
+    // Puts the exceptions into a Spring certified object
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value());

@@ -1,15 +1,16 @@
 package com.bramgussekloo.projects.DataClasses;
 
 public class Building {
-    private Integer id, addressId;
+    private Integer id, address_id;
     private String name;
 
-    public Building(Integer id, Integer addressId, String name){
-        this.addressId = addressId;
+    public Building(Integer id, Integer address_id, String name){
+        this.address_id = address_id;
         this.id = id;
         this.name = name;
     }
-    
+
+    public Building(){}
 
     public Integer getId() {
         return id;
@@ -19,7 +20,7 @@ public class Building {
         return name;
     }
 
-    public Integer getAddressId() {
-        return addressId;
+    public Integer getAddress_id() {
+        return address_id;
     }
 }
