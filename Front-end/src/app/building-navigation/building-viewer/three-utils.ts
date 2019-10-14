@@ -22,7 +22,7 @@ export class ThreeUtils {
   }
 
   static getMeshesByBuildingPart(object: THREE.Object3D, part: string): THREE.Mesh[] {
-    return <THREE.Mesh[]> ThreeUtils.getObjectsByFilter(object, (object: THREE.Object3D) => object.constructor.name === 'Mesh' && typeof (object.userData.name) === "string" && object.userData.name.startsWith(`[${part}]`));
+    return <THREE.Mesh[]> ThreeUtils.getObjectsByFilter(object, (object: THREE.Object3D) => object.constructor.name === 'Mesh' && typeof (object.userData.buildingPart) === "string" && object.userData.buildingPart == part );
   }
 
 }

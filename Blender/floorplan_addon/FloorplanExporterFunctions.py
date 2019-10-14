@@ -1,9 +1,13 @@
 import bpy
 import json
 from . FloorplanToolsFunctions import *
+from . FloorplanImporterFunctions import *
 
-def exportFloorplan(context, filepath):
+def exportFloorplan(context, filePath):
+    # Export the node network to .json
     # Object for all data to export
+    print(filePath)
+    jsonFilepath = pathToExtension(filePath, 'json')
     floorplan = {
         'locationName': bpy.context.scene.name,
         'nodes': [],
@@ -51,7 +55,26 @@ def exportFloorplan(context, filepath):
         }
         floorplan['connections'].append( connection )
 
-    with open(filepath, 'w') as jsonFile:
+    with open(jsonFilepath, 'w') as jsonFile:
         json.dump(floorplan, jsonFile)
+    
+    # Export the models to a .glb file
+    glbFilePath = pathToExtension(jsonFilepath, 'glb')
+    bpy.ops.object.select_all(action='DESELECT')
+    
+    exportParts = ['BuildingRoot', 'FloorRoot', 'Floor']
+    exportObjects = []
+    for part in exportParts:
+        exportObjects.extend( getObjectsByBuildingPart(part) )
+    # Select objects to export
+    for exportObject in exportObjects:
+        exportObject.select_set(state=True)
+    
+    bpy.ops.export_scene.gltf(
+        export_extras=True,
+        export_apply=True,
+        export_selected=True,
+        filepath=glbFilePath
+    )
 
     return {'FINISHED'}

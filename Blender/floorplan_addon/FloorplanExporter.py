@@ -13,10 +13,10 @@ class FloorplanExporter(Operator, ExportHelper):
     bl_idname = "floorplan.export"  # important since its how bpy.ops.import_test.some_data is constructed
     bl_label = "Export Floorplan"
 
-    filename_ext = ".json"
+    filename_ext = ""
 
     filter_glob: StringProperty(
-        default="*.json",
+        default="*.glb;*.json",
         options={'HIDDEN'},
         maxlen=255,  # Max internal buffer length, longer would be clamped.
     )
