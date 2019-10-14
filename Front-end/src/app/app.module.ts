@@ -6,12 +6,14 @@ import { FormsModule }   from '@angular/forms';
 
 import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
+import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
+import { MapsNavigationComponent } from './maps-navigation/maps-navigation.component';
 
 @NgModule({
   imports: [
@@ -20,7 +22,8 @@ import { SidenavComponent } from './sidenav/sidenav.component';
     HttpClientModule,
     FormsModule,
     RoutingModule,
-    MaterialModule
+    MaterialModule,
+    //NgxMaterialTimepickerModule.setLocale('nl-NL')
   ],
   declarations: [
     AppComponent,
@@ -30,7 +33,8 @@ import { SidenavComponent } from './sidenav/sidenav.component';
     TestComponent,
     TestCreateDialog,
     TestDeleteDialog,
-    SidenavComponent
+    SidenavComponent,
+    MapsNavigationComponent
   ],
   entryComponents: [
     TestCreateDialog,

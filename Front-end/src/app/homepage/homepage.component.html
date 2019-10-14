@@ -1,5 +1,18 @@
-<p>
-  homepage works!
-</p>
+<form #newAddressForm="ngForm">
+  <mat-form-field>
+    <input matInput name="from" placeholder="Van" required>
+    <mat-icon matSuffix>gps_fixed</mat-icon>
+  </mat-form-field>
 
-<a routerLink="/test"><button mat-raised-button color="primary">Go to test</button></a>
+  <mat-form-field>
+    <input matInput name="to" placeholder="Naar lokaal / gebouw" required>
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <!-- <mat-form-field>
+    <input [ngxTimepicker]="picker">
+    <ngx-material-timepicker #picker></ngx-material-timepicker>
+  </mat-form-field> -->
+
+
+</form>
