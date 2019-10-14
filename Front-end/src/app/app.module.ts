@@ -13,6 +13,7 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { BuildingNavigationComponent } from './building-navigation/building-navigation.component';
+import { BuildingViewerComponent } from './building-navigation/building-viewer/building-viewer.component';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { BuildingNavigationComponent } from './building-navigation/building-navi
     TestCreateDialog,
     TestDeleteDialog,
     SidenavComponent,
-    BuildingNavigationComponent
+    BuildingNavigationComponent,
+    BuildingViewerComponent
   ],
   entryComponents: [
     TestCreateDialog,

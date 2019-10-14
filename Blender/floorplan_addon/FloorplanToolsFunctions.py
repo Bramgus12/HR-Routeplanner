@@ -6,6 +6,9 @@ from . FloorplanImporterFunctions import linkToFloorCollection
 def getReferenceImages():
     return filter(lambda obj: obj.type == 'EMPTY' and obj.get('buildingPart') == 'ReferenceImage', bpy.context.scene.objects)
 
+def getObjectsByBuildingPart(part):
+    return list( filter(lambda obj: obj.get('buildingPart') == part, bpy.context.scene.objects) )
+
 def showReferenceImages(visible):
     referenceImages = getReferenceImages()
     for referenceImage in referenceImages:
@@ -13,7 +16,7 @@ def showReferenceImages(visible):
     return {'FINISHED'}
 
 def showRoomNodes(visible):
-    roomNodes = filter(lambda obj: obj.get('buildingPart') == 'RoomNode', bpy.context.scene.objects)
+    roomNodes = getObjectsByBuildingPart('RoomNode')
     for roomNode in roomNodes:
         roomNode.hide_viewport = not visible
     return {'FINISHED'}
@@ -34,7 +37,7 @@ def alignFloors():
 
 def createWalls():
     part = 'Wall'
-    floors = list(filter(lambda obj: obj.type == 'MESH' and obj.get('buildingPart') == 'Floor', bpy.context.scene.objects))
+    floors = getObjectsByBuildingPart('Floor')
     for floor in floors:
         if bpy.context.view_layer.objects.active != None and bpy.context.view_layer.objects.active.mode != 'OBJECT':
             bpy.ops.object.mode_set(mode='OBJECT')
@@ -99,7 +102,7 @@ def createWalls():
     return {'FINISHED'}
 
 def removeWalls():
-    walls = list(filter(lambda obj: obj.type == 'MESH' and obj.get('buildingPart') == 'Wall', bpy.context.scene.objects))
+    walls = getObjectsByBuildingPart('Wall')
     bpy.ops.object.delete({"selected_objects": walls})
     return {'FINISHED'}
 
@@ -210,5 +213,19 @@ def connectRoomNodes(roomsToNodes=False):
     
     if reenterEditMode:
         bpy.ops.object.mode_set(mode='EDIT')
+
+    return {'FINISHED'}
+
+def solidifyFloors(solidify=True):
+    floors = getObjectsByBuildingPart('Floor')
+    for floor in floors:
+        # Remove existing solidify modifiers
+        for modifier in floor.modifiers:
+            if modifier.type == 'SOLIDIFY':
+                floor.modifiers.remove(modifier)
+        # Add new solidify modifier
+        if solidify:
+            modifier = floor.modifiers.new(name='Solidify', type='SOLIDIFY')
+            modifier.thickness = 0.3
 
     return {'FINISHED'}

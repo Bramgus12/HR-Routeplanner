@@ -39,6 +39,8 @@ def register():
     bpy.utils.register_class(ConnectNodesToRooms)
     bpy.utils.register_class(ConnectRoomsToNodes)
     bpy.utils.register_class(RemoveWalls)
+    bpy.utils.register_class(SolidifyFloors)
+    bpy.utils.register_class(UnsolidifyFloors)
 
     bpy.utils.register_class(FloorplanToolsPanel)
 
@@ -59,6 +61,8 @@ def unregister():
     bpy.utils.unregister_class(ConnectNodesToRooms)
     bpy.utils.unregister_class(ConnectRoomsToNodes)
     bpy.utils.unregister_class(RemoveWalls)
+    bpy.utils.unregister_class(SolidifyFloors)
+    bpy.utils.unregister_class(UnsolidifyFloors)
 
     bpy.utils.unregister_class(FloorplanToolsPanel)
 

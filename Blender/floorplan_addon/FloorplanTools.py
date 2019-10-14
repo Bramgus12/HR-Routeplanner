@@ -24,10 +24,12 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.show_room_nodes', text="Show Rooms")
 
         row = layout.row()
+        row.operator('floorplan.remove_walls', text="Remove Walls")
         row.operator('floorplan.create_walls', text="Create Walls")
 
         row = layout.row()
-        row.operator('floorplan.remove_walls', text="Remove Walls")
+        row.operator('floorplan.unsolidify_floors', text="Unsolodify Floors")
+        row.operator('floorplan.solidify_floors', text="Solidify Floors")
 
         row = layout.row()
         row.operator('floorplan.create_node', text="Create Node")
@@ -118,3 +120,19 @@ class ConnectRoomsToNodes(Operator):
 
     def execute(self, context):
         return connectRoomNodes(True)
+
+class SolidifyFloors(Operator):
+    bl_idname = "floorplan.solidify_floors"
+    bl_label = "Add solidify modifier to floors."
+    bl_description = "Adds a solidify modifier to all floors in the scene."
+
+    def execute(self, context):
+        return solidifyFloors(True)
+
+class UnsolidifyFloors(Operator):
+    bl_idname = "floorplan.unsolidify_floors"
+    bl_label = "Remove solidify modifier from floors."
+    bl_description = "Removed the solidify modifiers from the floors that have one."
+
+    def execute(self, context):
+        return solidifyFloors(False)
