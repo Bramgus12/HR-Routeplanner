@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-maps-navigation',
@@ -7,9 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MapsNavigationComponent implements OnInit {
 
-  constructor() { }
+  from: any = '';
+  to: any = '';
+
+  constructor(private router: Router) {
+    const state = this.router.getCurrentNavigation().extras.state;
+
+    if(state == undefined || state.from == undefined || state.to == undefined) this.router.navigate(['/'])
+
+    this.from = state.from;
+    this.to = state.to;
+  }
 
   ngOnInit() {
+
   }
 
 }

@@ -1,18 +1,20 @@
-<form #newAddressForm="ngForm">
-  <mat-form-field>
-    <input matInput name="from" placeholder="Van" required>
-    <mat-icon matSuffix>gps_fixed</mat-icon>
-  </mat-form-field>
+<mat-card>
+  <form (ngSubmit)="goToNavigation()" #navigationForm="ngForm">
+    <mat-form-field>
+      <input matInput name="from" placeholder="Van" [(ngModel)]="navigationModel.from" required>
+      <mat-icon matSuffix>gps_fixed</mat-icon>
+    </mat-form-field>
 
-  <mat-form-field>
-    <input matInput name="to" placeholder="Naar lokaal / gebouw" required>
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
+    <mat-form-field>
+      <input matInput name="to" placeholder="Naar lokaal / gebouw" [(ngModel)]="navigationModel.to" required>
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
 
-  <!-- <mat-form-field>
-    <input [ngxTimepicker]="picker">
-    <ngx-material-timepicker #picker></ngx-material-timepicker>
-  </mat-form-field> -->
+    <!-- <mat-form-field>
+      <input [ngxTimepicker]="picker">
+      <ngx-material-timepicker #picker></ngx-material-timepicker>
+    </mat-form-field> -->
 
-
-</form>
+    <button mat-raised-button color="primary" class="next" type="submit" [disabled]="!navigationForm.form.valid">Volgende</button>
+  </form>
+</mat-card>
