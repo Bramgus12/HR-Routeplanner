@@ -17,7 +17,7 @@ export class BuildingViewerComponent implements OnInit, OnDestroy {
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private orbitControls: OrbitControls;
-  private animationLoop: number;
+  private nextFrameId: number;
 
   constructor() {
     // Setup the three.js scene
@@ -98,7 +98,11 @@ export class BuildingViewerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    window.cancelAnimationFrame(this.animationLoop);
+    // Remove event listeners from orbit controls
+    this.orbitControls.dispose();
+    // Stop render loop
+    window.cancelAnimationFrame(this.nextFrameId);
+    this.scene = undefined;
   }  
 
   // Main render loop for 3D view.
@@ -107,7 +111,7 @@ export class BuildingViewerComponent implements OnInit, OnDestroy {
     this.orbitControls.update();
 
     this.renderer.render(this.scene, this.camera);
-    this.animationLoop = window.requestAnimationFrame(() => this.animate());
+    this.nextFrameId = window.requestAnimationFrame(() => this.animate());
   }
 
   resizeCanvasToContainer(): void {
