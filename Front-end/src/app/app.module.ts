@@ -23,7 +23,7 @@ import { MapsNavigationComponent } from './maps-navigation/maps-navigation.compo
     FormsModule,
     RoutingModule,
     MaterialModule,
-    //NgxMaterialTimepickerModule.setLocale('nl-NL')
+    NgxMaterialTimepickerModule
   ],
   declarations: [
     AppComponent,

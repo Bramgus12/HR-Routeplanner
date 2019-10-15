@@ -6,22 +6,9 @@ export interface Address {
   postal: string;
 }
 
-// Bad?
-/*export interface Building {
-  id?: number;
-  address_id: number;
-  name: string;
-}*/
-//Better
-export interface Building {
-  id?: number;
-  address: Address;
-  institute: Institute;
-  name: string;
+export interface NavigationState {
+  from: string,
+  to: string,
+  departNow: boolean,
+  time: string
 }
-
-export interface Institute {
-  id?: number;
-  name: string;
-}
-
