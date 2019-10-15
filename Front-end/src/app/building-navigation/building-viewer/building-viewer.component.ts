@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -10,13 +10,14 @@ import { MeshStandardMaterial, LoadingManager } from 'three';
   templateUrl: './building-viewer.component.html',
   styleUrls: ['./building-viewer.component.scss']
 })
-export class BuildingViewerComponent implements OnInit {
+export class BuildingViewerComponent implements OnInit, OnDestroy {
   @ViewChild('threejscontainer') threejsContainer: ElementRef;
 
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private orbitControls: OrbitControls;
+  private animationLoop: number;
 
   constructor() {
     // Setup the three.js scene
@@ -96,13 +97,17 @@ export class BuildingViewerComponent implements OnInit {
     this.animate();
   }
 
+  ngOnDestroy(): void {
+    window.cancelAnimationFrame(this.animationLoop);
+  }  
+
   // Main render loop for 3D view.
   animate(): void {
     this.resizeCanvasToContainer();
     this.orbitControls.update();
 
     this.renderer.render(this.scene, this.camera);
-    window.requestAnimationFrame(() => this.animate());
+    this.animationLoop = window.requestAnimationFrame(() => this.animate());
   }
 
   resizeCanvasToContainer(): void {

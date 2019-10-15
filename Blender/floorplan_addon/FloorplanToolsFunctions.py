@@ -36,8 +36,34 @@ def alignFloors():
             referenceImage.matrix_world.translation.y -= offsetY
     return {'FINISHED'}
 
+def createDoorCutout():
+    part = "DoorCutout"
+    name = '[{}]'.format(part)
+    mesh = bpy.data.meshes.new(name)
+
+    bm = bmesh.new()
+    bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.translate(bm, verts=bm.verts, vec=(0.0, 0.0, 0.5))
+    minY = min( [vert.co.x for vert in bm.verts] )
+    maxY = max( [vert.co.x for vert in bm.verts] )
+    maxZ = max( [vert.co.z for vert in bm.verts] )
+    topVerts = list( filter(lambda vert: vert.co.z == maxZ , bm.verts) )
+    frontVerts = list( filter(lambda vert: vert.co.y == maxY , bm.verts) )
+    backVerts = list( filter(lambda vert: vert.co.y == minY , bm.verts) )
+    bmesh.ops.translate(bm, verts=topVerts, vec=(0.0, 0.0, 1.0))
+    bmesh.ops.translate(bm, verts=frontVerts, vec=(0.0, -0.3, 0.0))
+    bmesh.ops.translate(bm, verts=backVerts, vec=(0.0, 0.3, 0.0))
+    
+    bm.to_mesh(mesh)
+    bm.free()
+    
+    doorCutout = bpy.data.objects.new(name, mesh)
+    doorCutout['buildingPart'] = part
+    return doorCutout
+
 def createWalls():
     part = 'Wall'
+    removeWalls()
     floors = getObjectsByBuildingPart('Floor')
     for floor in floors:
         if bpy.context.view_layer.objects.active != None and bpy.context.view_layer.objects.active.mode != 'OBJECT':
@@ -101,9 +127,15 @@ def createWalls():
 
                 intersection = lineIntersection( wallLine, networkLine )
                 if intersection != None:
-                    intersectionVector = Vector( (intersection[0], intersection[1], 0) )
+                    intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
                     bpy.context.scene.cursor.location = intersectionVector
-                    # TODO Create a doorway at the location where the node network intersects with the wall.
+                    doorCutout = createDoorCutout()
+                    doorRotation = math.atan2(wallEdgeVector1.y-wallEdgeVector2.y, wallEdgeVector1.x-wallEdgeVector2.x)
+                    doorCutout.rotation_euler.z = doorRotation
+                    doorCutout.location = intersectionVector
+                    doorCutout.parent = wall
+                    doorCutout.matrix_parent_inverse = wall.matrix_world.inverted()
+                    linkToFloorCollection(doorCutout, wall.get('buildingName'), wall.get('floorNumber'))
 
         # Switch to edit mode and extrude the walls upward.
         bpy.ops.object.mode_set(mode='EDIT')
@@ -141,7 +173,9 @@ def createWalls():
 
 def removeWalls():
     walls = getObjectsByBuildingPart('Wall')
+    doorCutouts = getObjectsByBuildingPart('DoorCutout')
     bpy.ops.object.delete({"selected_objects": walls})
+    bpy.ops.object.delete({"selected_objects": doorCutouts})
     return {'FINISHED'}
 
 def createNodeVisual():
