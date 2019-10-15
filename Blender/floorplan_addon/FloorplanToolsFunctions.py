@@ -46,11 +46,14 @@ def createDoorCutout():
     bmesh.ops.translate(bm, verts=bm.verts, vec=(0.0, 0.0, 0.5))
     minY = min( [vert.co.x for vert in bm.verts] )
     maxY = max( [vert.co.x for vert in bm.verts] )
+    minZ = min( [vert.co.z for vert in bm.verts] )
     maxZ = max( [vert.co.z for vert in bm.verts] )
     topVerts = list( filter(lambda vert: vert.co.z == maxZ , bm.verts) )
+    bottomVerts = list( filter(lambda vert: vert.co.z == minZ , bm.verts) )
     frontVerts = list( filter(lambda vert: vert.co.y == maxY , bm.verts) )
     backVerts = list( filter(lambda vert: vert.co.y == minY , bm.verts) )
     bmesh.ops.translate(bm, verts=topVerts, vec=(0.0, 0.0, 1.0))
+    bmesh.ops.translate(bm, verts=bottomVerts, vec=(0.0, 0.0, -0.1))
     bmesh.ops.translate(bm, verts=frontVerts, vec=(0.0, -0.3, 0.0))
     bmesh.ops.translate(bm, verts=backVerts, vec=(0.0, 0.3, 0.0))
     
@@ -107,6 +110,12 @@ def createWalls():
         bpy.ops.mesh.delete(type='EDGE')
         bpy.ops.object.mode_set(mode='OBJECT')
 
+        # Add solidify modifier
+        solidifyModifier = solidifyObject(wall, 0.01)
+        # Hiding modifier here to prevent console being flooded with error messages from Blender.
+        solidifyModifier.show_viewport = False
+        solidifyModifier.show_render = False
+
         # Check where edges intersect with the node network to create doorways.
         for wallEdge in wall.data.edges:
             nodeNetwork = nodeNetwork = bpy.context.scene.objects.get('[NodeNetwork]')
@@ -130,6 +139,11 @@ def createWalls():
                     intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
                     bpy.context.scene.cursor.location = intersectionVector
                     doorCutout = createDoorCutout()
+                    doorCutout.display_type = 'WIRE'
+                    booleanModifier = wall.modifiers.new(name='Boolean', type='BOOLEAN')
+                    booleanModifier.operation = 'DIFFERENCE'
+                    booleanModifier.object = doorCutout
+
                     doorRotation = math.atan2(wallEdgeVector1.y-wallEdgeVector2.y, wallEdgeVector1.x-wallEdgeVector2.x)
                     doorCutout.rotation_euler.z = doorRotation
                     doorCutout.location = intersectionVector
@@ -146,9 +160,8 @@ def createWalls():
         bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, wall.get('floorHeight')-0.3 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
         bpy.ops.object.mode_set(mode='OBJECT')      
 
-        # Add solidify modifier
-        solidifyObject(wall, 0.01)
-
+        solidifyModifier.show_viewport = True
+        solidifyModifier.show_render = True
 
         # doorsVertexGroup = wall.vertex_groups.get('Doors')
         # doorVertexIndexes = []

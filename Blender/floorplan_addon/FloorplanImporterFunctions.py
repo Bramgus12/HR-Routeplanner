@@ -138,7 +138,6 @@ def createFloorPlane(floorRoot, floorplan, new=False):
         floorPlane.parent = floorRoot
         floorPlane.matrix_parent_inverse = floorRoot.matrix_world.inverted()
 
-        floorPlane.vertex_groups.new(name='Doors')
         floorPlane.vertex_groups.new(name='Ignore')
         return floorPlane
     else:
