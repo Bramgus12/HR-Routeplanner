@@ -62,6 +62,8 @@ def createDoorCutout():
     
     doorCutout = bpy.data.objects.new(name, mesh)
     doorCutout['buildingPart'] = part
+    doorCutout.display_type = 'WIRE'
+    doorCutout.hide_render = True
     return doorCutout
 
 def createWalls():
@@ -112,6 +114,8 @@ def createWalls():
 
         # Add solidify modifier
         solidifyModifier = solidifyObject(wall, 0.01)
+        solidifyModifier.offset = 0.0
+        solidifyModifier.use_even_offset = True
         # Hiding modifier here to prevent console being flooded with error messages from Blender.
         solidifyModifier.show_viewport = False
         solidifyModifier.show_render = False
@@ -139,7 +143,6 @@ def createWalls():
                     intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
                     bpy.context.scene.cursor.location = intersectionVector
                     doorCutout = createDoorCutout()
-                    doorCutout.display_type = 'WIRE'
                     booleanModifier = wall.modifiers.new(name='Boolean', type='BOOLEAN')
                     booleanModifier.operation = 'DIFFERENCE'
                     booleanModifier.object = doorCutout
@@ -163,25 +166,6 @@ def createWalls():
         solidifyModifier.show_viewport = True
         solidifyModifier.show_render = True
 
-        # doorsVertexGroup = wall.vertex_groups.get('Doors')
-        # doorVertexIndexes = []
-        # if doorsVertexGroup != None:
-        #     for vertex in wall.data.vertices:
-        #         for vertexGroup in vertex.groups:
-        #             if vertexGroup.group == doorsVertexGroup.index:
-        #                 doorVertexIndexes.append(vertex.index)
-
-        # bpy.ops.object.mode_set(mode='EDIT')
-        # bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, ((1/3)*wall.get('floorHeight'))-0.3 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
-        # bpy.ops.mesh.select_all(action='DESELECT')
-        # bpy.ops.object.mode_set(mode='OBJECT')
-
-        # for vertex in wall.data.vertices:
-        #     vertex.select = vertex.index in doorVertexIndexes
-        
-        # bpy.ops.object.mode_set(mode='EDIT')
-        # bpy.ops.mesh.delete(type='ONLY_FACE')
-        # bpy.ops.object.mode_set(mode='OBJECT')
     return {'FINISHED'}
 
 def removeWalls():

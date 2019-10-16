@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -10,7 +10,7 @@ import { MeshStandardMaterial, LoadingManager } from 'three';
   templateUrl: './building-viewer.component.html',
   styleUrls: ['./building-viewer.component.scss']
 })
-export class BuildingViewerComponent implements OnInit, OnDestroy {
+export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('threejscontainer') threejsContainer: ElementRef;
 
   private scene: THREE.Scene;
@@ -87,17 +87,14 @@ export class BuildingViewerComponent implements OnInit, OnDestroy {
 
   }
 
-  ngOnInit() {
-  }
-
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {
     // Add three.js canvas element to the div in this component.
     this.threejsContainer.nativeElement.appendChild(this.renderer.domElement);
     this.resizeCanvasToContainer();
     this.animate();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     // Remove event listeners from orbit controls
     this.orbitControls.dispose();
     // Stop render loop
@@ -106,15 +103,20 @@ export class BuildingViewerComponent implements OnInit, OnDestroy {
   }  
 
   // Main render loop for 3D view.
-  animate(): void {
-    this.resizeCanvasToContainer();
+  animate() {
+    // Update scene
     this.orbitControls.update();
 
+    // Render
     this.renderer.render(this.scene, this.camera);
     this.nextFrameId = window.requestAnimationFrame(() => this.animate());
   }
 
-  resizeCanvasToContainer(): void {
+  onResize() {
+    this.resizeCanvasToContainer();
+  }
+
+  resizeCanvasToContainer() {
     const width: number = this.threejsContainer.nativeElement.clientWidth;
     const height: number = this.threejsContainer.nativeElement.clientHeight;
     if (this.renderer.domElement.width != width || this.renderer.domElement.height != height) {
