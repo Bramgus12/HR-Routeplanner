@@ -5,6 +5,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 #### Index:
 - [Angular](#angular)
 - [Three.js](#threejs)
+- [Navigation APIs](#navigation-apis)
 
 ---
 ## Angular
@@ -56,3 +57,10 @@ export class ...Component implements OnInit {
   
 }
 ```
+
+---
+
+## Navigation APIs
+
+* [openroute service](https://openrouteservice.org/) for general navigation
+* [openOV](https://openov.nl/) / [OVAPI](https://github.com/skywave/KV78Turbo-OVAPI/wiki) for public transport
