@@ -14,6 +14,11 @@ Navigation:
     3. [Post](#post-apibuilding)
     4. [Delete](#delete-apibuildingid)
     5. [Update](#put-apibuildingid)
+4. [LocationNodeNetwork](#locationnodenetwork)
+    1. [Get a certain locationnodenetwork](#get-apilocationnodenetworklocationname)
+    2. [Post](#post-apilocationnodenetwork)
+    3. [Delete](#delete-apilocationnodenetworklocationname)
+    4. [Put](#put-apilocationnodenetworklocationname)
     
 
 
@@ -37,7 +42,9 @@ db_password=[password]
 
 ## Address
 ### GET /api/address
-Gives you a list of all addresses in the format of:
+Get a list of all addresses.
+
+**Response:**
 
     [
         {
@@ -54,13 +61,15 @@ Gives you a list of all addresses in the format of:
             "city": [string],
             "postal": [string]
         }
-    ]
+    ] in the format of:
 
     
-HTTP-Statuses: 400, 200
+**HTTP-statuses:** 400, 200
 
 ### GET /api/address/{id}
-Gives you a list with the list you want in the format of:
+Get a certain address.
+
+**Response:**
 
     {
         "id": [integer],
@@ -70,10 +79,12 @@ Gives you a list with the list you want in the format of:
         "postal": [string]
     }
     
-HTTP-statuses: 400, 200
+**HTTP-statuses:** 400, 200
 
 ### POST /api/address
-To post something you have to use a document in the form of this:
+Create a new address.
+
+**Requested body:**
 
     {
         "street": [string],
@@ -82,23 +93,23 @@ To post something you have to use a document in the form of this:
         "postal": [string]
     }
     
-You will get an object back in the form of this:
+**Response:**
 
-        {
-            "id": [Integer],
-            "street": [string],
-            "number": [integer],
-            "city": [string],
-            "postal": [string]
-        }
+    {
+        "id": [Integer],
+        "street": [string],
+        "number": [integer],
+        "city": [string],
+        "postal": [string]
+    }
     
     
-HTTP-statuses: 400, 200
+**HTTP-statuses:** 400, 200
 
 ### DELETE /api/address/{id}
-To delete something you go to the link with the right id.
+Delete an address by id.
 
-You will get the deleted object back in the form of this:
+**Response:**
 
     {
         "id": [Integer],
@@ -109,11 +120,12 @@ You will get the deleted object back in the form of this:
     }
 
 
-HTTP-statuses: 400, 200
+**HTTP-statuses:** 400, 200
 
 ### PUT /api/address/{id}
-To put something you have to send the whole document, not only the value that has to be changed, 
-also the id has to be in the link and in the document:
+Update a certain address.
+
+**Requested body:**
 
     {
         "id": [integer],
@@ -123,7 +135,7 @@ also the id has to be in the link and in the document:
         "postal": [string]
     }
     
-After you send this object, you will get an object back in the form of this:
+**Response:**
 
     {
         "id" : [Integer]
@@ -133,11 +145,13 @@ After you send this object, you will get an object back in the form of this:
         "postal": [string]
     }
     
-HTTP-Statuses: 400, 200
+**HTTP-statuses:** 400, 200
 
 ## Building
 ### GET /api/building
-Gives you a list of all buildings in the form of this:
+Gives you a list of all buildings.
+
+**Response:**
 
     [
         {
@@ -152,10 +166,12 @@ Gives you a list of all buildings in the form of this:
         }
     ]
     
-HTTP-statuses: 400, 200
+**HTTP-statuses:** 400, 200
     
 ### GET /api/building/{id}
-Gives you a specific building in the form of this:
+Get a specific building.
+
+**Response:**
 
     {
         "id": [Integer],
@@ -163,17 +179,19 @@ Gives you a specific building in the form of this:
         "name": [String]
     }
     
-HTTP-statuses: 400, 200
+**HTTP-statuses:** 400, 200
     
 ### POST /api/building
-Create a new building by sending a body with the link in the form of this:
+Create a new building.
+
+**Requested body:**
 
     {
         "address_id": [Integer],
         "name": [String]
     } 
 
-You get the created building immediately back with an id in the form of this:
+**Response:**
 
     {
         "id": [Integer],
@@ -181,13 +199,12 @@ You get the created building immediately back with an id in the form of this:
         "name": [String]
     }
     
-HTTP-statuses: 400, 200
+**HTTP-statuses:** 400, 200
 
 ### DELETE /api/building/{id}
-Delete a building by id
+Delete a building by id.
 
-You get the deleted bulding back in the form of this:
-
+**Response:**
 
     {
         "id": [Integer],
@@ -198,9 +215,9 @@ You get the deleted bulding back in the form of this:
 HTTP-statuses: 400, 200
 
 ### PUT /api/building/{id}
-Update a building by sending the whole object with the right id. The id in the body must correspond with the id in the url.
+Update a building.
 
-Send it in the form of this:
+**Requested body:**
 
     {
         "id": [Integer],
@@ -208,11 +225,263 @@ Send it in the form of this:
         "name": [String]
     }
     
-You get the changes back in the form of this:
-
+**Response**
 
     {
         "id": [Integer],
         "address_id": [Integer],
         "name": [String]
     }
+    
+**HTTP-statuses:** 400, 200
+    
+## LocationNodeNetwork
+**LocationNodeNetwork is not stored in an SQL-Database. It is stored inside of a JSON file.**
+### GET /api/locationnodenetwork/{locationName}
+Get a certain locationNodeNetwork object by locationName.
+
+**Response:**
+
+    {
+        "locationName": [String],
+        "nodes": [
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            },
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            }
+        ],
+        "connections": [
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            },
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            }
+        ]
+    }
+    
+**HTTP-statuses:** 400, 200
+    
+### POST /api/locationnodenetwork
+Post a node into the server. You can only do this when it does not exist alreay on the server.
+
+**Requested body:**
+
+    {
+        "locationName": [String],
+        "nodes": [
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            },
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            }
+        ],
+        "connections": [
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            },
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            }
+        ]
+    }
+    
+**Response:**
+
+    {
+        "locationName": [String],
+        "nodes": [
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            },
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            }
+        ],
+        "connections": [
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            },
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            }
+        ]
+    }
+
+**HTTP-statuses:** 400, 200
+
+### DELETE /api/locationnodenetwork/{locationname}
+Deletes the locationNodeNetwork indicated by the locationName in the URL.
+
+**Response:**
+
+
+    {
+        "locationName": [String],
+        "nodes": [
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            },
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            }
+        ],
+        "connections": [
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            },
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            }
+        ]
+    }
+    
+**HTTP-statuses:** 400, 200
+    
+### PUT /api/locationnodenetwork/{locationName}
+Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one.
+
+**Requested body:**
+
+    {
+        "locationName": [String],
+        "nodes": [
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            },
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            }
+        ],
+        "connections": [
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            },
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            }
+        ]
+    }
+    
+**Response:**
+
+    {
+        "locationName": [String],
+        "nodes": [
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            },
+            {
+                "number": [Integer],
+                "type": [String],
+                "code": [String],
+                "label": [String],
+                "x": [BigDecimal],
+                "y": [BigDecimal],
+                "z": [BigDecimal]
+            }
+        ],
+        "connections": [
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            },
+            {
+                "node1": [Integer],
+                "node2": [Integer],
+                "distance": [BigDecimal]
+            }
+        ]
+    }
+    
+**HTTP-statuses:** 400, 200
