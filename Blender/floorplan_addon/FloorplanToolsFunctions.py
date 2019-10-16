@@ -69,10 +69,10 @@ def createDoorCutout():
 def createWalls():
     part = 'Wall'
     removeWalls()
-    floors = getObjectsByBuildingPart('Floor')
+    floors = filter( lambda floor: floor.visible_get() ,getObjectsByBuildingPart('Floor'))
     for floor in floors:
-        if bpy.context.view_layer.objects.active != None and bpy.context.view_layer.objects.active.mode != 'OBJECT':
-            bpy.ops.object.mode_set(mode='OBJECT')
+        # if bpy.context.view_layer.objects.active != None and bpy.context.view_layer.objects.active.mode != 'OBJECT':
+        #     bpy.ops.object.mode_set(mode='OBJECT')
         name = '[{}] {}'.format(part, floor.get('floorName'))
         # Create a wall object by copying the floor mesh.
         wall = bpy.context.scene.objects.get(name)
@@ -113,9 +113,8 @@ def createWalls():
         bpy.ops.object.mode_set(mode='OBJECT')
 
         # Add solidify modifier
-        solidifyModifier = solidifyObject(wall, 0.01)
+        solidifyModifier = solidifyObject(wall, 0.02)
         solidifyModifier.offset = 0.0
-        solidifyModifier.use_even_offset = True
         # Hiding modifier here to prevent console being flooded with error messages from Blender.
         solidifyModifier.show_viewport = False
         solidifyModifier.show_render = False
@@ -141,7 +140,6 @@ def createWalls():
                 intersection = lineIntersection( wallLine, networkLine )
                 if intersection != None:
                     intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
-                    bpy.context.scene.cursor.location = intersectionVector
                     doorCutout = createDoorCutout()
                     booleanModifier = wall.modifiers.new(name='Boolean', type='BOOLEAN')
                     booleanModifier.operation = 'DIFFERENCE'
@@ -160,7 +158,8 @@ def createWalls():
         bpy.ops.mesh.delete(type='ONLY_FACE')
         bpy.ops.mesh.select_mode(type="VERT")
         bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, wall.get('floorHeight')-0.3 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
+        bpy.ops.transform.translate(value=(0, 0, -0.3), orient_type='LOCAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
+        bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, wall.get('floorHeight')-0.001 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
         bpy.ops.object.mode_set(mode='OBJECT')      
 
         solidifyModifier.show_viewport = True
@@ -334,3 +333,31 @@ def lineIntersection(line1, line2, infinite=False):
             if x < minX or x > maxX or y < minY or y > maxY:
                 return None
     return x, y
+
+def ignoreVertices(ignore=True):
+    activeObject = bpy.context.view_layer.objects.active
+    if not(activeObject != None and activeObject.mode == 'EDIT'):
+        return('CANCELLED')
+    
+    bpy.ops.object.mode_set(mode='OBJECT')
+    selectedObjects = bpy.context.selected_objects
+    for selectedObject in selectedObjects:
+        ignoreVertexGroup = selectedObject.vertex_groups.get('Ignore')
+        if ignoreVertexGroup != None:
+            selectedVerticesIndexes = [ vert.index for vert in list( filter( lambda vertex: vertex.select , selectedObject.data.vertices ) ) ]
+            if ignore:
+                ignoreVertexGroup.add( selectedVerticesIndexes, 1.0, 'ADD')
+            else:
+                ignoreVertexGroup.remove( selectedVerticesIndexes )
+
+    bpy.ops.object.mode_set(mode='EDIT')
+
+    return {'FINISHED'}
+
+def showWireframes(show=True):
+    buildingObjects = []
+    buildingObjects.extend( getObjectsByBuildingPart('Floor') )
+    buildingObjects.extend( getObjectsByBuildingPart('Wall') )
+    for buildingObject in buildingObjects:
+        buildingObject.show_wire = show
+    return {'FINISHED'}

@@ -28,8 +28,16 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.create_walls', text="Create Walls")
 
         row = layout.row()
+        row.operator('floorplan.ignore_vertices', text="Ignore Vertices")
+        row.operator('floorplan.include_vertices', text="Include Vertices")
+
+        row = layout.row()
         row.operator('floorplan.unsolidify_floors', text="Unsolodify Floors")
         row.operator('floorplan.solidify_floors', text="Solidify Floors")
+
+        row = layout.row()
+        row.operator('floorplan.hide_wireframes', text="Hide Wireframes")
+        row.operator('floorplan.show_wireframes', text="Show Wireframes")
 
         row = layout.row()
         row.operator('floorplan.create_node', text="Create Node")
@@ -136,3 +144,35 @@ class UnsolidifyFloors(Operator):
 
     def execute(self, context):
         return solidifyFloors(False)
+
+class IgnoreVertices(Operator):
+    bl_idname = "floorplan.ignore_vertices"
+    bl_label = "Ignore selected vertices when creating walls."
+    bl_description = "Ignore selected vertices when creating walls."
+
+    def execute(self, context):
+        return ignoreVertices(True)
+
+class IncludeVertices(Operator):
+    bl_idname = "floorplan.include_vertices"
+    bl_label = "Include selected vertices when creating walls."
+    bl_description = "Include selected vertices when creating walls."
+
+    def execute(self, context):
+        return ignoreVertices(False)
+
+class ShowWireframes(Operator):
+    bl_idname = "floorplan.show_wireframes"
+    bl_label = "Show wireframes."
+    bl_description = "Show the wireframes for building parts."
+
+    def execute(self, context):
+        return showWireframes(True)
+
+class HideWireframes(Operator):
+    bl_idname = "floorplan.hide_wireframes"
+    bl_label = "Hide wireframes."
+    bl_description = "Hide the wireframes for building parts."
+
+    def execute(self, context):
+        return showWireframes(False)

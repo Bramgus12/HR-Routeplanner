@@ -28,21 +28,30 @@ def register():
     bpy.types.TOPBAR_MT_file_import.append(menu_func_import)
     bpy.utils.register_class(FloorplanExporter)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
+    
+    addonClasses = [ 
+        AlignFloors,
+        HideReferenceImages,
+        ShowReferenceImages,
+        HideRoomNodes,
+        ShowRoomNodes,
+        CreateWalls,
+        CreateNode,
+        ConnectNodesToRooms,
+        ConnectRoomsToNodes,
+        RemoveWalls,
+        SolidifyFloors,
+        UnsolidifyFloors,
+        IgnoreVertices,
+        IncludeVertices,
+        ShowWireframes,
+        HideWireframes,
+        
+        FloorplanToolsPanel
+    ]
 
-    bpy.utils.register_class(AlignFloors)
-    bpy.utils.register_class(HideReferenceImages)
-    bpy.utils.register_class(ShowReferenceImages)
-    bpy.utils.register_class(HideRoomNodes)
-    bpy.utils.register_class(ShowRoomNodes)
-    bpy.utils.register_class(CreateWalls)
-    bpy.utils.register_class(CreateNode)
-    bpy.utils.register_class(ConnectNodesToRooms)
-    bpy.utils.register_class(ConnectRoomsToNodes)
-    bpy.utils.register_class(RemoveWalls)
-    bpy.utils.register_class(SolidifyFloors)
-    bpy.utils.register_class(UnsolidifyFloors)
-
-    bpy.utils.register_class(FloorplanToolsPanel)
+    for addonClass in addonClasses:
+        bpy.utils.register_class(addonClass)
 
 
 def unregister():
@@ -51,20 +60,29 @@ def unregister():
     bpy.utils.unregister_class(FloorplanExporter)
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
 
-    bpy.utils.unregister_class(AlignFloors)
-    bpy.utils.unregister_class(HideReferenceImages)
-    bpy.utils.unregister_class(ShowReferenceImages)
-    bpy.utils.unregister_class(HideRoomNodes)
-    bpy.utils.unregister_class(ShowRoomNodes)
-    bpy.utils.unregister_class(CreateWalls)
-    bpy.utils.unregister_class(CreateNode)
-    bpy.utils.unregister_class(ConnectNodesToRooms)
-    bpy.utils.unregister_class(ConnectRoomsToNodes)
-    bpy.utils.unregister_class(RemoveWalls)
-    bpy.utils.unregister_class(SolidifyFloors)
-    bpy.utils.unregister_class(UnsolidifyFloors)
+    addonClasses = [ 
+        AlignFloors,
+        HideReferenceImages,
+        ShowReferenceImages,
+        HideRoomNodes,
+        ShowRoomNodes,
+        CreateWalls,
+        CreateNode,
+        ConnectNodesToRooms,
+        ConnectRoomsToNodes,
+        RemoveWalls,
+        SolidifyFloors,
+        UnsolidifyFloors,
+        IgnoreVertices,
+        IncludeVertices,
+        ShowWireframes,
+        HideWireframes,
 
-    bpy.utils.unregister_class(FloorplanToolsPanel)
+        FloorplanToolsPanel
+    ]
+
+    for addonClass in addonClasses:
+        bpy.utils.unregister_class(addonClass)
 
 
 if __name__ == "__main__":
