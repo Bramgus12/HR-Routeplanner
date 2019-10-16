@@ -81,8 +81,7 @@ public class BuildingController {
     // Handles exceptions and puts extra information on it.
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
-
-
 }

@@ -84,6 +84,7 @@ public class AddressController {
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

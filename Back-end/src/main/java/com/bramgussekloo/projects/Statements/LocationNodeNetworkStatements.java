@@ -13,14 +13,13 @@ public class LocationNodeNetworkStatements {
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(locationName + ".json");
         if (file.exists()){
-            LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
-            return locationNodeNetwork;
+            return mapper.readValue(file, LocationNodeNetwork.class);
         } else {
             throw new IOException(locationName + ".json does not exist.");
         }
     }
 
-    public static void createLocationNodeNetwork(LocationNodeNetwork locationNodeNetwork) throws IOException {
+    public static LocationNodeNetwork createLocationNodeNetwork(LocationNodeNetwork locationNodeNetwork) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         File jsonFile = new File(locationNodeNetwork.getLocationName() + ".json");
         if (!jsonFile.exists()) {
@@ -29,8 +28,9 @@ public class LocationNodeNetworkStatements {
             out.println(jsonObject);
             out.flush();
             out.close();
+            return  mapper.readValue(jsonFile, LocationNodeNetwork.class);
         } else {
-            throw new IOException(locationNodeNetwork.getLocationName() + ".json already exists. Try deleting it first");
+            throw new IOException(locationNodeNetwork.getLocationName() + ".json already exists. Try put if you wanna change it.");
         }
     }
 

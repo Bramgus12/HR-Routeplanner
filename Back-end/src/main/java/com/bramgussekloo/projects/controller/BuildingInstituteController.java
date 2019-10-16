@@ -74,6 +74,7 @@ public class BuildingInstituteController {
     // Puts the exceptions into a Spring certified object
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

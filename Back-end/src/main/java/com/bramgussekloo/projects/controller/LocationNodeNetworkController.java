@@ -26,8 +26,7 @@ public class LocationNodeNetworkController {
     @PostMapping
     private ResponseEntity createLocationNodeNetwork(@RequestBody LocationNodeNetwork locationNodeNetwork){
         try {
-            LocationNodeNetworkStatements.createLocationNodeNetwork(locationNodeNetwork);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(locationNodeNetwork));
         } catch (IOException e){
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -47,7 +46,6 @@ public class LocationNodeNetworkController {
     private ResponseEntity updateLocationNodeNetwork(@PathVariable String locationName, @RequestBody LocationNodeNetwork locationNodeNetwork){
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, locationNodeNetwork));
-
         } catch (IOException e){
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -56,6 +54,7 @@ public class LocationNodeNetworkController {
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
