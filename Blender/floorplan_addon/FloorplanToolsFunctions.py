@@ -150,6 +150,7 @@ def createWalls():
                     doorCutout.location = intersectionVector
                     doorCutout.parent = wall
                     doorCutout.matrix_parent_inverse = wall.matrix_world.inverted()
+
                     linkToFloorCollection(doorCutout, wall.get('buildingName'), wall.get('floorNumber'))
 
         # Switch to edit mode and extrude the walls upward.
