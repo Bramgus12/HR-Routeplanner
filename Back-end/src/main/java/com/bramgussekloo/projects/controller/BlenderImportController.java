@@ -1,40 +1,52 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.DataClasses.BlenderImport;
-import com.bramgussekloo.projects.DataClasses.ConnectedNode;
-import com.bramgussekloo.projects.DataClasses.Error;
-import com.bramgussekloo.projects.DataClasses.Node;
-import com.bramgussekloo.projects.Statements.ConnectedNodeStatements;
+import com.bramgussekloo.projects.Statements.BlenderImportStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletResponse;
+import javax.sound.sampled.FloatControl;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/blenderimport")
 public class BlenderImportController {
 
-    @PostMapping
-    private ResponseEntity createNodes(@RequestBody BlenderImport blenderImport){
-        ArrayList<ConnectedNode> connectedNodeList = blenderImport.getConnectedNodeList();
-        ArrayList<Node> nodeList = blenderImport.getNodeList();
-        String locationName = blenderImport.getLocationName();
-        String output = "";
+    @GetMapping("/{locationName}")
+    private ResponseEntity getBlenderImport(@PathVariable String locationName){
+        try {
+            BlenderImport blenderImport = BlenderImportStatements.getBlenderImport(locationName);
+            return ResponseEntity.status(HttpStatus.OK).body(blenderImport);
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 
-        for (int i = 0; i < connectedNodeList.size(); i++) {
-            ConnectedNode connectedNode = connectedNodeList.get(i);
-            String Error = ConnectedNodeStatements.createConnectedNode(connectedNode);
-            if (Error.equals("yes")){
-                output = output + "";
-            } else {
-                output = output + Error;
-            }
-        }
-        if (output.equals("")){
+    @PostMapping
+    private ResponseEntity createBlenderImport(@RequestBody BlenderImport blenderImport){
+        try {
+            BlenderImportStatements.createBlenderImport(blenderImport);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(400, output));
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
         }
+    }
+
+    @DeleteMapping("/{locationName}")
+    private ResponseEntity deleteBlenderImport(@PathVariable String locationName){
+        try {
+            BlenderImport blenderImport = BlenderImportStatements.deleteBlenderImport(locationName);
+            return ResponseEntity.status(HttpStatus.OK).body(blenderImport);
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    // puts the Error in the right format
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

@@ -4,21 +4,23 @@ import java.util.ArrayList;
 
 public class BlenderImport {
     private String locationName;
-    private ArrayList<Node> nodeList;
-    private ArrayList<ConnectedNode> connectedNodeList;
+    private ArrayList<Node> nodes;
+    private ArrayList<ConnectedNode> connections;
 
-    public BlenderImport(String locationName, ArrayList<Node> nodeList, ArrayList<ConnectedNode> connectedNodeList){
+    public BlenderImport(String locationName, ArrayList<Node> nodes, ArrayList<ConnectedNode> connections){
         this.locationName = locationName;
-        this.connectedNodeList = connectedNodeList;
-        this.nodeList = nodeList;
+        this.connections = connections;
+        this.nodes = nodes;
     }
 
-    public ArrayList<ConnectedNode> getConnectedNodeList() {
-        return connectedNodeList;
+    public BlenderImport(){}
+
+    public ArrayList<ConnectedNode> getConnections() {
+        return connections;
     }
 
-    public ArrayList<Node> getNodeList() {
-        return  nodeList;
+    public ArrayList<Node> getNodes() {
+        return nodes;
     }
 
     public String getLocationName() {
