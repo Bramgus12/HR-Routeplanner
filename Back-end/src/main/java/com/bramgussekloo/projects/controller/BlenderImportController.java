@@ -44,6 +44,16 @@ public class BlenderImportController {
         }
     }
 
+    @PutMapping("/{locationName}")
+    private ResponseEntity updateBlenderImport(@PathVariable String locationName, @RequestBody BlenderImport blenderImport){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(BlenderImportStatements.updateBlenderImport(locationName, blenderImport));
+
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {

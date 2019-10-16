@@ -49,4 +49,28 @@ public class BlenderImportStatements {
             throw new IOException(locationName + ".json does not exist.");
         }
     }
+
+    public static BlenderImport updateBlenderImport(String locationName, BlenderImport blenderImport) throws IOException{
+        File file = new File(locationName + ".json");
+        if (file.exists()){
+            if (file.delete()){
+                if (locationName.equals(blenderImport.getLocationName())) {
+                    ObjectMapper mapper = new ObjectMapper();
+                    String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(blenderImport);
+                    PrintWriter out = new PrintWriter(locationName + ".json");
+                    out.println(jsonString);
+                    out.flush();
+                    out.close();
+                    BlenderImport blenderImportOut = mapper.readValue(file, BlenderImport.class);
+                    return blenderImportOut;
+                } else {
+                    throw new IOException("locationName in URL and locationName in JSON are not the same.");
+                }
+            } else {
+                throw new IOException("File deletion did not go well");
+            }
+        } else {
+            throw new IOException("File does not exist yet. Use post for creating a new file.");
+        }
+    }
 }
