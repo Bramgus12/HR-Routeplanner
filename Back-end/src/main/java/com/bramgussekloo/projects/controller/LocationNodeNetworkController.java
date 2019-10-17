@@ -1,7 +1,7 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.DataClasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.Statements.LocationNodeNetworkStatements;
+import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
+import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,5 @@
-package com.bramgussekloo.projects.DataClasses;
+package com.bramgussekloo.projects.dataclasses;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Error {

@@ -1,8 +1,7 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.DataClasses.Building;
-import com.bramgussekloo.projects.DataClasses.Error;
-import com.bramgussekloo.projects.Statements.BuildingStatements;
+import com.bramgussekloo.projects.dataclasses.Building;
+import com.bramgussekloo.projects.statements.BuildingStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

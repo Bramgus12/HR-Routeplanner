@@ -1,18 +1,14 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.DataClasses.Address;
-import com.bramgussekloo.projects.DataClasses.Error;
-import com.bramgussekloo.projects.Statements.AddressStatements;
+import com.bramgussekloo.projects.dataclasses.Address;
+import com.bramgussekloo.projects.statements.AddressStatements;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.PastOrPresent;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 
 //Makes it a REST-controller

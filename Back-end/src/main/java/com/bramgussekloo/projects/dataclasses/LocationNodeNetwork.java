@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.DataClasses;
+package com.bramgussekloo.projects.dataclasses;
 
 import java.util.ArrayList;
 

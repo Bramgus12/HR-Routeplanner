@@ -1,7 +1,7 @@
-package com.bramgussekloo.projects.Statements;
+package com.bramgussekloo.projects.statements;
 
-import com.bramgussekloo.projects.DataClasses.Building;
-import com.bramgussekloo.projects.Database.DatabaseConnection;
+import com.bramgussekloo.projects.dataclasses.Building;
+import com.bramgussekloo.projects.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -29,6 +29,9 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools
 	compile group: 'org.springframework.boot', name: 'spring-boot-devtools', version: '2.1.9.RELEASE'
 
+	// https://mvnrepository.com/artifact/com.graphhopper/graphhopper-core
+	compile group: 'com.graphhopper', name: 'graphhopper-core', version: '0.13.0'
+
 }
 
 test {

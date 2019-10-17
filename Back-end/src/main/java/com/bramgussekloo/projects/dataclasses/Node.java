@@ -1,17 +1,15 @@
-package com.bramgussekloo.projects.DataClasses;
-
-import java.math.BigDecimal;
+package com.bramgussekloo.projects.dataclasses;
 
 public class Node {
     private Integer number;
     private String type;
     private String code;
     private String label;
-    private BigDecimal x;
-    private BigDecimal y;
-    private BigDecimal z;
+    private double x;
+    private double y;
+    private double z;
 
-    public Node (Integer id, String type, String code, String label, BigDecimal x, BigDecimal y, BigDecimal z){
+    public Node(Integer id, String type, String code, String label, double x, double y, double z) {
         this.number = id;
         this.x = x;
         this.y = y;
@@ -21,21 +19,22 @@ public class Node {
         this.label = label;
     }
 
-    public Node(){}
+    public Node() {
+    }
 
     public Integer getNumber() {
         return number;
     }
 
-    public BigDecimal getX() {
+    public double getX() {
         return x;
     }
 
-    public BigDecimal getY() {
+    public double getY() {
         return y;
     }
 
-    public BigDecimal getZ() {
+    public double getZ() {
         return z;
     }
 

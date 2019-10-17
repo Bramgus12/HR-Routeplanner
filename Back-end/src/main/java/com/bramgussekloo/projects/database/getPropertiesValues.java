@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.database;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

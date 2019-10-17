@@ -1,10 +1,7 @@
-package com.bramgussekloo.projects.Statements;
+package com.bramgussekloo.projects.statements;
 
-import com.bramgussekloo.projects.DataClasses.Address;
-import com.bramgussekloo.projects.DataClasses.Error;
-import com.bramgussekloo.projects.Database.DatabaseConnection;
-import org.graalvm.compiler.code.DataSection;
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+import com.bramgussekloo.projects.dataclasses.Address;
+import com.bramgussekloo.projects.database.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

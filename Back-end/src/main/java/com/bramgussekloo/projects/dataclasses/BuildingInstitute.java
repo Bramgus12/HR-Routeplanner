@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.DataClasses;
+package com.bramgussekloo.projects.dataclasses;
 
 public class BuildingInstitute {
     private Integer id, buildingId, instituteId;

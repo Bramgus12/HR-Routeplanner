@@ -1,6 +1,6 @@
-package com.bramgussekloo.projects.Statements;
+package com.bramgussekloo.projects.statements;
 
-import com.bramgussekloo.projects.DataClasses.LocationNodeNetwork;
+import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -9,10 +9,10 @@ import java.io.PrintWriter;
 
 public class LocationNodeNetworkStatements {
 
-    public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException{
+    public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         File file = new File(locationName + ".json");
-        if (file.exists()){
+        if (file.exists()) {
             return mapper.readValue(file, LocationNodeNetwork.class);
         } else {
             throw new IOException(locationName + ".json does not exist.");
@@ -28,18 +28,18 @@ public class LocationNodeNetworkStatements {
             out.println(jsonObject);
             out.flush();
             out.close();
-            return  mapper.readValue(jsonFile, LocationNodeNetwork.class);
+            return mapper.readValue(jsonFile, LocationNodeNetwork.class);
         } else {
             throw new IOException(locationNodeNetwork.getLocationName() + ".json already exists. Try put if you wanna change it.");
         }
     }
 
-    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException{
+    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException {
         File file = new File(locationName + ".json");
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
-            if (file.delete()){
+            if (file.delete()) {
                 return locationNodeNetwork;
             } else {
                 throw new IOException("Deleting of file " + locationName + ".json has failed.");
@@ -49,10 +49,10 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, LocationNodeNetwork locationNodeNetwork) throws IOException{
+    public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, LocationNodeNetwork locationNodeNetwork) throws IOException {
         File file = new File(locationName + ".json");
-        if (file.exists()){
-            if (file.delete()){
+        if (file.exists()) {
+            if (file.delete()) {
                 if (locationName.equals(locationNodeNetwork.getLocationName())) {
                     ObjectMapper mapper = new ObjectMapper();
                     String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(locationNodeNetwork);

@@ -1,6 +1,5 @@
-package com.bramgussekloo.projects.Database;
+package com.bramgussekloo.projects.database;
 
-import java.io.IOException;
 import java.sql.*;
 
 public class DatabaseConnection {
