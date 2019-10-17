@@ -19,7 +19,8 @@ Navigation:
     2. [Post](#post-apilocationnodenetwork)
     3. [Delete](#delete-apilocationnodenetworklocationname)
     4. [Put](#put-apilocationnodenetworklocationname)
-    
+5. [Route-engine](#routeengine)
+    1. [Get the route between two nodes.](#get-apiroutes)
 
 
 ## Install
@@ -484,4 +485,38 @@ Update a certain locationNodeNetwork. It deletes the old one and replaces it wit
         ]
     }
     
+**HTTP-statuses:** 400, 200
+
+## Route-engine
+### GET /api/routes
+Get the route between two nodes.
+
+**Requested parameters:**
+* `"from": [Integer]`
+* `"to": [Integer]`
+* `"locationName": [String]`
+
+**Response:**
+
+    [
+        {
+            "number": [Integer],
+            "type": [String],
+            "code": [String],
+            "label": [String],
+            "x": [Double],
+            "y": [Double],
+            "z": [Double]
+        },
+        {
+            "number": [Integer],
+            "type": [String],
+            "code": [String],
+            "label": [String],
+            "x": [Double],
+            "y": [Double],
+            "z": [Double]
+        }
+    ]
+
 **HTTP-statuses:** 400, 200
