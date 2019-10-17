@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 
 import { NavigationState } from '../shared/dataclasses';
 import { keys } from '../3rdparty/api_keys';
-import { OpenrouteserviceService, profiles } from '../3rdparty/openrouteservice.service';
-import { tileLayer, latLng, Map, geoJSON } from 'leaflet';
+import { OpenrouteserviceService, PROFILES } from '../3rdparty/openrouteservice.service';
+import { tileLayer, latLng, Map, geoJSON, latLngBounds } from 'leaflet';
 @Component({
   selector: 'app-maps-navigation',
   templateUrl: './maps-navigation.component.html',
@@ -18,8 +18,8 @@ export class MapsNavigationComponent implements OnInit {
     layers: [
       tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={accessToken}', { accessToken: keys.openrouteservice })
     ],
-    zoom: 8,
-    center: latLng(51.816139, 4.403112)
+    zoom: 15,
+    center: latLng(51.917218, 4.48405)
   };
 
   constructor(private router: Router, private routeService: OpenrouteserviceService) {
@@ -34,8 +34,19 @@ export class MapsNavigationComponent implements OnInit {
   }
 
   onMapReady(map: Map){
-    this.routeService.getDirection(profiles.car, "4.403112,51.816139", "4.484072,51.917145").subscribe(res => map.addLayer(geoJSON(res as any)))
-    
+    this.routeService.getDirection(PROFILES.car, "4.403112,51.816139", "4.484072,51.917145").subscribe(res => {
+      map.addLayer(geoJSON(res));
+      map.flyToBounds(this.routeService.getBoundsFromBBox(res.bbox), { duration: 1 });
+    })
+
+    this.routeService.searchGeocode("Wijnhaven 107").subscribe(res => {
+      console.log(res.features)
+      for (const feature of res.features){
+        const name = feature.properties["label"]
+        const coords = feature.geometry.coordinates
+        console.log(name, coords)
+      }
+    })
   }
 
 }
