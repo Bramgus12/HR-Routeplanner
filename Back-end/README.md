@@ -1,8 +1,8 @@
 # API Documentation
 
 Navigation:
-1. [Install instructions](#Install)
-2. [Address](#Address)
+1. [Install instructions](#install)
+2. [Address](#address)
     1. [Get all addresses](#get-apiaddress)
     2. [Get a certain address](#get-apiaddressid)
     3. [Post](#post-apiaddress)
@@ -62,7 +62,7 @@ Get a list of all addresses.
             "city": [string],
             "postal": [string]
         }
-    ] in the format of:
+    ]
 
     
 **HTTP-statuses:** 400, 200
@@ -282,7 +282,7 @@ Get a certain locationNodeNetwork object by locationName.
 **HTTP-statuses:** 400, 200
     
 ### POST /api/locationnodenetwork
-Post a node into the server. You can only do this when it does not exist alreay on the server.
+Post a node into the server. You can only do this when it does not exist already on the server.
 
 **Requested body:**
 
