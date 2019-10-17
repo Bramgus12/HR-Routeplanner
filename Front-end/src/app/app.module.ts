@@ -6,7 +6,8 @@ import { FormsModule }   from '@angular/forms';
 
 import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
-import {NgxMaterialTimepickerModule} from 'ngx-material-timepicker';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -23,7 +24,8 @@ import { MapsNavigationComponent } from './maps-navigation/maps-navigation.compo
     FormsModule,
     RoutingModule,
     MaterialModule,
-    NgxMaterialTimepickerModule
+    NgxMaterialTimepickerModule,
+    LeafletModule.forRoot(),
   ],
   declarations: [
     AppComponent,

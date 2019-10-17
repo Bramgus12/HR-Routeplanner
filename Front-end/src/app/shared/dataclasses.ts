@@ -12,3 +12,17 @@ export interface NavigationState {
   departNow: boolean,
   time: string
 }
+
+export class GeoLocation {
+  latitute: number;
+  longtitute: number;
+
+  constructor(lat: number, long: number){
+    this.latitute = lat;
+    this.longtitute = long;
+  }
+
+  toString(): string{
+    return this.latitute + ',' + this.longtitute;
+  }
+}

@@ -63,4 +63,7 @@ export class ...Component implements OnInit {
 ## Navigation APIs
 
 * [openroute service](https://openrouteservice.org/) for general navigation
+  * limited request rates (GeocodeSearch: 1000*, Directions: 2000*)(* per 24 hours)
 * [openOV](https://openov.nl/) / [OVAPI](https://github.com/skywave/KV78Turbo-OVAPI/wiki) for public transport
+  * openOV has a lot of datasets, but a route planner has to be made by ourselves
+  * OVAPI isn't meant for mass requests, but a good example of how to create a REST based backend application

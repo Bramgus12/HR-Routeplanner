@@ -4,3 +4,5 @@
   departNow {{navigationState.departNow}}<br>
   Time {{navigationState.time}}<br>
 </p>
+
+<div style="width: 600px; height: 600px; margin: 10px auto;" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"></div>
