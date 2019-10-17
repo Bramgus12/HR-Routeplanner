@@ -251,30 +251,30 @@ Get a certain locationNodeNetwork object by locationName.
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             },
             {
                 "number": [Integer],
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             }
         ],
         "connections": [
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             },
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             }
         ]
     }
@@ -294,30 +294,30 @@ Post a node into the server. You can only do this when it does not exist alreay 
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             },
             {
                 "number": [Integer],
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             }
         ],
         "connections": [
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             },
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             }
         ]
     }
@@ -332,30 +332,30 @@ Post a node into the server. You can only do this when it does not exist alreay 
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             },
             {
                 "number": [Integer],
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             }
         ],
         "connections": [
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             },
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             }
         ]
     }
@@ -376,30 +376,30 @@ Deletes the locationNodeNetwork indicated by the locationName in the URL.
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             },
             {
                 "number": [Integer],
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             }
         ],
         "connections": [
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             },
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             }
         ]
     }
@@ -419,30 +419,30 @@ Update a certain locationNodeNetwork. It deletes the old one and replaces it wit
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             },
             {
                 "number": [Integer],
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             }
         ],
         "connections": [
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             },
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             }
         ]
     }
@@ -457,30 +457,30 @@ Update a certain locationNodeNetwork. It deletes the old one and replaces it wit
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             },
             {
                 "number": [Integer],
                 "type": [String],
                 "code": [String],
                 "label": [String],
-                "x": [BigDecimal],
-                "y": [BigDecimal],
-                "z": [BigDecimal]
+                "x": [Double],
+                "y": [Double],
+                "z": [Double]
             }
         ],
         "connections": [
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             },
             {
                 "node1": [Integer],
                 "node2": [Integer],
-                "distance": [BigDecimal]
+                "distance": [Double]
             }
         ]
     }
