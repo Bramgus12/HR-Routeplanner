@@ -28,15 +28,30 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.camera = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(1280, 720);
+    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadowMap.type = THREE.VSMShadowMap;
+
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     this.camera.position.z = 5;
-
     // Setup lighting
     const directionalLight: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.castShadow = true;
     directionalLight.position.x = 50;
-    directionalLight.position.z = 50;
+    directionalLight.position.z = -50;
     directionalLight.position.y = 50;
     this.scene.add(directionalLight);
+
+    directionalLight.shadow.mapSize.width = 512;
+    directionalLight.shadow.mapSize.height = 512;
+    directionalLight.shadow.camera.near = 10;
+    directionalLight.shadow.camera.far = 200;
+    directionalLight.shadow.camera.left = -50;
+    directionalLight.shadow.camera.right = 50;
+    directionalLight.shadow.camera.top = -50;
+    directionalLight.shadow.camera.bottom = 50;
+    
+    const directionalLightHelper:THREE.CameraHelper = new THREE.CameraHelper( directionalLight.shadow.camera );
+    this.scene.add( directionalLightHelper );
 
     const hemisphereLight = new THREE.HemisphereLight( 0xffffff, 0x080820, 0.5 );
     this.scene.add( hemisphereLight );
@@ -63,7 +78,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
         const floorMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Floor");
         floorMeshes.forEach(floorMesh => {
           // console.log(floorMesh);
-          floorMesh.castShadow = true;
+          floorMesh.castShadow = false;
           floorMesh.receiveShadow = true;
           const material: THREE.MeshStandardMaterial = new MeshStandardMaterial();
           material.roughness = 1;
