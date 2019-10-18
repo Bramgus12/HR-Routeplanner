@@ -37,11 +37,11 @@ To run this api on your own computer, follow these steps:
 4. Choose SDK version 11.0.4 when it is being asked.
 5. Create a file that is called: `Database_config.properties` that has the layout 
 like this below and put it in the folder `~/ProjectC/Back-end/src/main/resources`
-```
+
 db_url=jdbc:postgresql://[host]/[Database name]:[database port]
 db_username=[username]
 db_password=[password]
-```    
+    
     
 6. Build the front-end en put it in the `~/ProjectC/Back-end/src/main/resources/static` folder of the project. (Project will run without the front-end)
 7. Run the file `ProjectsApplication.java` which is located in the `~/ProjectC/Back-end/src/main/java/com/bramgussekloo/projects/ProjectsApplication.java` folder.
@@ -52,7 +52,7 @@ db_password=[password]
 Get a list of all addresses.
 
 **Response:**
-```JSON
+
     [
         {
             "id": [integer],
@@ -69,7 +69,7 @@ Get a list of all addresses.
             "postal": [string]
         }
     ]
-```
+
 
     
 **HTTP-statuses:** 400, 200
@@ -78,7 +78,7 @@ Get a list of all addresses.
 Get a certain address.
 
 **Response:**
-```JSON
+
     {
         "id": [integer],
         "street": [string], 
@@ -86,23 +86,23 @@ Get a certain address.
         "city": [string],
         "postal": [string]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ### POST `/api/address`
 Create a new address.
  
 **Requested body:**
-```JSON
+
     {
         "street": [string],
         "number": [integer],
         "city": [string],
         "postal": [string]
     }
-```    
+    
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "street": [string],
@@ -110,7 +110,7 @@ Create a new address.
         "city": [string],
         "postal": [string]
     }
-```    
+    
     
 **HTTP-statuses:** 400, 200
 
@@ -118,7 +118,7 @@ Create a new address.
 Delete an address by id.
 
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "street": [string],
@@ -126,7 +126,7 @@ Delete an address by id.
         "city": [string],
         "postal": [string]
     }
-```
+
 
 **HTTP-statuses:** 400, 200
 
@@ -134,7 +134,7 @@ Delete an address by id.
 Update a certain address.
 
 **Requested body:**
-```JSON
+
     {
         "id": [integer],
         "street": [string],
@@ -142,10 +142,10 @@ Update a certain address.
         "city": [string],
         "postal": [string]
     }
- ```
+ 
 
 **Response:**
-```JSON
+
     {
         "id" : [Integer],
         "street" : [string],
@@ -153,7 +153,7 @@ Update a certain address.
         "city": [string],
         "postal": [string]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ## Building
@@ -161,7 +161,7 @@ Update a certain address.
 Gives you a list of all buildings.
 
 **Response:**
-```JSON
+
     [
         {
             "id": [Integer],
@@ -174,74 +174,74 @@ Gives you a list of all buildings.
             "name": [String]
         }
     ]
-```    
+    
 **HTTP-statuses:** 400, 200
     
 ### GET `/api/building/{id}`
 Get a specific building.
 
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "address_id": [Integer],
         "name": [String]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
     
 ### POST `/api/building`
 Create a new building.
 
 **Requested body:**
-```JSON
+
     {
         "address_id": [Integer],
         "name": [String]
     } 
-```
+
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "address_id": [Integer],
         "name": [String]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ### DELETE `/api/building/{id}`
 Delete a building by id.
 
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "address_id": [Integer],
         "name": [String]
     }
-```    
+    
 HTTP-statuses: 400, 200
 
 ### PUT `/api/building/{id}`
 Update a building.
 
 **Requested body:**
-```JSON
+
     {
         "id": [Integer],
         "address_id": [Integer],
         "name": [String]
     }
-```    
+    
 **Response**
-```JSON
+
     {
         "id": [Integer],
         "address_id": [Integer],
         "name": [String]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ## Institute
@@ -249,7 +249,7 @@ Update a building.
 Gives you a list of all Institutes.
 
 **Response:**
-```JSON
+
     [
         {
             "id": [Integer],
@@ -260,68 +260,68 @@ Gives you a list of all Institutes.
             "name": [String]
         }
     ]
-```    
+    
 **HTTP-statuses:** 400, 200
     
 ### GET `/api/institute/{id}`
 Get a specific institute by ID.
 
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "name": [String]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ### POST `/api/institute`
 Add/Create a new Institute.
 
 **Requested body:**
-```JSON
+
     {
         "name": [String]
     } 
-```
+
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "name": [String]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ### DELETE `/api/institute/{id}`
 Delete an Institute by id.
 
 **Response:**
-```JSON
+
     {
         "id": [Integer],
         "name": [String]
     }
-```    
+    
 HTTP-statuses: 400, 200
 
 ### PUT `/api/institute/{id}`
 Update an institute.
 
 **Requested body:**
-```JSON
+
     {
         "id": [Integer],
         "name": [String]
     }
-```    
+    
 **Response**
-```JSON
+
     {
         "id": [Integer],
         "name": [String]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
     
 ## LocationNodeNetwork
@@ -330,7 +330,7 @@ Update an institute.
 Get a certain locationNodeNetwork object by locationName.
 
 **Response:**
-```JSON
+
     {
         "locationName": [String],
         "nodes": [
@@ -366,14 +366,14 @@ Get a certain locationNodeNetwork object by locationName.
             }
         ]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
     
 ### POST `/api/locationnodenetwork`
 Post a node into the server. You can only do this when it does not exist already on the server.
 
 **Requested body:**
-```JSON
+
     {
         "locationName": [String],
         "nodes": [
@@ -409,9 +409,9 @@ Post a node into the server. You can only do this when it does not exist already
             }
         ]
     }
-```    
+    
 **Response:**
-```JSON
+
     {
         "locationName": [String],
         "nodes": [
@@ -447,14 +447,14 @@ Post a node into the server. You can only do this when it does not exist already
             }
         ]
     }
-```
+
 **HTTP-statuses:** 400, 200
 
 ### DELETE `/api/locationnodenetwork/{locationname}`
 Deletes the locationNodeNetwork indicated by the locationName in the URL.
 
 **Response:**
-```JSON
+
     {
         "locationName": [String],
         "nodes": [
@@ -490,14 +490,14 @@ Deletes the locationNodeNetwork indicated by the locationName in the URL.
             }
         ]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
     
 ### PUT `/api/locationnodenetwork/{locationName}`
 Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one.
 
 **Requested body:**
-```JSON
+
     {
         "locationName": [String],
         "nodes": [
@@ -533,9 +533,9 @@ Update a certain locationNodeNetwork. It deletes the old one and replaces it wit
             }
         ]
     }
-```    
+    
 **Response:**
-```JSON
+
     {
         "locationName": [String],
         "nodes": [
@@ -571,7 +571,7 @@ Update a certain locationNodeNetwork. It deletes the old one and replaces it wit
             }
         ]
     }
-```    
+    
 **HTTP-statuses:** 400, 200
 
 ## Route-engine
@@ -584,7 +584,7 @@ Get the route between two nodes.
 * `"locationName": [String]`
 
 **Response:**
-```JSON
+
     [
         {
             "number": [Integer],
@@ -605,5 +605,5 @@ Get the route between two nodes.
             "z": [Double]
         }
     ]
-```
+
 **HTTP-statuses:** 400, 200

@@ -51,6 +51,23 @@ public class LocationNodeNetworkStatements {
         }
     }
 
+    public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException{
+        File file = new File(locationName + ".json");
+        ArrayList<Node> nodeList = new ArrayList<>();
+        if (file.exists()){
+            ObjectMapper mapper = new ObjectMapper();
+            LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
+            for (Node node : network.getNodes()) {
+                if (node.getType().equals(definedType)) {
+                    nodeList.add(node);
+                }
+            }
+            return nodeList;
+        } else {
+            throw new IOException(locationName + ".json does not exist.");
+        }
+    }
+
     public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, LocationNodeNetwork locationNodeNetwork) throws IOException {
         File file = new File(locationName + ".json");
         if (file.exists()) {

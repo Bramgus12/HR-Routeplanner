@@ -2,6 +2,7 @@ package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,15 @@ public class LocationNodeNetworkController {
         try {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @GetMapping
+    private ResponseEntity getAllNodesByType(@RequestParam String locationName, @RequestParam String type){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllNodesByType(locationName, type));
         } catch (IOException e){
             throw new IllegalArgumentException(e.getMessage());
         }
