@@ -1,5 +1,9 @@
 # API Documentation
 
+**Swagger-ui on link `[host]:[port]/swagger-ui.html` when server is running.**
+
+**When running on your own pc in the IDE, that would be `localhost:8080/swagger-ui.html`**
+
 Navigation:
 1. [Install instructions](#install)
 2. [Address](#address)
