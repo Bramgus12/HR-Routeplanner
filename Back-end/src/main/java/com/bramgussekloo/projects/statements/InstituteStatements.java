@@ -9,42 +9,57 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class InstituteStatements {
-    public static ArrayList<Institute> getAllInstitutes(){
+    public static ArrayList<Institute> getAllInstitutes() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Institute> list = new ArrayList<>();
-        try {
-            ResultSet result = conn.createStatement().executeQuery("SELECT * FROM institute");
-            while (result.next()){
-                Integer id = result.getInt("id");
-                String instituteName = result.getString("name");
-                Institute institute = new Institute(id, instituteName);
-                list.add(institute);
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM institute");
+        while (result.next()) {
+            Integer id = result.getInt("id");
+            String instituteName = result.getString("name");
+            Institute institute = new Institute(id, instituteName);
+            list.add(institute);
         }
         return list;
     }
-    public static String createInstitute(Institute institute){
+    public static Institute getInstituteName(Integer id) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id =" + id + ";");
+        resultSet.next();
+        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+    }
+
+    public static Institute getInstituteId(String instituteName) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE name ='" + instituteName + "';");
+        resultSet.next();
+        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+    }
+
+    public static Institute createInstitute(Institute institute) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = institute.getId();
-        String institute_name = institute.getName();
-        try{
-            conn.createStatement().execute("INSERT INTO institute VALUES (" + id + ", " + id + ");");
-            return "yes";
-        } catch (SQLException e){
-            e.printStackTrace();
-            return e.getMessage();
-        }
+        String instituteName = institute.getName();
+        conn.createStatement().execute("INSERT INTO institute VALUES (DEFAULT, " + instituteName + ");");
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE name ='" + instituteName + "';");
+        resultSet.next();
+        return new Institute(resultSet.getInt("id"), instituteName);
     }
-    public static String deleteBuildingInstitute(Integer id){
+
+    public static Institute deleteInstitute(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        try{
-            conn.createStatement().execute("DELETE FROM building_institute WHERE id=" + id);
-            return "yes";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return e.getMessage();
-        }
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id =" + id + ";");
+        conn.createStatement().execute("DELETE FROM institute WHERE id =" + id +";");
+        resultSet.next();
+        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+    }
+
+    public static Institute updateInstitute(Institute institute) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        Integer id = institute.getId();
+        String instituteName = institute.getName();
+        conn.createStatement().executeQuery("UPDATE institute SET name ='" + instituteName + "' WHERE id =" + id + ";");
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id =" + id +";");
+        resultSet.next();
+        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
     }
 }
