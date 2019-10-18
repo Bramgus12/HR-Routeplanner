@@ -5,4 +5,7 @@
   Time {{navigationState.time}}<br>
 </p>
 
-<div style="width: 600px; height: 600px; margin: 10px auto;" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"></div>
+<!-- <div style="width: 600px; height: 600px; margin: 10px auto;" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"></div> -->
+<div style="width: 600px; height: 600px; margin: 10px auto;">
+  <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" style="height:600px;"></agm-map>
+</div>

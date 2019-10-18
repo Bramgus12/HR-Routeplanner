@@ -8,6 +8,7 @@ import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { AgmCoreModule } from '@agm/core';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -15,6 +16,8 @@ import { HomepageComponent } from './homepage/homepage.component';
 import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { MapsNavigationComponent } from './maps-navigation/maps-navigation.component';
+
+import { keys } from './3rdparty/api_keys'; 
 
 @NgModule({
   imports: [
@@ -26,6 +29,7 @@ import { MapsNavigationComponent } from './maps-navigation/maps-navigation.compo
     MaterialModule,
     NgxMaterialTimepickerModule,
     LeafletModule.forRoot(),
+    AgmCoreModule.forRoot({ apiKey: keys.google_maps })
   ],
   declarations: [
     AppComponent,
