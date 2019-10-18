@@ -15,13 +15,13 @@ import java.io.IOException;
 public class RoutesController {
 
     @GetMapping
-    private ResponseEntity getLocationNodeNetwork(@RequestParam Integer from, @RequestParam Integer to, @RequestParam String locationName) throws IOException {
+    private ResponseEntity getLocationNodeNetwork(@RequestParam Integer from, @RequestParam Integer to, @RequestParam String locationName) {
         try {
             RouteEngine routeEngine = new RouteEngine();
             LocationNodeNetwork network = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
             routeEngine.init(network);
             return ResponseEntity.status(HttpStatus.OK).body(routeEngine.generateRoute(from, to));
-        } catch (IllegalArgumentException e){
+        } catch (IOException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }
