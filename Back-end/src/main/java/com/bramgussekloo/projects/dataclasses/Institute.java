@@ -9,6 +9,8 @@ public class Institute {
         this.name = name;
     }
 
+    public Institute(){}
+
     public Integer getId() {
         return this.id;
     }

@@ -45,20 +45,6 @@ public class InstituteController {
     }
 
     /**
-     * Get the Institute id from the Database
-     * @param name
-     * @return Institute Object
-     */
-    @GetMapping("/{name}")
-    private ResponseEntity getInstituteByName(@PathVariable String name) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.getInstituteId(name));
-        } catch (SQLException e){
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    /**
      * Creates a new Institute Object and add its value to the Database
      *
      * @param institute
@@ -67,7 +53,8 @@ public class InstituteController {
     @PostMapping
     private ResponseEntity createInstitute(@RequestBody Institute institute) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.createInstitute(institute));
+            Institute result = InstituteStatements.createInstitute(institute);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
