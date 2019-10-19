@@ -34,7 +34,7 @@ public class BuildingInstituteStatements {
 
     public static BuildingInstitute createBuildingInstitute(BuildingInstitute buildingInstitute) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
-        Integer building_id = buildingInstitute.getBuilding_id();
+        Integer building_id = buildingInstitute.getBuildingId();
         Integer institute_id = buildingInstitute.getInstituteId();
         conn.createStatement().execute("INSERT INTO building_institute VALUES (DEFAULT , " + building_id + ", " + institute_id + ");");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building_institute WHERE building_id=" + building_id + " AND institute_id=" + institute_id + ";");
@@ -52,7 +52,7 @@ public class BuildingInstituteStatements {
     public static BuildingInstitute updateBuildingInstitute(BuildingInstitute buildingInstitute) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = buildingInstitute.getId();
-        Integer building_id = buildingInstitute.getBuilding_id();
+        Integer building_id = buildingInstitute.getBuildingId();
         Integer institute_id = buildingInstitute.getInstituteId();
         conn.createStatement().execute("UPDATE building_institute SET building_id=" + building_id + ", institute_id=" + institute_id + " WHERE id=" + id );
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building_institute WHERE id=" + id + ";");

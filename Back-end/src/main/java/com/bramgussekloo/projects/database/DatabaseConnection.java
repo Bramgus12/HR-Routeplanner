@@ -1,10 +1,12 @@
 package com.bramgussekloo.projects.database;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private Connection conn = null;
     String propFileName = "Database_config.properties";
+    private Connection conn = null;
 
     public Connection getConnection() {
         try {
