@@ -14,16 +14,17 @@ public class LocationNodeNetwork {
     @ApiModelProperty(notes = "All the nodes in the locationNodeNetwork", required = true)
     private ArrayList<Node> nodes;
 
-    @ApiModelProperty(notes = "All the connections in the locationNodeNetwork")
+    @ApiModelProperty(notes = "All the connections in the locationNodeNetwork", required = true)
     private ArrayList<ConnectedNode> connections;
 
-    public LocationNodeNetwork(String locationName, ArrayList<Node> nodes, ArrayList<ConnectedNode> connections){
+    public LocationNodeNetwork(String locationName, ArrayList<Node> nodes, ArrayList<ConnectedNode> connections) {
         this.locationName = locationName;
         this.connections = connections;
         this.nodes = nodes;
     }
 
-    public LocationNodeNetwork(){}
+    public LocationNodeNetwork() {
+    }
 
     public ArrayList<ConnectedNode> getConnections() {
         return connections;
