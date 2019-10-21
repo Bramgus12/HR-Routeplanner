@@ -3,10 +3,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { ThreeUtils } from './three-utils'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { SAOPass } from 'three/examples/jsm/postprocessing/SAOPass.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
+import * as POSTPROCESSING from "postprocessing";
+import { DevGui } from './dev-gui';
 
 @Component({
   selector: 'app-building-viewer',
@@ -19,91 +17,86 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
-  private composer: EffectComposer;
+  private composer: POSTPROCESSING.EffectComposer;
   private orbitControls: OrbitControls;
   private nextFrameId: number;
-  private gui: GUI;
+
+  private devGui: DevGui;
 
   constructor() {
-    // Setup the three.js scene
-    this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x505050);
-
-    // Camera and renderer
-    this.camera = new THREE.PerspectiveCamera(75, 1280 / 720, 0.1, 1000);
-    this.renderer = new THREE.WebGLRenderer({ preserveDrawingBuffer: false, powerPreference: "high-performance"});
-    console.log(this.renderer);
+    // Renderer and composer
+    this.renderer = new THREE.WebGLRenderer({
+      logarithmicDepthBuffer: false
+    });
     this.renderer.setSize(1280, 720);
-    this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.VSMShadowMap;
+    this.composer = new POSTPROCESSING.EffectComposer(this.renderer);
     
-    this.composer = new EffectComposer( this.renderer );
-    const renderPass = new RenderPass( this.scene, this.camera );
-    this.composer.addPass( renderPass );
-
-    // Ambient Occlusion
-    const saoPass: SAOPass = new SAOPass(this.scene, this.camera, false, true);
-    saoPass.params.saoBias = -0.35;
-    saoPass.params.saoIntensity = 0.11;
-    saoPass.params.saoScale = 246.5;
-    saoPass.params.saoKernelRadius = 37;
-    saoPass.params.saoMinResolution = 0;
-    // saoPass.params.saoBlur = 0;
-    saoPass.params.saoBlurRadius = 116.6;
-    saoPass.params.saoBlurStdDev = 2;
-    saoPass.params.saoBlurDepthCutoff = 0.001;
-    saoPass.enabled = true;
-    // TODO Optimize performance, shadows and ambient oclusion.
-    this.composer.addPass(saoPass);
+    // Camera
+    this.camera = new THREE.PerspectiveCamera(50, 1280/720, 2.0, 200);
+    this.camera.position.set(46, 30, -15);
 
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.camera.position.z = 5;
-    // Setup lighting
-    const directionalLight: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.castShadow = true;
-    directionalLight.position.x = 10;
-    directionalLight.position.z = -10;
-    directionalLight.position.y = 50;
-    // this.scene.add(directionalLight);
-
-    directionalLight.shadow.mapSize.width = 512;
-    directionalLight.shadow.mapSize.height = 512;
-    directionalLight.shadow.camera.near = 10;
-    directionalLight.shadow.camera.far = 200;
-    directionalLight.shadow.camera.left = -50;
-    directionalLight.shadow.camera.right = 50;
-    directionalLight.shadow.camera.top = -50;
-    directionalLight.shadow.camera.bottom = 50;
-
-    // Gui tools for development
-    this.gui = new GUI({ autoPlace: true });
-    this.gui.add( saoPass.params, 'output', {
-      'Beauty': SAOPass.OUTPUT.Beauty,
-      'Beauty+SAO': SAOPass.OUTPUT.Default,
-      'SAO': SAOPass.OUTPUT.SAO,
-      'Depth': SAOPass.OUTPUT.Depth,
-      'Normal': SAOPass.OUTPUT.Normal
-    } ).onChange( function ( value ) {
-      saoPass.params.output = parseInt( value );
-    } );
-    this.gui.add( saoPass.params, 'saoBias', - 1, 1 );
-    this.gui.add( saoPass.params, 'saoIntensity', 0, 1 );
-    this.gui.add( saoPass.params, 'saoScale', 0, 300 );
-    this.gui.add( saoPass.params, 'saoKernelRadius', 1, 100 );
-    this.gui.add( saoPass.params, 'saoMinResolution', 0, 1 );
-    this.gui.add( saoPass.params, 'saoBlur' );
-    this.gui.add( saoPass.params, 'saoBlurRadius', 0, 200 );
-    this.gui.add( saoPass.params, 'saoBlurStdDev', 0.5, 150 );
-    this.gui.add( saoPass.params, 'saoBlurDepthCutoff', 0.0, 0.1 );
+    this.orbitControls.target.set(22, 2, -34);
+    this.orbitControls.update();
     
-    const directionalLightHelper:THREE.CameraHelper = new THREE.CameraHelper( directionalLight.shadow.camera );
-    // this.scene.add( directionalLightHelper );
+    // Scene
+    this.scene = new THREE.Scene();
 
-    const hemisphereLight = new THREE.HemisphereLight( 0xffffff, 0x080820, 0.5 );
-    // this.scene.add( hemisphereLight );
-
-    const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0xffffff, 2.0);
+    // Lighting
+    const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x404040, 5.0);
     this.scene.add(ambientLight);
+
+    const dirLight1: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.2);
+    dirLight1.castShadow = false;
+    dirLight1.position.x = -50;
+    dirLight1.position.z = 50;
+    dirLight1.position.y = 50;
+    dirLight1.shadow.mapSize.width = 512;
+    dirLight1.shadow.mapSize.height = 512;
+    dirLight1.shadow.camera.near = 10;
+    dirLight1.shadow.camera.far = 200;
+    dirLight1.shadow.camera.left = -50;
+    dirLight1.shadow.camera.right = 50;
+    dirLight1.shadow.camera.top = -50;
+    dirLight1.shadow.camera.bottom = 50;
+    this.scene.add(dirLight1);
+    
+    const dirLight2: THREE.DirectionalLight = dirLight1.clone();
+    dirLight2.position.x = 50;
+    console.log(dirLight2);
+    this.scene.add(dirLight2);
+    
+    const dirLightHelper1 = new THREE.DirectionalLightHelper( dirLight1, 5 );
+    const dirLightHelper2 = new THREE.DirectionalLightHelper( dirLight2, 5 );
+    this.scene.add(dirLightHelper1);
+    this.scene.add(dirLightHelper2);
+
+    // Ambient Occlusion
+    const normalPass: POSTPROCESSING.NormalPass = new POSTPROCESSING.NormalPass(this.scene, this.camera, {
+      resolutionScale: 1.0
+    });
+    const ssaoEffect = new POSTPROCESSING.SSAOEffect(this.camera, normalPass.renderTarget.texture, {
+      blendFunction: POSTPROCESSING.BlendFunction.MULTIPLY,
+      samples: 16,
+      rings: 7,
+      distanceThreshold: 0.975,
+      distanceFalloff: 1.0,
+      rangeThreshold: 0.025,
+      rangeFalloff: 0.1,
+      luminanceInfluence: 0.702,
+      radius: 49.46,
+      scale: 0.8,
+      bias: 0.665
+    });
+    ssaoEffect.blendMode.opacity.value = 3.0;
+
+    const renderPass: POSTPROCESSING.RenderPass = new POSTPROCESSING.RenderPass(this.scene, this.camera);
+    const effectPass: POSTPROCESSING.EffectPass = new POSTPROCESSING.EffectPass(this.camera, ssaoEffect);
+    effectPass.renderToScreen = true;
+
+    this.composer.addPass(renderPass);
+    this.composer.addPass(normalPass);
+    this.composer.addPass(effectPass);
 
     // Load models
     const loadingManager: THREE.LoadingManager = new THREE.LoadingManager();
@@ -125,34 +118,38 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
         floorMeshes.forEach(floorMesh => {
           // console.log(floorMesh);
           floorMesh.castShadow = false;
-          floorMesh.receiveShadow = true;
+          floorMesh.receiveShadow = false;
           const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial();
-          material.roughness = 1;
+          material.roughness = 0.8;
           floorMesh.material = material;
           
         });
 
         const wallMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Wall");
         wallMeshes.forEach(wallMesh => {
-          wallMesh.castShadow = true;
-          wallMesh.receiveShadow = true;
+          wallMesh.castShadow = false;
+          wallMesh.receiveShadow = false;
           const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial();
-          // material.roughness = 1;
+          material.roughness = 0.8;
           material.color = new THREE.Color( 0xBDBDBD );
           wallMesh.material = material;
           
         });
-        
+
         this.scene.add(gltf.scene);
       },
-    )
+    );
+
+    // Dev gui for monitoring three.js performance
+    // This should be removed or commented out once the 3D viewer correctly.
+    this.devGui = new DevGui(effectPass, normalPass, ssaoEffect);
 
   }
 
   ngAfterViewInit() {
     // Add three.js canvas element to the div in this component.
     this.threejsContainer.nativeElement.appendChild(this.renderer.domElement);
-    this.threejsContainer.nativeElement.appendChild(this.gui.domElement);
+    this.devGui.appendToElement(this.threejsContainer.nativeElement);
     this.resizeCanvasToContainer();
     this.animate();
   }
@@ -167,12 +164,14 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
   // Main render loop for 3D view.
   animate() {
-    // Update scene
-    this.orbitControls.update();
+    // Start monitoring frame
+    this.devGui.stats.begin();
 
-    // Render
-    // this.renderer.render(this.scene, this.camera);
+    // Render scene
     this.composer.render();
+
+    // End monitoring frame
+    this.devGui.stats.end();
 
     this.nextFrameId = window.requestAnimationFrame(() => this.animate());
   }
