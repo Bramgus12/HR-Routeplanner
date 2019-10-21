@@ -43,7 +43,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.scene = new THREE.Scene();
 
     // Lighting
-    const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x404040, 5.0);
+    const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x404040, 6.0);
     this.scene.add(ambientLight);
 
     const dirLight1: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.2);
@@ -123,6 +123,10 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
           const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial();
           material.roughness = 0.8;
           floorMesh.material = material;
+
+          if(floorMesh.userData.floorNumber != 5){
+            floorMesh.visible = false;
+          }
           
         });
 
@@ -134,6 +138,10 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
           material.roughness = 0.8;
           material.color = new THREE.Color( 0xBDBDBD );
           wallMesh.material = material;
+          
+          if(wallMesh.userData.floorNumber != 5){
+            wallMesh.visible = false;
+          }
           
         });
 

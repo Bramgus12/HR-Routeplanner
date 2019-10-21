@@ -67,7 +67,7 @@ def createDoorCutout(width, depth):
     doorCutout.hide_render = True
     return doorCutout
 
-def fixDoorWallOverlap(doorCutout, wallLine, doorWidth):
+def fixDoorWallOverlap(doorCutout, wallLine, doorWidth, offset):
     '''Checks if a door cutout overlaps with one of the two vectors of an edge. Adjusts the location if it overlaps.'''
     vector1 = wallLine[0]
     vector2 = wallLine[1]
@@ -76,7 +76,7 @@ def fixDoorWallOverlap(doorCutout, wallLine, doorWidth):
         # Calculate distance between doorcutout and vector
         difX = doorCutout.location.x - vector.x
         difY = doorCutout.location.y - vector.y
-        distance = math.sqrt( difX**2 + difY**2 ) - 0.021
+        distance = math.sqrt( difX**2 + difY**2 ) - (offset+0.001)
         if distance <= doorWidth / 2:
             # Overlap detected
             move = (doorWidth / 2) - distance
@@ -134,7 +134,8 @@ def createWalls():
         bpy.ops.object.mode_set(mode='OBJECT')
 
         # Add solidify modifier
-        solidifyModifier = solidifyObject(wall, 0.02)
+        wallThickness = 0.1
+        solidifyModifier = solidifyObject(wall, wallThickness)
         solidifyModifier.offset = 0.0
         # Hiding modifier here to prevent console being flooded with error messages from Blender.
         solidifyModifier.show_viewport = False
@@ -163,17 +164,15 @@ def createWalls():
                 if intersection != None:
                     intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
                     doorWidth = 1.0
-                    doorDepth = 0.1
+                    doorDepth = wallThickness + 0.01
                     doorCutout = createDoorCutout(doorWidth, doorDepth)
-
 
                     # Set the rotation of the door
                     doorRotation = math.atan2(wallEdgeVector1.y-wallEdgeVector2.y, wallEdgeVector1.x-wallEdgeVector2.x)
                     doorCutout.rotation_euler.z = doorRotation
                     doorCutout.location = intersectionVector
 
-                    # Check if the door cutout is overlapping with one of the edge vertices
-                    fixDoorWallOverlap(doorCutout, wallLine, doorWidth)
+                    fixDoorWallOverlap(doorCutout, wallLine, doorWidth, wallThickness)
 
                     # Check if door overlaps with another door in this wall with the same rotation
                     otherDoorCutouts = filter( lambda obj: obj.rotation_euler.z == doorCutout.rotation_euler.z, doorCutouts)
@@ -205,6 +204,10 @@ def createWalls():
         bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.transform.translate(value=(0, 0, -0.3), orient_type='LOCAL', orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL', constraint_axis=(False, False, True), mirror=True, use_proportional_edit=False, proportional_edit_falloff='SMOOTH', proportional_size=1, use_proportional_connected=False, use_proportional_projected=False)
         bpy.ops.mesh.extrude_region_move(MESH_OT_extrude_region={"use_normal_flip":False, "mirror":False}, TRANSFORM_OT_translate={"value":(0, 0, wall.get('floorHeight')-0.001 ), "orient_type":'LOCAL', "orient_matrix":((1, 0, 0), (0, 1, 0), (0, 0, 1)), "orient_matrix_type":'LOCAL', "constraint_axis":(False, False, True), "mirror":False, "use_proportional_edit":False, "proportional_edit_falloff":'SMOOTH', "proportional_size":1, "use_proportional_connected":False, "use_proportional_projected":False, "snap":False, "snap_target":'CLOSEST', "snap_point":(0, 0, 0), "snap_align":False, "snap_normal":(0, 0, 0), "gpencil_strokes":False, "cursor_transform":False, "texture_space":False, "remove_on_cancel":False, "release_confirm":False, "use_accurate":False})
+
+        # Separate all faces on edges
+        bpy.ops.mesh.select_all(action='SELECT')
+        bpy.ops.mesh.edge_split()
         bpy.ops.object.mode_set(mode='OBJECT')      
 
         solidifyModifier.show_viewport = True
