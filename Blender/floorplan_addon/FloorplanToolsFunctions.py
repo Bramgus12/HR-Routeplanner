@@ -36,13 +36,13 @@ def alignFloors():
             referenceImage.matrix_world.translation.y -= offsetY
     return {'FINISHED'}
 
-def createDoorCutout():
+def createDoorCutout(width, depth):
     part = "DoorCutout"
     name = '[{}]'.format(part)
     mesh = bpy.data.meshes.new(name)
 
     bm = bmesh.new()
-    bmesh.ops.create_cube(bm, size=1.0)
+    bmesh.ops.create_cube(bm, size=width)
     bmesh.ops.translate(bm, verts=bm.verts, vec=(0.0, 0.0, 0.5))
     minY = min( [vert.co.x for vert in bm.verts] )
     maxY = max( [vert.co.x for vert in bm.verts] )
@@ -52,10 +52,11 @@ def createDoorCutout():
     bottomVerts = list( filter(lambda vert: vert.co.z == minZ , bm.verts) )
     frontVerts = list( filter(lambda vert: vert.co.y == maxY , bm.verts) )
     backVerts = list( filter(lambda vert: vert.co.y == minY , bm.verts) )
-    bmesh.ops.translate(bm, verts=topVerts, vec=(0.0, 0.0, 1.0))
+    bmesh.ops.translate(bm, verts=topVerts, vec=(0.0, 0.0, width))
     bmesh.ops.translate(bm, verts=bottomVerts, vec=(0.0, 0.0, -0.1))
-    bmesh.ops.translate(bm, verts=frontVerts, vec=(0.0, -0.3, 0.0))
-    bmesh.ops.translate(bm, verts=backVerts, vec=(0.0, 0.3, 0.0))
+    moveDepth = (width/2)-depth/2
+    bmesh.ops.translate(bm, verts=frontVerts, vec=(0.0, -moveDepth, 0.0))
+    bmesh.ops.translate(bm, verts=backVerts, vec=(0.0, moveDepth, 0.0))
     
     bm.to_mesh(mesh)
     bm.free()
@@ -65,6 +66,26 @@ def createDoorCutout():
     doorCutout.display_type = 'WIRE'
     doorCutout.hide_render = True
     return doorCutout
+
+def fixDoorWallOverlap(doorCutout, wallLine, doorWidth):
+    '''Checks if a door cutout overlaps with one of the two vectors of an edge. Adjusts the location if it overlaps.'''
+    vector1 = wallLine[0]
+    vector2 = wallLine[1]
+
+    for vector in (vector1, vector2):
+        # Calculate distance between doorcutout and vector
+        difX = doorCutout.location.x - vector.x
+        difY = doorCutout.location.y - vector.y
+        distance = math.sqrt( difX**2 + difY**2 ) - 0.021
+        if distance <= doorWidth / 2:
+            # Overlap detected
+            move = (doorWidth / 2) - distance
+            factor = move / distance
+            moveX = factor * difX
+            moveY = factor * difY
+            doorCutout.location.x += moveX
+            doorCutout.location.y += moveY
+            break
 
 def createWalls():
     part = 'Wall'
@@ -128,6 +149,7 @@ def createWalls():
             minZ = min(wallEdgeVector1.z, wallEdgeVector2.z) - 0.1
             maxZ = max(wallEdgeVector1.z, wallEdgeVector2.z) + 0.1
             wallLine = (wallEdgeVector1 , wallEdgeVector2)
+            doorCutouts = []
 
             for networkEdge in nodeNetwork.data.edges:
                 networkEdgeVector1 = nodeNetwork.data.vertices[networkEdge.vertices[0]].co
@@ -140,17 +162,39 @@ def createWalls():
                 intersection = lineIntersection( wallLine, networkLine )
                 if intersection != None:
                     intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
-                    doorCutout = createDoorCutout()
-                    booleanModifier = wall.modifiers.new(name='Boolean', type='BOOLEAN')
-                    booleanModifier.operation = 'DIFFERENCE'
-                    booleanModifier.object = doorCutout
+                    doorWidth = 1.0
+                    doorDepth = 0.1
+                    doorCutout = createDoorCutout(doorWidth, doorDepth)
 
+
+                    # Set the rotation of the door
                     doorRotation = math.atan2(wallEdgeVector1.y-wallEdgeVector2.y, wallEdgeVector1.x-wallEdgeVector2.x)
                     doorCutout.rotation_euler.z = doorRotation
                     doorCutout.location = intersectionVector
+
+                    # Check if the door cutout is overlapping with one of the edge vertices
+                    fixDoorWallOverlap(doorCutout, wallLine, doorWidth)
+
+                    # Check if door overlaps with another door in this wall with the same rotation
+                    otherDoorCutouts = filter( lambda obj: obj.rotation_euler.z == doorCutout.rotation_euler.z, doorCutouts)
+                    abort = False
+                    for otherDoorCutout in otherDoorCutouts:
+                        if distanceBetween2D(otherDoorCutout.location, doorCutout.location) <= doorWidth/2:
+                            abort = True
+                            break
+                    if abort:
+                        bpy.data.objects.remove(doorCutout, do_unlink=True)
+                        continue
+
+                    # Add boolean modifier to wall to create a hole in the wall.
+                    booleanModifier = wall.modifiers.new(name='Boolean', type='BOOLEAN')
+                    booleanModifier.operation = 'DIFFERENCE'
+                    booleanModifier.object = doorCutout
+                    
                     doorCutout.parent = wall
                     doorCutout.matrix_parent_inverse = wall.matrix_world.inverted()
 
+                    doorCutouts.append(doorCutout)
                     linkToFloorCollection(doorCutout, wall.get('buildingName'), wall.get('floorNumber'))
 
         # Switch to edit mode and extrude the walls upward.

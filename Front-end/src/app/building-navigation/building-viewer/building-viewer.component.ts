@@ -91,6 +91,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     ssaoEffect.blendMode.opacity.value = 3.0;
 
     const renderPass: POSTPROCESSING.RenderPass = new POSTPROCESSING.RenderPass(this.scene, this.camera);
+    renderPass.renderToScreen = false;
     const effectPass: POSTPROCESSING.EffectPass = new POSTPROCESSING.EffectPass(this.camera, ssaoEffect);
     effectPass.renderToScreen = true;
 
@@ -169,6 +170,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
     // Render scene
     this.composer.render();
+    // this.renderer.render(this.scene, this.camera);
 
     // End monitoring frame
     this.devGui.stats.end();
