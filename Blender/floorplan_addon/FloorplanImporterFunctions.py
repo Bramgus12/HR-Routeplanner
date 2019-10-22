@@ -2,24 +2,7 @@ import bpy
 import json
 import bmesh
 
-def pathToExtension(path, extension):
-    return ".".join(path.split(".")[:-1]) + "." + extension
-
-def linkToFloorCollection(obj, buildingName ,floorNumber):
-    part = 'FloorCollection'
-    name = '[{}] {}'.format(part, floorNumber)
-    collection = bpy.data.collections.get(name)
-    if collection == None:
-        collection = bpy.data.collections.new(name)
-    if bpy.context.scene.collection.children.get(collection.name) == None:
-        bpy.context.scene.collection.children.link(collection)
-    if collection.objects.get(obj.name) == None:
-        collection.objects.link(obj)
-
-def unlinkFromCollections(obj):
-    for collection in bpy.data.collections:
-        if collection.objects.get(obj.name) != None:
-            collection.objects.unlink(obj)
+from . GeneralFunctions import *
 
 def createBuildingRoot(buildingName):
     part = "BuildingRoot"
@@ -47,14 +30,14 @@ def createFloorRoot(buildingRoot, floorNumber, floorHeight):
     unlinkFromCollections(floorRoot)
     if bpy.context.scene.collection.objects.get(floorRoot.name) != None:
         bpy.context.scene.collection.objects.unlink(floorRoot)
-    linkToFloorCollection(floorRoot, floorRoot["buildingName"], floorNumber)
+    linkToFloorCollection(floorRoot, floorNumber)
     return floorRoot
 
 def createAlignPoint(referenceImage):
     part = 'AlignPoint'
     alignPoint = bpy.data.objects.new( '[{}] {}'.format(part, referenceImage['floorName']) , None )
     # bpy.context.scene.collection.objects.link( alignPoint )
-    linkToFloorCollection(alignPoint, referenceImage["buildingName"], referenceImage["floorNumber"])
+    linkToFloorCollection(alignPoint, referenceImage["floorNumber"])
 
     alignPoint["buildingName"] = referenceImage["buildingName"]
     alignPoint["buildingPart"] = part
@@ -95,7 +78,7 @@ def createReferenceImage(floorplan, filepath, floorRoot):
     unlinkFromCollections(referenceImage)
     if bpy.context.scene.collection.objects.get(referenceImage.name) != None:
         bpy.context.scene.collection.objects.unlink(referenceImage)
-    linkToFloorCollection(referenceImage, referenceImage["buildingName"], referenceImage["floorNumber"])
+    linkToFloorCollection(referenceImage, referenceImage["floorNumber"])
     return referenceImage
 
 def createFloorPlane(floorRoot, floorplan, new=False):
@@ -126,7 +109,7 @@ def createFloorPlane(floorRoot, floorplan, new=False):
         bm.free()
 
         # bpy.context.scene.collection.objects.link(floorPlane)
-        linkToFloorCollection(floorPlane, floorRoot["buildingName"], floorRoot["floorNumber"])
+        linkToFloorCollection(floorPlane, floorRoot["floorNumber"])
 
         floorPlane.name = "[{}] {}".format(part, floorRoot["floorName"])
         floorPlane["buildingName"] = floorRoot["buildingName"]
@@ -163,7 +146,7 @@ def createFloorPlane(floorRoot, floorplan, new=False):
                 floorPlane.parent = floorRoot
                 floorPlane.matrix_parent_inverse = floorRoot.matrix_world.inverted()
                 # bpy.context.collection.objects.link(floorPlane)
-                linkToFloorCollection(floorPlane, floorPlane["buildingName"], floorPlane["floorNumber"])
+                linkToFloorCollection(floorPlane, floorPlane["floorNumber"])
 
                 return floorPlane
 
@@ -193,7 +176,7 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
         roomNode = bpy.data.objects.new('[{}] {}'.format(part, room['code']), mesh)
         roomNode.location = (referenceImage.location.x + x, referenceImage.location.y + y, referenceImage.location.z)
     # bpy.context.scene.collection.objects.link(roomNode)
-    linkToFloorCollection(roomNode, buildingName, floorNumber)
+    linkToFloorCollection(roomNode, floorNumber)
     roomNode.color = color
 
     roomNode.name = '[{}] {}'.format(part, room['code'])
