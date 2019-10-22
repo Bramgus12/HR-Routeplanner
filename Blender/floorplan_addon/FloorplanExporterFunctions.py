@@ -1,6 +1,5 @@
 import bpy
 import json
-from . FloorplanToolsFunctions import *
 from . FloorplanImporterFunctions import *
 
 def exportFloorplan(context, filePath):
