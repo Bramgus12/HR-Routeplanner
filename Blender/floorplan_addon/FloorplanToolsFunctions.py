@@ -164,7 +164,7 @@ def createWalls():
                 if intersection != None:
                     intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
                     doorWidth = 1.0
-                    doorDepth = wallThickness + 0.01
+                    doorDepth = wallThickness + 0.1
                     doorCutout = createDoorCutout(doorWidth, doorDepth)
 
                     # Set the rotation of the door
