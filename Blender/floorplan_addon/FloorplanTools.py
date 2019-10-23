@@ -9,6 +9,7 @@ from . IgnoreVerticesFunctions import ignoreVertices
 from . SolidifyFloorFunctions import solidifyFloors
 from . WireframeVisibilityFunctions import showWireframes
 from . NodeNetworkFunctions import createNode, connectRoomNodes
+from . AmbientOcclusionFunctions import setupAmbientOcclusion
 
 class FloorplanToolsPanel(Panel):
     bl_idname = "FLOORPLAN_PT_PANEL"
@@ -19,6 +20,9 @@ class FloorplanToolsPanel(Panel):
 
     def draw(self, context):
         layout = self.layout
+
+        row = layout.row()
+        row.label(text="Floors")
 
         row = layout.row()
         row.operator('floorplan.align_floors', text="Align Floors")
@@ -48,6 +52,9 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.show_wireframes', text="Show Wireframes")
 
         row = layout.row()
+        row.label(text="Node Network")
+
+        row = layout.row()
         row.operator('floorplan.create_node', text="Create Node")
 
         row = layout.row()
@@ -55,6 +62,12 @@ class FloorplanToolsPanel(Panel):
 
         row = layout.row()
         row.operator('floorplan.connect_rooms_to_nodes', text="Connect Rooms To Nodes")
+
+        row = layout.row()
+        row.label(text="Ambient Occlusion")
+
+        row = layout.row()
+        row.operator('floorplan.bake_ao', text="Bake Ambient Occlusion")
 
 class AlignFloors(Operator):
     bl_idname = "floorplan.align_floors"
@@ -183,3 +196,28 @@ class HideWireframes(Operator):
 
     def execute(self, context):
         return showWireframes(False)
+
+class BakeAmbientOcclusion(Operator):
+    bl_idname = "floorplan.bake_ao"
+    bl_label = "Bake Ambient Occlusion"
+    bl_description = "Sets up materials and uv maps for building parts and bakes the ambient occlusion to an image."
+
+    interrupted = False
+    done = False
+
+    def modal(self, context, event):
+
+        if self.done:
+            return {'FINISHED'}
+        elif event.type in {'ESC'}:
+            self.interrupted = True
+            print("Escape was pressed, interrupting baking.")
+            return {'CANCELLED'}
+        
+        return {'PASS_THROUGH'}
+
+    def execute(self, context):
+        res = setupAmbientOcclusion(self, context)
+        if res == {'RUNNING_MODAL'}:
+            context.window_manager.modal_handler_add(self)
+        return res

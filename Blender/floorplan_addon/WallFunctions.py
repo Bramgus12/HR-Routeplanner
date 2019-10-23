@@ -8,33 +8,42 @@ from . GeneralFunctions import *
 def createDoorCutout(width, depth):
     part = "DoorCutout"
     name = '[{}]'.format(part)
-    mesh = bpy.data.meshes.new(name)
 
-    bm = bmesh.new()
-    bmesh.ops.create_cube(bm, size=width)
-    bmesh.ops.translate(bm, verts=bm.verts, vec=(0.0, 0.0, 0.5))
-    minY = min( [vert.co.x for vert in bm.verts] )
-    maxY = max( [vert.co.x for vert in bm.verts] )
-    minZ = min( [vert.co.z for vert in bm.verts] )
-    maxZ = max( [vert.co.z for vert in bm.verts] )
-    topVerts = list( filter(lambda vert: vert.co.z == maxZ , bm.verts) )
-    bottomVerts = list( filter(lambda vert: vert.co.z == minZ , bm.verts) )
-    frontVerts = list( filter(lambda vert: vert.co.y == maxY , bm.verts) )
-    backVerts = list( filter(lambda vert: vert.co.y == minY , bm.verts) )
-    bmesh.ops.translate(bm, verts=topVerts, vec=(0.0, 0.0, width))
-    bmesh.ops.translate(bm, verts=bottomVerts, vec=(0.0, 0.0, -0.1))
-    moveDepth = (width/2)-depth/2
-    bmesh.ops.translate(bm, verts=frontVerts, vec=(0.0, -moveDepth, 0.0))
-    bmesh.ops.translate(bm, verts=backVerts, vec=(0.0, moveDepth, 0.0))
-    
-    bm.to_mesh(mesh)
-    bm.free()
+    mesh = bpy.data.meshes.get(name)
+    if mesh == None:
+        mesh = bpy.data.meshes.new(name)
+        mesh['buildingPart'] = part
+
+        bm = bmesh.new()
+        bmesh.ops.create_cube(bm, size=width)
+        bmesh.ops.translate(bm, verts=bm.verts, vec=(0.0, 0.0, 0.5))
+        minY = min( [vert.co.x for vert in bm.verts] )
+        maxY = max( [vert.co.x for vert in bm.verts] )
+        minZ = min( [vert.co.z for vert in bm.verts] )
+        maxZ = max( [vert.co.z for vert in bm.verts] )
+        topVerts = list( filter(lambda vert: vert.co.z == maxZ , bm.verts) )
+        bottomVerts = list( filter(lambda vert: vert.co.z == minZ , bm.verts) )
+        frontVerts = list( filter(lambda vert: vert.co.y == maxY , bm.verts) )
+        backVerts = list( filter(lambda vert: vert.co.y == minY , bm.verts) )
+        bmesh.ops.translate(bm, verts=topVerts, vec=(0.0, 0.0, width))
+        bmesh.ops.translate(bm, verts=bottomVerts, vec=(0.0, 0.0, -2))
+        moveDepth = (width/2)-depth/2
+        bmesh.ops.translate(bm, verts=frontVerts, vec=(0.0, -moveDepth, 0.0))
+        bmesh.ops.translate(bm, verts=backVerts, vec=(0.0, moveDepth, 0.0))
+        
+        bm.to_mesh(mesh)
+        bm.free()
     
     doorCutout = bpy.data.objects.new(name, mesh)
     doorCutout['buildingPart'] = part
     doorCutout.display_type = 'WIRE'
     doorCutout.hide_render = True
     return doorCutout
+
+def cleanupDoorCutoutMeshes():
+    doorCutoutMeshes = filter( lambda mesh: mesh.get('buildingPart') == 'DoorCutout', bpy.data.meshes )
+    for doorCutoutMesh in doorCutoutMeshes:
+        bpy.data.meshes.remove(doorCutoutMesh)
 
 def fixDoorWallOverlap(doorCutout, wallLine, doorWidth, offset):
     '''Checks if a door cutout overlaps with one of the two vectors of an edge. Adjusts the location if it overlaps.'''
@@ -109,6 +118,7 @@ def createWalls():
         # Hiding modifier here to prevent console being flooded with error messages from Blender.
         solidifyModifier.show_viewport = False
         solidifyModifier.show_render = False
+        doorCutouts = []
 
         # Check where edges intersect with the node network to create doorways.
         nodeNetwork = nodeNetwork = bpy.context.scene.objects.get('[NodeNetwork]')
@@ -120,7 +130,6 @@ def createWalls():
                 minZ = min(wallEdgeVector1.z, wallEdgeVector2.z) - 0.1
                 maxZ = max(wallEdgeVector1.z, wallEdgeVector2.z) + 0.1
                 wallLine = (wallEdgeVector1 , wallEdgeVector2)
-                doorCutouts = []
 
                 for networkEdge in nodeNetwork.data.edges:
                     networkEdgeVector1 = nodeNetwork.data.vertices[networkEdge.vertices[0]].co
@@ -178,18 +187,32 @@ def createWalls():
         # Separate all faces on edges
         bpy.ops.mesh.select_all(action='SELECT')
         bpy.ops.mesh.edge_split()
-        bpy.ops.object.mode_set(mode='OBJECT')      
+        bpy.ops.object.mode_set(mode='OBJECT')
 
         solidifyModifier.show_viewport = True
         solidifyModifier.show_render = True
+
+        # Apply all modifiers
+        modifierNames = [ modifier.name for modifier in wall.modifiers ]
+        for modifierName in modifierNames:
+            bpy.ops.object.modifier_apply(modifier=modifierName)
+        
+        # Remove door cutouts
+        for doorCutout in doorCutouts:
+            bpy.data.objects.remove(doorCutout, do_unlink=True)
+
+    cleanupDoorCutoutMeshes()
 
     return {'FINISHED'}
 
 def removeWalls():
     walls = getObjectsByBuildingPart('Wall')
     doorCutouts = getObjectsByBuildingPart('DoorCutout')
-    bpy.ops.object.delete({"selected_objects": walls})
-    bpy.ops.object.delete({"selected_objects": doorCutouts})
+    objects = walls + doorCutouts
+    for obj in objects:
+        data = obj.data
+        bpy.data.objects.remove(obj, do_unlink=True)
+        bpy.data.meshes.remove(data)
     return {'FINISHED'}
 
 def lineIntersection(line1, line2, infinite=False):

@@ -1,10 +1,11 @@
 import bpy
 import math
+import os
 
 def pathToExtension(path, extension):
     '''Returns the input path with the correct extension.
     Replaces the extension if the input path already has one.'''
-    return ".".join(path.split(".")[:-1]) + "." + extension
+    return os.path.join( os.path.dirname(path), os.path.splitext(os.path.basename(path))[0] + "." + extension )
 
 def getObjectsByBuildingPart(part):
     '''Returns a list of objects of the given building part.'''
@@ -37,6 +38,8 @@ def linkToFloorCollection(obj ,floorNumber):
         bpy.context.scene.collection.children.link(collection)
     if collection.objects.get(obj.name) == None:
         collection.objects.link(obj)
+    collection['buildingPart'] = part
+    collection['floorNumber'] = floorNumber
 
 def unlinkFromCollections(obj):
     '''Unlinks the object from all collections it's in.'''

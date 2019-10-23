@@ -46,6 +46,7 @@ def register():
         IncludeVertices,
         ShowWireframes,
         HideWireframes,
+        BakeAmbientOcclusion,
         
         FloorplanToolsPanel
     ]
@@ -77,6 +78,7 @@ def unregister():
         IncludeVertices,
         ShowWireframes,
         HideWireframes,
+        BakeAmbientOcclusion,
 
         FloorplanToolsPanel
     ]
