@@ -29,7 +29,7 @@ import { keys } from './3rdparty/api_keys';
     MaterialModule,
     NgxMaterialTimepickerModule,
     LeafletModule.forRoot(),
-    AgmCoreModule.forRoot({ apiKey: keys.google_maps })
+    AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places'] })
   ],
   declarations: [
     AppComponent,

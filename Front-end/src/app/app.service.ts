@@ -1,11 +1,11 @@
-import { Injectable, Output, EventEmitter, Renderer2, RendererFactory2 } from '@angular/core';
+import { Injectable, EventEmitter, Renderer2, RendererFactory2 } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
 
-  @Output() trigger: EventEmitter<null> = new EventEmitter();
+  trigger: EventEmitter<null> = new EventEmitter();
 
   private renderer: Renderer2;
 

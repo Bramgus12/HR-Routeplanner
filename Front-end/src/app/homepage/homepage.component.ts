@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import {  } from 'rxjs';
 
 import { NavigationState } from '../shared/dataclasses';
+import { GoogleMapsService } from '../3rdparty/google-maps.service';
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
@@ -11,10 +13,10 @@ export class HomepageComponent implements OnInit {
 
   navigationModel: NavigationState = { from: '', to: '', departNow: true, time: '' }
 
-  constructor(private router: Router) { }
+  constructor(private mapsService: GoogleMapsService, private router: Router) { }
 
   ngOnInit() {
-    
+    //setTimeout(() => this.mapsService.getPlacePredictions('Frans Halsstraat').subscribe(result => console.log(result)), 1000);
   }
 
   departNowUpdate(departNow: boolean){

@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 
 import { NavigationState } from '../shared/dataclasses';
 import { keys } from '../3rdparty/api_keys';
-import { OpenrouteserviceService, PROFILES } from '../3rdparty/openrouteservice.service';
-import { tileLayer, latLng, Map, geoJSON, latLngBounds } from 'leaflet';
+// import { OpenrouteserviceService, PROFILES } from '../3rdparty/openrouteservice.service';
+// import { tileLayer, latLng, Map, geoJSON, latLngBounds } from 'leaflet';
 import { GoogleMap } from '@agm/core/services/google-maps-types';
 @Component({
   selector: 'app-maps-navigation',
@@ -27,7 +27,7 @@ export class MapsNavigationComponent implements OnInit {
     center: latLng(51.917218, 4.48405)
   };*/
 
-  constructor(private router: Router, private routeService: OpenrouteserviceService) {
+  constructor(private router: Router/*, private routeService: OpenrouteserviceService*/) {
     const state = this.router.getCurrentNavigation().extras.state;
 
     if(state == undefined || !Object.keys(this.navigationState).every(prop => state.hasOwnProperty(prop))) this.router.navigate(['/'])
