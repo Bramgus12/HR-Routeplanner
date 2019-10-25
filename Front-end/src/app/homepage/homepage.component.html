@@ -1,12 +1,17 @@
 <mat-card>
   <form (ngSubmit)="goToNavigation()" #navigationForm="ngForm">
     <mat-form-field>
-      <input matInput name="from" placeholder="Van" [(ngModel)]="navigationModel.from" required>
+      <input matInput name="from" placeholder="From" [(ngModel)]="navigationModel.from" [matAutocomplete]="fromAuto" required #fromInput=ngModel>
       <mat-icon matSuffix>gps_fixed</mat-icon>
+      <mat-autocomplete #fromAuto="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let option of fromSuggestions" [value]="option">
+          {{ option.description }}
+        </mat-option>
+      </mat-autocomplete>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput name="to" placeholder="Naar lokaal / gebouw" [(ngModel)]="navigationModel.to" required>
+      <input matInput name="to" placeholder="To classroom / building" [(ngModel)]="navigationModel.to" required>
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
 

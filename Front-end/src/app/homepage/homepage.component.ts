@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import {  } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { Observable, interval } from 'rxjs';
+import { map, startWith, throttleTime, debounceTime } from 'rxjs/operators';
 
 import { NavigationState } from '../shared/dataclasses';
 import { GoogleMapsService } from '../3rdparty/google-maps.service';
@@ -11,12 +13,25 @@ import { GoogleMapsService } from '../3rdparty/google-maps.service';
 })
 export class HomepageComponent implements OnInit {
 
-  navigationModel: NavigationState = { from: '', to: '', departNow: true, time: '' }
+  navigationModel: NavigationState = { from: null, to: null, departNow: true, time: '' }
+  @ViewChild('fromInput') fromFormControl: FormControl;
+  fromSuggestions: google.maps.places.AutocompletePrediction[] = [];
 
   constructor(private mapsService: GoogleMapsService, private router: Router) { }
 
   ngOnInit() {
-    //setTimeout(() => this.mapsService.getPlacePredictions('Frans Halsstraat').subscribe(result => console.log(result)), 1000);
+    this.fromFormControl.valueChanges.pipe(
+      debounceTime(650),
+      startWith<string | google.maps.places.AutocompletePrediction>('')
+    ).subscribe(value => {
+      if(typeof value == 'string' && value != "" ){
+        console.log("from value update:", value);
+        this.mapsService.getPlacePredictions(value).subscribe(result => this.fromSuggestions = result);
+      } else {
+        this.navigationModel.from = <google.maps.places.AutocompletePrediction>value;
+        this.fromSuggestions = [];
+      }
+    })
   }
 
   departNowUpdate(departNow: boolean){
@@ -32,6 +47,11 @@ export class HomepageComponent implements OnInit {
     // Other alternatives: https://stackoverflow.com/a/44865817
     console.log(this.navigationModel.from, this.navigationModel.to)
     this.router.navigate(['maps-navigation'], { state: this.navigationModel })
+  }
+
+  displayFn(prediction?: google.maps.places.AutocompletePrediction){
+    console.log(prediction ? prediction.description : undefined)
+    return prediction ? prediction.description : undefined;
   }
 
 }

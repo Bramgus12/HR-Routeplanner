@@ -21,7 +21,7 @@ export class GoogleMapsService {
   }
 
   getPlacePredictions(input: string){
-    return new Observable(observer => {
+    return new Observable<google.maps.places.AutocompletePrediction[]>(observer => {
       this.autocomplete.getPlacePredictions({ input, componentRestrictions: this.componentRestrictions, types: ['geocode'] }, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           observer.next(results);

@@ -7,7 +7,7 @@ export interface Address {
 }
 
 export interface NavigationState {
-  from: string,
+  from: google.maps.places.AutocompletePrediction,
   to: string,
   departNow: boolean,
   time: string

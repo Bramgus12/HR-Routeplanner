@@ -13,7 +13,7 @@ import { GoogleMap } from '@agm/core/services/google-maps-types';
 })
 export class MapsNavigationComponent implements OnInit {
 
-  navigationState: NavigationState = { from: '', to: '', departNow: true, time: '' };
+  navigationState: NavigationState = { from: null, to: null, departNow: true, time: '' };
 
   lat = 51.917218;
   lng = 4.48405;
