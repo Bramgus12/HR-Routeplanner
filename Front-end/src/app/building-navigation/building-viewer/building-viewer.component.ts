@@ -1,9 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { ThreeUtils } from './three-utils'
 import { DevGui } from './dev-gui';
+import { BuildingModel } from './building-model';
 
 @Component({
   selector: 'app-building-viewer',
@@ -13,11 +12,12 @@ import { DevGui } from './dev-gui';
 export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('threejscontainer') threejsContainer: ElementRef;
 
-  private scene: THREE.Scene;
+  public scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private orbitControls: OrbitControls;
   private nextFrameId: number;
+  private buildingModel: BuildingModel;
 
   private devGui: DevGui;
 
@@ -30,13 +30,14 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.renderer.gammaOutput = true;
     this.renderer.setSize(1280, 720);
     this.renderer.setPixelRatio( window.devicePixelRatio );
-    console.log(this.renderer);
     
     // Camera
     this.camera = new THREE.PerspectiveCamera(50, 1280/720, 2.0, 200);
     this.camera.position.set(46, 30, -15);
 
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.orbitControls.enableDamping = true;
+    this.orbitControls.dampingFactor = 0.05;
     this.orbitControls.target.set(22, 2, -34);
     this.orbitControls.update();
     
@@ -47,53 +48,8 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
 
-    // Load models
-    const loadingManager: THREE.LoadingManager = new THREE.LoadingManager();
-    loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      // console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
-    };
-    loadingManager.onLoad = () => {
-      console.log('Loading complete!');
-    }
-    loadingManager.onError = (url) => {
-      // console.log('There was an error loading ' + url);
-    };
-
-    const gltfLoader = new GLTFLoader(loadingManager);
-    gltfLoader.load(
-      'assets/building-viewer/Wijnhaven.glb',
-      (gltf: GLTF) => {
-        const floorMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Floor");
-        floorMeshes.forEach(floorMesh => {
-
-          const material = <THREE.MeshStandardMaterial> floorMesh.material;
-          material.color.set(0xffffff);
-          material.aoMapIntensity = 0.7;
-
-          if(floorMesh.userData.floorNumber != 5){
-            floorMesh.visible = false;
-          }
-          
-        });
-
-        const wallMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Wall");
-        wallMeshes.forEach(wallMesh => {
-
-          const material = <THREE.MeshStandardMaterial> wallMesh.material;
-          material.color.set(0xffffff);
-          material.aoMapIntensity = 0.7;
-          
-          if(wallMesh.userData.floorNumber != 5){
-            wallMesh.visible = false;
-          }
-          
-        });
-
-        console.log(wallMeshes);
-
-        this.scene.add(gltf.scene);
-      },
-    );
+    // Load building
+    this.buildingModel = new BuildingModel(this, 'assets/building-viewer/Wijnhaven.glb');
 
     // Dev gui for monitoring three.js performance
     // This should be removed or commented out once the 3D viewer correctly.
@@ -121,6 +77,8 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   animate() {
     // Start monitoring frame
     this.devGui.stats.begin();
+
+    this.orbitControls.update();
 
     // Render scene
     this.renderer.render(this.scene, this.camera);

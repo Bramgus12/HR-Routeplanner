@@ -25,4 +25,12 @@ export class ThreeUtils {
     return <THREE.Mesh[]> ThreeUtils.getObjectsByFilter(object, (object: THREE.Object3D) => object.constructor.name === 'Mesh' && typeof (object.userData.buildingPart) === "string" && object.userData.buildingPart === part );
   }
 
+  static getMeshByBuildingPart(object: THREE.Object3D, part: string): THREE.Mesh | null {
+    const meshes: THREE.Mesh[] = this.getMeshesByBuildingPart(object, part);
+    if(meshes.length > 0){
+      return meshes[0];
+    }
+    return null
+  }
+
 }
