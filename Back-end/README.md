@@ -1,6 +1,6 @@
 # API Documentation
 
-**Swagger-ui on link `[host]:[port]/swagger-ui.html` when server is running.**
+**Swagger-ui on link `[host]:[port]/swagger-ui.html` when server is running. This contains a more detailed and interactive API-Documentation**
 
 **When running on your own pc in the IDE, that would be `localhost:8080/swagger-ui.html`**
 
@@ -63,14 +63,18 @@ Get a list of all addresses.
             "street": [string],
             "number": [integer],
             "city": [string],
-            "postal": [string]
+            "postal": [string],
+            "latitude": [double],
+            "longitude": [double]
         },
         {
             "id": [integer],
             "street": [string],
             "number": [integer],
             "city": [string],
-            "postal": [string]
+            "postal": [string],
+            "latitude": [double],
+            "longitude": [double]
         }
     ]
 
@@ -88,7 +92,9 @@ Get a certain address.
         "street": [string], 
         "number": [integer],
         "city": [string],
-        "postal": [string]
+        "postal": [string],
+        "latitude": [double],
+        "longitude": [double]
     }
     
 **HTTP-statuses:** 400, 200
@@ -103,6 +109,8 @@ Create a new address.
         "number": [integer],
         "city": [string],
         "postal": [string]
+        "latitude": [double],
+        "longitude": [double]
     }
     
 **Response:**
@@ -113,6 +121,8 @@ Create a new address.
         "number": [integer],
         "city": [string],
         "postal": [string]
+        "latitude": [double],
+        "longitude": [double]
     }
     
     
@@ -129,6 +139,8 @@ Delete an address by id.
         "number": [integer],
         "city": [string],
         "postal": [string]
+        "latitude": [double],
+        "longitude": [double]
     }
 
 
@@ -145,6 +157,8 @@ Update a certain address.
         "number": [integer],
         "city": [string],
         "postal": [string]
+        "latitude": [double],
+        "longitude": [double]
     }
  
 
@@ -156,6 +170,8 @@ Update a certain address.
         "number": [integer],
         "city": [string],
         "postal": [string]
+        "latitude": [double],
+        "longitude": [double]
     }
     
 **HTTP-statuses:** 400, 200
