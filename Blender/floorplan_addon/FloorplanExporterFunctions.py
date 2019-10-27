@@ -73,8 +73,7 @@ def exportFloorplan(context, filePath):
         export_extras=True,
         export_apply=True,
         export_selected=True,
-        filepath=glbFilePath,
-        export_draco_mesh_compression_enable=True
+        filepath=glbFilePath
     )
 
     return {'FINISHED'}

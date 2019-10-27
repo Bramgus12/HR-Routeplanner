@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { ThreeUtils } from './three-utils'
-import * as POSTPROCESSING from "postprocessing";
 import { DevGui } from './dev-gui';
 
 @Component({
@@ -17,19 +16,21 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
-  private composer: POSTPROCESSING.EffectComposer;
   private orbitControls: OrbitControls;
   private nextFrameId: number;
 
   private devGui: DevGui;
 
   constructor() {
-    // Renderer and composer
+    // Renderer
     this.renderer = new THREE.WebGLRenderer({
-      logarithmicDepthBuffer: false
+      antialias: true,
+      logarithmicDepthBuffer: false,
     });
+    this.renderer.gammaOutput = true;
     this.renderer.setSize(1280, 720);
-    this.composer = new POSTPROCESSING.EffectComposer(this.renderer);
+    this.renderer.setPixelRatio( window.devicePixelRatio );
+    console.log(this.renderer);
     
     // Camera
     this.camera = new THREE.PerspectiveCamera(50, 1280/720, 2.0, 200);
@@ -43,86 +44,31 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.scene = new THREE.Scene();
 
     // Lighting
-    const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0x404040, 6.0);
+    const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
-
-    const dirLight1: THREE.DirectionalLight = new THREE.DirectionalLight(0xffffff, 0.2);
-    dirLight1.castShadow = false;
-    dirLight1.position.x = -50;
-    dirLight1.position.z = 50;
-    dirLight1.position.y = 50;
-    dirLight1.shadow.mapSize.width = 512;
-    dirLight1.shadow.mapSize.height = 512;
-    dirLight1.shadow.camera.near = 10;
-    dirLight1.shadow.camera.far = 200;
-    dirLight1.shadow.camera.left = -50;
-    dirLight1.shadow.camera.right = 50;
-    dirLight1.shadow.camera.top = -50;
-    dirLight1.shadow.camera.bottom = 50;
-    this.scene.add(dirLight1);
-    
-    const dirLight2: THREE.DirectionalLight = dirLight1.clone();
-    dirLight2.position.x = 50;
-    console.log(dirLight2);
-    this.scene.add(dirLight2);
-    
-    const dirLightHelper1 = new THREE.DirectionalLightHelper( dirLight1, 5 );
-    const dirLightHelper2 = new THREE.DirectionalLightHelper( dirLight2, 5 );
-    this.scene.add(dirLightHelper1);
-    this.scene.add(dirLightHelper2);
-
-    // Ambient Occlusion
-    const normalPass: POSTPROCESSING.NormalPass = new POSTPROCESSING.NormalPass(this.scene, this.camera, {
-      resolutionScale: 1.0
-    });
-    const ssaoEffect = new POSTPROCESSING.SSAOEffect(this.camera, normalPass.renderTarget.texture, {
-      blendFunction: POSTPROCESSING.BlendFunction.MULTIPLY,
-      samples: 16,
-      rings: 7,
-      distanceThreshold: 0.975,
-      distanceFalloff: 1.0,
-      rangeThreshold: 0.025,
-      rangeFalloff: 0.1,
-      luminanceInfluence: 0.702,
-      radius: 49.46,
-      scale: 0.8,
-      bias: 0.665
-    });
-    ssaoEffect.blendMode.opacity.value = 3.0;
-
-    const renderPass: POSTPROCESSING.RenderPass = new POSTPROCESSING.RenderPass(this.scene, this.camera);
-    renderPass.renderToScreen = false;
-    const effectPass: POSTPROCESSING.EffectPass = new POSTPROCESSING.EffectPass(this.camera, ssaoEffect);
-    effectPass.renderToScreen = true;
-
-    this.composer.addPass(renderPass);
-    this.composer.addPass(normalPass);
-    this.composer.addPass(effectPass);
 
     // Load models
     const loadingManager: THREE.LoadingManager = new THREE.LoadingManager();
     loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
-      console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
+      // console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
     };
     loadingManager.onLoad = () => {
       console.log('Loading complete!');
     }
     loadingManager.onError = (url) => {
-      console.log('There was an error loading ' + url);
+      // console.log('There was an error loading ' + url);
     };
 
     const gltfLoader = new GLTFLoader(loadingManager);
     gltfLoader.load(
-      'assets/building-viewer/Buildings.glb',
+      'assets/building-viewer/Wijnhaven.glb',
       (gltf: GLTF) => {
         const floorMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Floor");
         floorMeshes.forEach(floorMesh => {
-          // console.log(floorMesh);
-          floorMesh.castShadow = false;
-          floorMesh.receiveShadow = false;
-          const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial();
-          material.roughness = 0.8;
-          floorMesh.material = material;
+
+          const material = <THREE.MeshStandardMaterial> floorMesh.material;
+          material.color.set(0xffffff);
+          material.aoMapIntensity = 0.7;
 
           if(floorMesh.userData.floorNumber != 5){
             floorMesh.visible = false;
@@ -132,12 +78,10 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
         const wallMeshes: THREE.Mesh[] = ThreeUtils.getMeshesByBuildingPart(gltf.scene, "Wall");
         wallMeshes.forEach(wallMesh => {
-          wallMesh.castShadow = false;
-          wallMesh.receiveShadow = false;
-          const material: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial();
-          material.roughness = 0.8;
-          material.color = new THREE.Color( 0xBDBDBD );
-          wallMesh.material = material;
+
+          const material = <THREE.MeshStandardMaterial> wallMesh.material;
+          material.color.set(0xffffff);
+          material.aoMapIntensity = 0.7;
           
           if(wallMesh.userData.floorNumber != 5){
             wallMesh.visible = false;
@@ -145,13 +89,15 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
           
         });
 
+        console.log(wallMeshes);
+
         this.scene.add(gltf.scene);
       },
     );
 
     // Dev gui for monitoring three.js performance
     // This should be removed or commented out once the 3D viewer correctly.
-    this.devGui = new DevGui(effectPass, normalPass, ssaoEffect);
+    this.devGui = new DevGui();
 
   }
 
@@ -177,8 +123,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.devGui.stats.begin();
 
     // Render scene
-    this.composer.render();
-    // this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
 
     // End monitoring frame
     this.devGui.stats.end();
@@ -195,7 +140,6 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     const height: number = this.threejsContainer.nativeElement.clientHeight;
     if (this.renderer.domElement.width != width || this.renderer.domElement.height != height) {
       this.renderer.setSize(width, height);
-      this.composer.setSize(width, height);
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }

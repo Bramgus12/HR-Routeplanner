@@ -23,7 +23,6 @@
     "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
-    "postprocessing": "^6.8.5",
     "rxjs": "~6.3.3",
     "stats.js": "^0.17.0",
     "three": "^0.109.0",
