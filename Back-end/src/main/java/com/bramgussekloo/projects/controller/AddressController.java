@@ -35,13 +35,13 @@ public class AddressController {
     }
 
     // Get a certain address object
-    @ApiOperation(value = "Get a certain address", response = Address.class)
+    @ApiOperation(value = "Get a certain address")
     @ApiResponses(value = {
             @ApiResponse(code = 200, response = Address.class, message = "Successfully gotten the address"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/{id}")
-    private ResponseEntity getAddress(@PathVariable Integer id) {
+    private ResponseEntity getAddress(@ApiParam(value = "the id of the address you want", required = true) @PathVariable Integer id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddress(id));
         } catch (SQLException e) {

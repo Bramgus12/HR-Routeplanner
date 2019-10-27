@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "All details from Address")
 public class Address {
-    @ApiModelProperty(notes = "The database generated id", required = false)
+    @ApiModelProperty(notes = "The database generated id")
     private Integer id;
 
     @ApiModelProperty(notes = "Street. You should know what a street is", required = true)
@@ -21,12 +21,20 @@ public class Address {
     @ApiModelProperty(notes = "Postal code that belongs to the address", required = true)
     private String postal;
 
-    public Address(Integer id, String street, Integer number, String city, String postal) {
+    @ApiModelProperty(notes = "Latitude of the address", required = true)
+    private double latitude;
+
+    @ApiModelProperty(notes = "longitude of the address", required = true)
+    private double longitude;
+
+    public Address(Integer id, String street, Integer number, String city, String postal, double latitude, double longitude) {
         this.id = id;
         this.street = street;
         this.number = number;
         this.city = city;
         this.postal = postal;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Address() {
@@ -54,6 +62,14 @@ public class Address {
 
     public String getStreet() {
         return street;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 }
 
