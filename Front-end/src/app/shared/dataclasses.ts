@@ -6,8 +6,14 @@ export interface Address {
   postal: string;
 }
 
+export interface Building {
+  id?: number,
+  address_id: number,
+  name: string
+}
+
 export interface NavigationState {
-  from: google.maps.places.AutocompletePrediction,
+  from: string,
   to: string,
   departNow: boolean,
   time: string

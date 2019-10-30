@@ -6,6 +6,7 @@ import { Injectable, EventEmitter, Renderer2, RendererFactory2 } from '@angular/
 export class AppService {
 
   trigger: EventEmitter<null> = new EventEmitter();
+  darkMode: boolean = false;
 
   private renderer: Renderer2;
 
@@ -21,6 +22,7 @@ export class AppService {
     if(mode) this.renderer.addClass(document.body, 'dark-theme');
     else this.renderer.removeClass(document.body, 'dark-theme');
 
+    this.darkMode = mode;
     localStorage.setItem("dark-theme", mode.toString());
   }
 }
