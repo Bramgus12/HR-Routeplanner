@@ -30,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 @Override
                 protected Resource getResource(String resourcePath, Resource location) throws IOException {
                     Resource requestedResource = location.createRelative(resourcePath);
-                    System.out.println(resourcePath);
+//                    System.out.println(resourcePath);
                     if (requestedResource.exists() && requestedResource.isReadable()){
                         return requestedResource;
                     } else {
