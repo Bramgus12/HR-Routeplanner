@@ -91,7 +91,7 @@ public class BuildingController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping("/{id}")
-    private ResponseEntity updateAddress(
+    private ResponseEntity updateBuilding(
             @ApiParam(value = "Id of the building that you want to update", required = true) @PathVariable Integer id,
             @ApiParam(value = "Tha building that you want to update", required = true) @RequestBody Building building
     ) {

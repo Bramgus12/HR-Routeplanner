@@ -56,7 +56,7 @@ public class InstituteStatements {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = institute.getId();
         String instituteName = institute.getName();
-        conn.createStatement().executeQuery("UPDATE institute SET name ='" + instituteName + "' WHERE id=" + id + ";");
+        conn.createStatement().execute("UPDATE institute SET name ='" + instituteName + "' WHERE id=" + id + ";");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id=" + id + ";");
         resultSet.next();
         return new Institute(resultSet.getInt("id"), resultSet.getString("name"));

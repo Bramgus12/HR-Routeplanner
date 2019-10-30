@@ -60,13 +60,14 @@ public class AddressStatements {
         String city = address.getCity();
         double latitude = address.getLatitude();
         double longitude = address.getLongitude();
-        ResultSet resultSet = conn.createStatement().executeQuery("UPDATE address SET number=" + number + ", street='"
-                + street + "', postal='" + postal + "', city='" + city + "', latitude="+ latitude + ", longitude="+ longitude +" WHERE id=" + id + "; " +
-                "SELECT * FROM address WHERE id=" + id + ";" );
+        conn.createStatement().execute("UPDATE address SET number=" + number + ", street='"
+                + street + "', postal='" + postal + "', city='" + city + "', latitude="+ latitude + ", longitude="+ longitude +" WHERE id=" + id + "; ");
+        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=" + id + ";");
         return getResult(id, resultSet);
     }
     
     private static Address getResult(Integer id, ResultSet resultSet) throws SQLException{
+        resultSet.next();
         String streetResult = resultSet.getString("street");
         Integer numberResult = resultSet.getInt("number");
         String cityResult = resultSet.getString("city");

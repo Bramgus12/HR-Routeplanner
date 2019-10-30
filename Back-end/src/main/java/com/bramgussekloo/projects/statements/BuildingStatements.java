@@ -55,7 +55,7 @@ public class BuildingStatements {
         Integer id = building.getId();
         Integer address_id = building.getAddress_id();
         String name = building.getName();
-        conn.createStatement().executeQuery("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id + "; ");
+        conn.createStatement().execute("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id + "; ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
         resultSet.next();
         return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
