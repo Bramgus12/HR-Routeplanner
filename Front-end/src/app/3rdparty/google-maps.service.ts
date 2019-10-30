@@ -9,12 +9,14 @@ import { MapsAPILoader } from '@agm/core';
 export class GoogleMapsService {
   private geocoder: google.maps.Geocoder; // type is 'Geocode' from '@agm/core/map-types' when @agm/core releases an update
   private autocomplete: google.maps.places.AutocompleteService;
+  private directions: google.maps.DirectionsService;
   private componentRestrictions = { country: 'nl' }
 
   constructor(private mapsAPI: MapsAPILoader) {
     mapsAPI.load().then(() => {
       this.geocoder = new google.maps.Geocoder();
       this.autocomplete = new google.maps.places.AutocompleteService();
+      this.directions = new google.maps.DirectionsService();
 
       console.log("Loaded MapsAPI")
     })
@@ -45,6 +47,19 @@ export class GoogleMapsService {
         observer.complete();
       });
     });
+  }
+
+  getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode){
+    return new Observable<google.maps.DirectionsResult>(observer => {
+      this.directions.route({ origin, destination, travelMode }, (result, status) => {
+        if (status === google.maps.DirectionsStatus.OK) {
+          observer.next(result);
+        } else {
+          observer.error(new Error('Directions error: '+result+'\nStatus: '+status));
+        }
+        observer.complete();
+      })
+    })
   }
 
 }

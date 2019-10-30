@@ -61,7 +61,7 @@ export class HomepageComponent implements OnInit {
       this.buildings = data.map(val => val.name)
     })
 
-    this.fromFormControl.valueChanges.pipe(debounceTime(650)).subscribe((value: string) => {
+    this.fromFormControl.valueChanges.pipe(debounceTime(500)).subscribe((value: string) => {
       if(value != "" ){
         this.fromSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()))
         // TODO get classroom suggestions
