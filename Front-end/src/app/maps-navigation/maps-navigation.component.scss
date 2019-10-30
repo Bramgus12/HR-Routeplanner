@@ -25,6 +25,23 @@ section {
       li {
         list-style-type: none;
         padding: 8px;
+        border-bottom: 2px solid rgba(0,0,0,.3);
+
+        .icon {
+          display: inline-block;
+          width: 16px;
+          height: 16px;
+          overflow: hidden;
+
+          img {
+            position: relative;
+            width: 19px;
+          }
+        }
+
+        span {
+          padding-left: 8px;
+        }
       }
     }
   }
