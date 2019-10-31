@@ -27,7 +27,8 @@ export class AppComponent implements OnInit{
       this.titleService.setTitle(data['title']);
     });
 
-    this.appService.setDarkmode(JSON.parse(localStorage.getItem("dark-theme")))
+    const savedDarkmode = JSON.parse(localStorage.getItem("dark-theme"));
+    if(savedDarkmode != null) this.appService.setDarkmode(savedDarkmode);
 
     this.appService.trigger.subscribe(() => {
       this.sideDrawer.toggle();

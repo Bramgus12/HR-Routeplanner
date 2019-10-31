@@ -11,7 +11,7 @@ export class TestService {
   constructor(private http: HttpClient) { }
 
   // temp api base url
-  private API_URL = "http://localhost:8080/api/"
+  private API_URL = "/api/"
 
   getAddresses() {
     return this.http.get<Address[]>(this.API_URL + "address");
