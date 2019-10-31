@@ -15,6 +15,10 @@ import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
+
+import { BuildingNavigationComponent } from './building-navigation/building-navigation.component';
+import { BuildingViewerComponent } from './building-navigation/building-viewer/building-viewer.component';
+
 import { MapsNavigationComponent } from './maps-navigation/maps-navigation.component';
 
 import { keys } from './3rdparty/api_keys';
@@ -41,6 +45,8 @@ import { SafeHTMLPipe } from './pipes/safe-html.pipe';
     TestCreateDialog,
     TestDeleteDialog,
     SidenavComponent,
+    BuildingNavigationComponent,
+    BuildingViewerComponent,
     MapsNavigationComponent,
     SafeHTMLPipe
   ],
