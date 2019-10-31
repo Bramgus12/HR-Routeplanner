@@ -33,4 +33,9 @@ export class ThreeUtils {
     return null
   }
 
+  static tweenValue(from: number, to: number, step: number){
+    const difference: number = to - from;
+    return Math.abs(difference) < step ? to : from + Math.abs(step) * (Math.abs(difference)/difference);
+  }
+
 }

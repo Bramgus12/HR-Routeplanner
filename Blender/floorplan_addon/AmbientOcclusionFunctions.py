@@ -101,7 +101,7 @@ def setupAmbientOcclusion(operator, context):
     scene = bpy.context.scene
     scene.render.engine = 'CYCLES'
     scene.cycles.device = 'GPU'
-    scene.cycles.samples = 256
+    scene.cycles.samples = 1024
     scene.render.tile_x = 512
     scene.render.tile_y = 512
     scene.cycles.bake_type = 'AO'

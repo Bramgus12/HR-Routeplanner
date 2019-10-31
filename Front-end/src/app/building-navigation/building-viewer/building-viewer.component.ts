@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DevGui } from './dev-gui';
 import { BuildingModel } from './building-model';
+import { NodePath } from './node-path';
 
 @Component({
   selector: 'app-building-viewer',
@@ -13,11 +14,13 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   @ViewChild('threejscontainer') threejsContainer: ElementRef;
 
   public scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
+  public camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
-  private orbitControls: OrbitControls;
+  public orbitControls: OrbitControls;
   private nextFrameId: number;
-  private buildingModel: BuildingModel;
+  private clock: THREE.Clock;
+  public buildingModel: BuildingModel;
+  public nodePath: NodePath;
 
   private devGui: DevGui;
 
@@ -32,17 +35,21 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.renderer.setPixelRatio( window.devicePixelRatio );
     
     // Camera
-    this.camera = new THREE.PerspectiveCamera(50, 1280/720, 2.0, 200);
+    this.camera = new THREE.PerspectiveCamera(50, 1280/720, 0.01, 200);
     this.camera.position.set(46, 30, -15);
 
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     this.orbitControls.enableDamping = true;
     this.orbitControls.dampingFactor = 0.05;
     this.orbitControls.target.set(22, 2, -34);
+    this.orbitControls.enableKeys = false;
     this.orbitControls.update();
     
     // Scene
     this.scene = new THREE.Scene();
+
+    // Clock for delta time
+    this.clock = new THREE.Clock();
 
     // Lighting
     const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0xffffff, 1.0);
@@ -50,6 +57,9 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
     // Load building
     this.buildingModel = new BuildingModel(this, 'assets/building-viewer/Wijnhaven.glb');
+
+    // Create path
+    this.nodePath = new NodePath(this);
 
     // Dev gui for monitoring three.js performance
     // This should be removed or commented out once the 3D viewer correctly.
@@ -75,10 +85,16 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
   // Main render loop for 3D view.
   animate() {
+    const delta = this.clock.getDelta();
     // Start monitoring frame
     this.devGui.stats.begin();
 
+    // Update orbit controls for damping
     this.orbitControls.update();
+
+    // Update position of objects in the scene
+    this.nodePath.animate(delta);
+    this.buildingModel.animate(delta);
 
     // Render scene
     this.renderer.render(this.scene, this.camera);
@@ -101,6 +117,14 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }
+  }
+
+  onArrowLeft(){
+    this.nodePath.prev();
+  }
+
+  onArrowRight(){
+    this.nodePath.next();
   }
 
 }

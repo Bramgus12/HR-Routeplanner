@@ -16,7 +16,10 @@ export class BuildingModel{
     loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
       // console.log('Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.');
     };
-    loadingManager.onLoad = () => { this.onLoad() };
+    loadingManager.onLoad = () => { 
+      this.onLoad();
+      this.buildingViewer.nodePath.onLoad();
+    };
     loadingManager.onError = (url) => {
       // console.log('There was an error loading ' + url);
     };
@@ -42,7 +45,7 @@ export class BuildingModel{
     });
 
     this.floorsCollections.forEach(floorCollection => {
-      floorCollection.setVisible(floorCollection.number === 0);
+      // floorCollection.setVisible(floorCollection.number === 0);
     });
 
     this.buildingViewer.scene.add(this.root);
@@ -62,7 +65,47 @@ export class BuildingModel{
     return null;
   }
 
+  /**
+   * Returns a list of floors between a minimum and maximum height.
+   */
+  getFloorsInRange(min: number, max: number): FloorCollection[]{
+    const floorCollections: FloorCollection[] = [];
+    this.floorsCollections.forEach(floorCollection => {
+      const bbox: THREE.Box3 = floorCollection.getBoundingBox();
+      const yPos: number = floorCollection.getYPos();
+      if(bbox.max.y + yPos > min && bbox.min.y + yPos < max){
+        floorCollections.push(floorCollection);
+      }
+    });
+    return floorCollections;
+  }
+
+  showFloorsInRange(min: number, max: number): FloorCollection[]{
+    const visibleFloorCollections: FloorCollection[] = this.getFloorsInRange(min, max);
+    this.floorsCollections.forEach(floorCollection => {
+      const visible: boolean = visibleFloorCollections.indexOf(floorCollection) >= 0;
+
+      // floorCollection.setVisible( visible );
+      if(visible){
+        floorCollection.moveToBase();
+      }
+      else if(floorCollection.getYPos() < min){
+        floorCollection.moveDown();
+      }
+      else{
+        floorCollection.moveUp();
+      }
+    });
+    return visibleFloorCollections;
+  }
+
   getObjectsByBuildingPart(part: string): THREE.Object3D[]{
     return ThreeUtils.getObjectsByFilter(this.root, (object: THREE.Object3D) => object.userData.buildingPart === part );
+  }
+
+  animate(delta: number){
+    this.floorsCollections.forEach(floorCollection => {
+      floorCollection.animate(delta);
+    });
   }
 }

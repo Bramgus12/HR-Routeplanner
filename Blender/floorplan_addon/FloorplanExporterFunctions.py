@@ -26,8 +26,8 @@ def exportFloorplan(context, filePath):
                 'code': None,
                 'label': None,
                 'x': vertex.co.x,
-                'y': vertex.co.y,
-                'z': vertex.co.z
+                'y': vertex.co.z,
+                'z': -vertex.co.y
             }
 
             for roomNode in roomNodes:
