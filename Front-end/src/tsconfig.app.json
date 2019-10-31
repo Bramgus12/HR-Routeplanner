@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "types": [
-      "offscreencanvas"
+      "offscreencanvas",
+      "googlemaps"
     ]
   },
   "exclude": [

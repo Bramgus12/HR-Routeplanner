@@ -1,0 +1,25 @@
+
+<section>
+  <!-- <div style="width: 600px; height: 600px; margin: 10px auto;" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"></div> -->
+
+  <div class="map-container">
+    <agm-map
+      [latitude]="lat"
+      [longitude]="lng"
+      [zoom]="zoom"
+      [streetViewControl]="false"
+      [clickableIcons]="false"
+      (mapReady)="onMapReady($event)"
+      ></agm-map>
+  </div>
+  
+  <!-- TODO convert to directions component -->
+  <div class="directions">
+    <ul>
+      <li *ngFor="let direction of directions">
+        <div class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(direction)"></div>
+        <span [innerHTML]="direction.instructions | safeHTML"></span>
+      </li>
+    </ul>
+  </div>
+</section>
