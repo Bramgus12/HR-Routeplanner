@@ -42,9 +42,11 @@ To run this api on your own computer, follow these steps:
 5. Create a file that is called: `Database_config.properties` that has the layout 
 like this below and put it in the folder `~/ProjectC/Back-end/src/main/resources`
 
+```
 db_url=jdbc:postgresql://[host]/[Database name]:[database port]
 db_username=[username]
 db_password=[password]
+```
     
     
 6. Build the front-end en put it in the `~/ProjectC/Back-end/src/main/resources/static` folder of the project. (Project will run without the front-end)
