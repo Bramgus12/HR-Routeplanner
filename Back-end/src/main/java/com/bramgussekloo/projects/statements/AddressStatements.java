@@ -46,8 +46,7 @@ public class AddressStatements {
         Connection conn = new DatabaseConnection().getConnection();
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=" + id + ";");
         resultSet.next();
-        Address address = new Address(resultSet.getInt("id"), resultSet.getString("street"), resultSet.getInt("number"), 
-                resultSet.getString("city"), resultSet.getString("postal"), resultSet.getDouble("latitude"), resultSet.getDouble("longitude"));
+        Address address = getResult(id, resultSet);
         conn.createStatement().execute("DELETE FROM address WHERE id=" + id);
         return address;
     }
@@ -63,11 +62,11 @@ public class AddressStatements {
         conn.createStatement().execute("UPDATE address SET number=" + number + ", street='"
                 + street + "', postal='" + postal + "', city='" + city + "', latitude="+ latitude + ", longitude="+ longitude +" WHERE id=" + id + "; ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=" + id + ";");
+        resultSet.next();
         return getResult(id, resultSet);
     }
     
     private static Address getResult(Integer id, ResultSet resultSet) throws SQLException{
-        resultSet.next();
         String streetResult = resultSet.getString("street");
         Integer numberResult = resultSet.getInt("number");
         String cityResult = resultSet.getString("city");
