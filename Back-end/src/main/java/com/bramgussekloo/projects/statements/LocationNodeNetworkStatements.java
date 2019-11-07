@@ -13,7 +13,7 @@ public class LocationNodeNetworkStatements {
 
     public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File(locationName + ".json");
+        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
         if (file.exists()) {
             return mapper.readValue(file, LocationNodeNetwork.class);
         } else {
@@ -23,10 +23,10 @@ public class LocationNodeNetworkStatements {
 
     public static LocationNodeNetwork createLocationNodeNetwork(LocationNodeNetwork locationNodeNetwork) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File jsonFile = new File(locationNodeNetwork.getLocationName() + ".json");
+        File jsonFile = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationNodeNetwork.getLocationName() + ".json");
         if (!jsonFile.exists()) {
             String jsonObject = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(locationNodeNetwork);
-            PrintWriter out = new PrintWriter(locationNodeNetwork.getLocationName() + ".json");
+            PrintWriter out = new PrintWriter("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationNodeNetwork.getLocationName() + ".json");
             out.println(jsonObject);
             out.flush();
             out.close();
@@ -37,7 +37,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException {
-        File file = new File(locationName + ".json");
+        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
@@ -52,7 +52,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException{
-        File file = new File(locationName + ".json");
+        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
         ArrayList<Node> nodeList = new ArrayList<>();
         if (file.exists()){
             ObjectMapper mapper = new ObjectMapper();
@@ -69,18 +69,17 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, LocationNodeNetwork locationNodeNetwork) throws IOException {
-        File file = new File(locationName + ".json");
+        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
         if (file.exists()) {
             if (file.delete()) {
                 if (locationName.equals(locationNodeNetwork.getLocationName())) {
                     ObjectMapper mapper = new ObjectMapper();
                     String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(locationNodeNetwork);
-                    PrintWriter out = new PrintWriter(locationName + ".json");
+                    PrintWriter out = new PrintWriter("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
                     out.println(jsonString);
                     out.flush();
                     out.close();
-                    LocationNodeNetwork locationNodeNetworkOut = mapper.readValue(file, LocationNodeNetwork.class);
-                    return locationNodeNetworkOut;
+                    return mapper.readValue(file, LocationNodeNetwork.class);
                 } else {
                     throw new IOException("locationName in URL and locationName in JSON are not the same.");
                 }
