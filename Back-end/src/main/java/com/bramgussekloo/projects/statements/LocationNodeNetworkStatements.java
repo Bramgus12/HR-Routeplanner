@@ -7,26 +7,62 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class LocationNodeNetworkStatements {
 
+
+    private static File getFile(String locationName) throws IOException {
+        ClassLoader classLoader = LocationNodeNetworkStatements.class.getClassLoader();
+        if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")){
+            File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
+            if (!file.exists()){
+                throw new IOException("File not found");
+            } else {
+                return file;
+            }
+        } else {
+            URL resource = classLoader.getResource("Locations/" + locationName + ".json");
+            if (resource == null) {
+                throw new IOException("File not found");
+            } else {
+                return new File(String.valueOf(classLoader.getResource("Locations/" + locationName + ".json")).replace("file:", ""));
+            }
+        }
+    }
+    private static File getLocationsFolder() throws IOException{
+        ClassLoader classLoader = LocationNodeNetworkStatements.class.getClassLoader();
+        if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")){
+            File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/");
+            if (!file.exists()){
+                throw new IOException("File not found");
+            } else {
+                return file;
+            }
+        } else {
+            URL resource = classLoader.getResource("Locations/");
+            if (resource == null) {
+                throw new IOException("File not found");
+            } else {
+                return new File(resource.toString().replace("file:", ""));
+            }
+        }
+    }
+
     public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
-        if (file.exists()) {
-            return mapper.readValue(file, LocationNodeNetwork.class);
-        } else {
-            throw new IOException(locationName + ".json does not exist.");
-        }
+        File file = getFile(locationName);
+        return mapper.readValue(file, LocationNodeNetwork.class);
     }
 
     public static LocationNodeNetwork createLocationNodeNetwork(LocationNodeNetwork locationNodeNetwork) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File jsonFile = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationNodeNetwork.getLocationName() + ".json");
+        File jsonFile = getFile(locationNodeNetwork.getLocationName());
         if (!jsonFile.exists()) {
             String jsonObject = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(locationNodeNetwork);
-            PrintWriter out = new PrintWriter("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationNodeNetwork.getLocationName() + ".json");
+            PrintWriter out = new PrintWriter(getFile(locationNodeNetwork.getLocationName()));
             out.println(jsonObject);
             out.flush();
             out.close();
@@ -37,7 +73,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException {
-        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
+        File file = getFile(locationName);
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
@@ -52,7 +88,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException {
-        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
+        File file = getFile(locationName);
         ArrayList<Node> nodeList = new ArrayList<>();
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
@@ -69,13 +105,13 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, LocationNodeNetwork locationNodeNetwork) throws IOException {
-        File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
+        File file = getFile(locationName);
         if (file.exists()) {
             if (file.delete()) {
                 if (locationName.equals(locationNodeNetwork.getLocationName())) {
                     ObjectMapper mapper = new ObjectMapper();
                     String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(locationNodeNetwork);
-                    PrintWriter out = new PrintWriter("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
+                    PrintWriter out = new PrintWriter(file);
                     out.println(jsonString);
                     out.flush();
                     out.close();
@@ -92,7 +128,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static ArrayList<Node> getAllRooms() throws IOException {
-        File folder = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/");
+        File folder = getLocationsFolder();
         File[] listOfFiles = folder.listFiles();
         ArrayList<Node> nodeArrayList = new ArrayList<>();
 
