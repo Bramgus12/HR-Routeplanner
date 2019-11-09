@@ -51,10 +51,10 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException{
+    public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException {
         File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName + ".json");
         ArrayList<Node> nodeList = new ArrayList<>();
-        if (file.exists()){
+        if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
             for (Node node : network.getNodes()) {
@@ -89,5 +89,27 @@ public class LocationNodeNetworkStatements {
         } else {
             throw new IOException("File does not exist yet. Use post for creating a new file.");
         }
+    }
+
+    public static ArrayList<Node> getAllRooms() throws IOException {
+        File folder = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/");
+        File[] listOfFiles = folder.listFiles();
+        ArrayList<Node> nodeArrayList = new ArrayList<>();
+
+        assert listOfFiles != null;
+        for (File listOfFile : listOfFiles) {
+            if (listOfFile.isFile()) {
+                ObjectMapper mapper = new ObjectMapper();
+                LocationNodeNetwork network = mapper.readValue(listOfFile, LocationNodeNetwork.class);
+                for (Node node : network.getNodes()) {
+                    if (node.getType().equals("Room")){
+                        nodeArrayList.add(node);
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+        return nodeArrayList;
     }
 }

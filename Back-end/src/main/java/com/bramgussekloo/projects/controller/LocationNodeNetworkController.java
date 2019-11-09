@@ -25,6 +25,8 @@ public class LocationNodeNetworkController {
     private ResponseEntity getLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to retrieve", required = true) @PathVariable String locationName
     ) {
+        // testing out this line
+//        System.out.println(LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class"));
         try {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
@@ -96,6 +98,19 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, locationNodeNetwork));
         } catch (IOException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+    @ApiOperation(value = "Get all nodes that are a room")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes",response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/room")
+    private ResponseEntity getAllRooms(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
+        } catch (IOException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }
