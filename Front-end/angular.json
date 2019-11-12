@@ -37,9 +37,7 @@
                 "src/sass"
               ]
             },
-            "scripts": [
-              "node_modules/three/examples/jsm/controls/OrbitControls.js"
-            ],
+            "scripts": [],
             "es5BrowserSupport": true
           },
           "configurations": {
