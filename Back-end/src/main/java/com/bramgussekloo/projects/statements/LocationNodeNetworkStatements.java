@@ -1,15 +1,17 @@
 package com.bramgussekloo.projects.statements;
 
+import com.bramgussekloo.projects.FileHandling.FileException;
+import com.bramgussekloo.projects.FileHandling.FileService;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class LocationNodeNetworkStatements {
 
@@ -147,5 +149,13 @@ public class LocationNodeNetworkStatements {
             }
         }
         return nodeArrayList;
+    }
+
+    public static void uploadFile(MultipartFile file){
+        try {
+            FileService.uploadFile(file);
+        } catch (Exception e){
+            throw new FileException(e.getMessage());
+        }
     }
 }
