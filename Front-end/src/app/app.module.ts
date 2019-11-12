@@ -24,11 +24,12 @@ import { MapsNavigationComponent } from './maps-navigation/maps-navigation.compo
 import { keys } from './3rdparty/api_keys';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment'; 
+import { environment } from '../environments/environment';
+import { RouterModule } from '@angular/router'; 
 
 @NgModule({
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
@@ -37,7 +38,8 @@ import { environment } from '../environments/environment';
     NgxMaterialTimepickerModule,
     // LeafletModule.forRoot(),
     AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    RouterModule
   ],
   declarations: [
     AppComponent,
