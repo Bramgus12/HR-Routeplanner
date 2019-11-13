@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.FileHandling.FileException;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
@@ -7,6 +8,7 @@ import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -97,6 +99,29 @@ public class LocationNodeNetworkController {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, locationNodeNetwork));
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+    @ApiOperation(value = "Get all nodes that are a room")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes",response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/room")
+    private ResponseEntity getAllRooms(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @PostMapping("/upload")
+    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file){
+        try {
+            LocationNodeNetworkStatements.uploadFile(file);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (FileException e){
+            throw new IllegalArgumentException(e.getMsg());
         }
     }
 

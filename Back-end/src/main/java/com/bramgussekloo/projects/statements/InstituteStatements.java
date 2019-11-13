@@ -14,10 +14,7 @@ public class InstituteStatements {
         ArrayList<Institute> list = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM institute");
         while (result.next()) {
-            Integer id = result.getInt("id");
-            String instituteName = result.getString("name");
-            Institute institute = new Institute(id, instituteName);
-            list.add(institute);
+            list.add(getResult(result.getInt("id"), result));
         }
         return list;
     }
@@ -26,14 +23,14 @@ public class InstituteStatements {
         Connection conn = new DatabaseConnection().getConnection();
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id=" + id + ";");
         resultSet.next();
-        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+        return getResult(id, resultSet);
     }
 
     public static Institute getInstituteId(String instituteName) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE name='" + instituteName + "';");
         resultSet.next();
-        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+        return getResult(resultSet.getInt("id"), resultSet);
     }
 
     public static Institute createInstitute(Institute institute) throws SQLException {
@@ -41,7 +38,7 @@ public class InstituteStatements {
         conn.createStatement().execute("INSERT INTO institute VALUES (DEFAULT ,'" + institute.getName() + "');");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE name='" + institute.getName() + "';");
         resultSet.next();
-        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+        return getResult(resultSet.getInt("id"), resultSet);
     }
 
     public static Institute deleteInstitute(Integer id) throws SQLException {
@@ -49,7 +46,7 @@ public class InstituteStatements {
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id=" + id + ";");
         conn.createStatement().execute("DELETE FROM institute WHERE id =" + id + ";");
         resultSet.next();
-        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+        return getResult(id, resultSet);
     }
 
     public static Institute updateInstitute(Institute institute) throws SQLException {
@@ -59,6 +56,11 @@ public class InstituteStatements {
         conn.createStatement().execute("UPDATE institute SET name ='" + instituteName + "' WHERE id=" + id + ";");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM institute WHERE id=" + id + ";");
         resultSet.next();
-        return new Institute(resultSet.getInt("id"), resultSet.getString("name"));
+        return getResult(resultSet.getInt("id"), resultSet);
+    }
+
+    private static Institute getResult(Integer id, ResultSet resultSet) throws SQLException{
+        String instituteName = resultSet.getString("name");
+        return new Institute(id, instituteName);
     }
 }
