@@ -1,1 +1,9 @@
 <app-building-viewer></app-building-viewer>
+<!-- <button mat-raised-button color="primary">back</button> -->
+<div [class.mat-elevation-z12]="!isActive" class="navigation-buttons-container">
+  <!-- <div [class.mat-elevation-z12]="!isActive" class="center-buttons">
+    TEST
+  </div> -->
+  <button mat-raised-button color="primary" (click)="backward()">Backward</button>
+  <button mat-raised-button color="primary" (click)="forward()">Forward</button>
+</div>

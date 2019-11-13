@@ -119,11 +119,11 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  onArrowLeft(){
+  backward(){
     this.nodePath.prev();
   }
 
-  onArrowRight(){
+  forward(){
     this.nodePath.next();
   }
 

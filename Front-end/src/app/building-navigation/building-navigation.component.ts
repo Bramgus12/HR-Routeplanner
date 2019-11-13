@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { BuildingViewerComponent } from './building-viewer/building-viewer.component';
 
 @Component({
   selector: 'app-building-navigation',
@@ -8,9 +9,18 @@ import { Router } from '@angular/router';
 })
 export class BuildingNavigationComponent implements OnInit {
 
+  @ViewChild(BuildingViewerComponent) buildingViewer: BuildingViewerComponent;
+
   constructor(private router: Router) { }
 
   ngOnInit() {
+  }
+
+  forward(){
+    this.buildingViewer.forward();
+  }
+  backward(){
+    this.buildingViewer.backward();
   }
 
 }
