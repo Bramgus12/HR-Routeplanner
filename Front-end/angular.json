@@ -134,6 +134,7 @@
                 "src/sass"
               ]
             },
+            "bundleDependencies": "all"
           },
           "configurations": {
             "production": {

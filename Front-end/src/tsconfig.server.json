@@ -2,7 +2,12 @@
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app-server",
-    "baseUrl": "."
+    "baseUrl": ".",
+    "module": "commonjs",
+    "types": [
+      "offscreencanvas",
+      "googlemaps"
+    ]
   },
   "angularCompilerOptions": {
     "entryModule": "app/app.server.module#AppServerModule"
