@@ -1,5 +1,7 @@
 package com.bramgussekloo.projects.statements;
 
+import com.bramgussekloo.projects.FileHandling.FileException;
+import com.bramgussekloo.projects.FileHandling.FileService;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -15,10 +17,20 @@ import org.springframework.stereotype.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 public class XlsxReadingStatements {
+
+    public static void uploadFile(MultipartFile file) {
+        try {
+            FileService.uploadFile(file, "ElectionCourse");
+        } catch (IOException e) {
+            throw new FileException(e.getMessage());
+        }
+    }
 }

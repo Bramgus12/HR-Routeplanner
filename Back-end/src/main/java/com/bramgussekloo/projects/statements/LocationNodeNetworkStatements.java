@@ -153,7 +153,7 @@ public class LocationNodeNetworkStatements {
 
     public static void uploadFile(MultipartFile file){
         try {
-            FileService.uploadFile(file);
+            FileService.uploadFile(file, "Locations");
         } catch (Exception e){
             throw new FileException(e.getMessage());
         }
