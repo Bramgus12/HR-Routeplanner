@@ -7,7 +7,6 @@ import { FormsModule }   from '@angular/forms';
 import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-// import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { AgmCoreModule } from '@agm/core';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -33,7 +32,6 @@ import { SafeHTMLPipe } from './pipes/safe-html.pipe';
     RoutingModule,
     MaterialModule,
     NgxMaterialTimepickerModule,
-    // LeafletModule.forRoot(),
     AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] })
   ],
   declarations: [

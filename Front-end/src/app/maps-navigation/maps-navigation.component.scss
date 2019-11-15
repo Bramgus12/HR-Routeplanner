@@ -1,3 +1,4 @@
+@import '~@angular/material/theming';
 @import 'helpers';
 
 section {
@@ -13,10 +14,29 @@ section {
     }
   }
 
+  .time-info {
+    margin: 8px 16px 12px;
+  }
+
   .directions {
     flex: 1 0 auto;
     max-height: calc(60vh - 56px);
     overflow-y: auto; 
+
+    .settings-bar {
+      padding: 8px 12px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      @include mat-elevation(2);
+
+      * {
+        display: inline-block;
+      }
+
+      mat-form-field, mat-slide-toggle {
+        padding-right: 8px;
+      }
+    }
 
     ul {
       margin: 0;
@@ -73,6 +93,14 @@ section {
     .directions {
       flex: 1 1 auto;
       max-height: initial;
+
+      .settings-bar {
+        white-space: normal;
+
+        .time-settings{
+          display: block;
+        }
+      }
     }
   }
 }

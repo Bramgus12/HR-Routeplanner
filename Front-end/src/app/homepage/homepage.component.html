@@ -20,15 +20,25 @@
       </mat-autocomplete>
     </mat-form-field>
 
-    <mat-slide-toggle name="departNow" [(ngModel)]="navigationModel.departNow" (change)="departNowUpdate($event.checked)">Nu vertrekken</mat-slide-toggle>
+    <mat-slide-toggle name="departNow" [(ngModel)]="navigationModel.departNow" (change)="departNowUpdate($event.checked)">Depart now</mat-slide-toggle>
 
-    <mat-form-field *ngIf="!navigationModel.departNow">
-      <input matInput name="time" placeholder="Tijd" [ngxTimepicker]="picker" [format]="24" [(ngModel)]="navigationModel.time" required>
-      <mat-icon matSuffix>schedule</mat-icon>
-      <ngx-material-timepicker #picker [ngxMaterialTimepickerTheme]="timepickerTheme"></ngx-material-timepicker>
-    </mat-form-field>
+    <ng-container *ngIf="!navigationModel.departNow">
+      <mat-form-field>
+        <mat-label>Time mode</mat-label>
+        <mat-select name="timeMode" [(ngModel)]="navigationModel.timeMode">
+          <mat-option *ngFor="let option of timeModeOptions" [value]="option.value">
+            {{ option.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <button mat-raised-button color="primary" class="next" type="submit" [disabled]="navigationForm.form.invalid" (click)="componentUrl='building-navigation'">Volgende (building)</button>
+      <mat-form-field >
+        <input matInput name="time" placeholder="Time" [ngxTimepicker]="picker" [format]="24" [(ngModel)]="navigationModel.time" required>
+        <mat-icon matSuffix>schedule</mat-icon>
+        <ngx-material-timepicker #picker [ngxMaterialTimepickerTheme]="timepickerTheme"></ngx-material-timepicker>
+      </mat-form-field>
+    </ng-container>
+    
     <button mat-raised-button color="primary" class="next" type="submit" [disabled]="navigationForm.form.invalid" (click)="componentUrl='maps-navigation'">Volgende (maps)</button>
   </form>
 </mat-card>

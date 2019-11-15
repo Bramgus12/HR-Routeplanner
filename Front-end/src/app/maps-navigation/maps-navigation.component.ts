@@ -1,13 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-
-// import { OpenrouteserviceService, PROFILES } from '../3rdparty/openrouteservice.service';
+import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { AppService } from '../app.service';
-import { GoogleMapsService } from '../3rdparty/google-maps.service'
-import { NavigationState } from '../shared/dataclasses';
+import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
+import { NavigationState, TimeMode, TimeModeOption } from '../shared/dataclasses';
 import { keys } from '../3rdparty/api_keys';
-// import { tileLayer, latLng, Map, geoJSON, latLngBounds } from 'leaflet';
 
 @Component({
   selector: 'app-maps-navigation',
@@ -16,20 +14,34 @@ import { keys } from '../3rdparty/api_keys';
 })
 export class MapsNavigationComponent implements OnInit {
 
-  navigationState: NavigationState = { from: null, to: null, departNow: true, time: '' };
+  navigationState: NavigationState = { from: null, to: null, departNow: true, timeMode: TimeMode.DEPART_BY, time: '' };
   directions: google.maps.DirectionsStep[] = [];
+  travelModes: TravelMode[] = [];
+  transitModes: TransitMode[] = [];
+  travelMode: google.maps.TravelMode;
+  transitMode: google.maps.TransitMode[] = [];
+  timeModeOptions: TimeModeOption[] = [
+    { name: "Arrival by", value: TimeMode.ARRIVAL_BY },
+    { name: "Depart by", value: TimeMode.DEPART_BY }
+  ];
+  timeInfo = "";
+  timepickerTheme: NgxMaterialTimepickerTheme = {
+    container: {
+      buttonColor: '#d32f2f'
+    },
+    dial: {
+      dialBackgroundColor: '#d32f2f',
+    },
+    clockFace: {
+      clockHandColor: '#d32f2f',
+    }
+  };
 
   lat = 51.917218;
   lng = 4.48405;
   zoom = 16;
 
-  /*options = {
-    layers: [
-      tileLayer('https://api.openrouteservice.org/mapsurfer/{z}/{x}/{y}.png?api_key={accessToken}', { accessToken: keys.openrouteservice })
-    ],
-    zoom: 15,
-    center: latLng(51.917218, 4.48405)
-  };*/
+  private directionsRenderer: google.maps.DirectionsRenderer;
 
   constructor(private router: Router, private googleMapsService: GoogleMapsService, private appService: AppService/*, private routeService: OpenrouteserviceService*/) {
     const state = this.router.getCurrentNavigation().extras.state;
@@ -39,102 +51,203 @@ export class MapsNavigationComponent implements OnInit {
     this.navigationState = <NavigationState>state;
   }
 
-  ngOnInit() {
+  ngOnInit(){
+    // Init google stuff here, google isn't loaded in before this
+    this.directionsRenderer = new google.maps.DirectionsRenderer();
+
+    this.travelModes = [
+      { name: "Driving", value: google.maps.TravelMode.DRIVING },
+      { name: "Bicycling", value: google.maps.TravelMode.BICYCLING },
+      { name: "Transit", value: google.maps.TravelMode.TRANSIT },
+      { name: "Walking", value: google.maps.TravelMode.WALKING }
+    ];
+    this.transitModes = [
+      { name: "Bus", value: google.maps.TransitMode.BUS },
+      { name: "Rail", value: google.maps.TransitMode.RAIL },
+      { name: "Subway", value: google.maps.TransitMode.SUBWAY },
+      { name: "Train", value: google.maps.TransitMode.TRAIN },
+      { name: "Tram", value: google.maps.TransitMode.TRAM }
+    ]
+    this.travelMode = google.maps.TravelMode.TRANSIT;
+
+    if(this.appService.darkMode) this.timepickerTheme = {
+      container: {
+        bodyBackgroundColor: '#303030',
+        buttonColor: '#d32f2f'
+      },
+      dial: {
+        dialBackgroundColor: '#d32f2f',
+      },
+      clockFace: {
+        clockFaceBackgroundColor: '#424242',
+        clockHandColor: '#d32f2f',
+        clockFaceTimeInactiveColor: '#fff'
+      }
+    }
   }
 
-  /*onMapReady(map: Map){
-    this.routeService.getDirection(PROFILES.car, "4.403112,51.816139", "4.484072,51.917145").subscribe(res => {
-      map.addLayer(geoJSON(res));
-      map.flyToBounds(this.routeService.getBoundsFromBBox(res.bbox), { duration: 1 });
-    })
-
-    this.routeService.searchGeocode("Wijnhaven 107").subscribe(res => {
-      console.log(res.features)
-      for (const feature of res.features){
-        const name = feature.properties["label"]
-        const coords = feature.geometry.coordinates
-        console.log(name, coords)
-      }
-    })
-  }*/
-
   onMapReady(map: google.maps.Map){
-    const directionsRenderer = new google.maps.DirectionsRenderer();
-    directionsRenderer.setMap(map);
+    this.directionsRenderer.setMap(map);
+    this.getDirections();
+  }
 
-    this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, google.maps.TravelMode.DRIVING).subscribe(data => {
-    //this.googleMapsService.getDirections('Frans Halsstraat, Oud-Beijerland', 'Wijnhaven 107, Rotterdam', google.maps.TravelMode.DRIVING).subscribe(data => {
-      directionsRenderer.setDirections(data);
-      this.directions = data.routes[0].legs[0].steps;
-      console.log(data.routes[0].legs[0].steps);
+  onDepartNowChange(){
+    if(!this.navigationState.departNow) this.navigationState.time = new Date().toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute:'2-digit'
+    });
+
+    this.getDirections();
+  }
+
+  getDirections(){
+    const transitOptions: google.maps.TransitOptions = { modes: this.transitMode };
+
+    if(!this.navigationState.departNow){
+      const time = this.navigationState.time.split(':'),
+        dateTime = new Date();
+      dateTime.setHours(time[0]);
+      dateTime.setMinutes(time[1]);
+
+      if(this.navigationState.timeMode == TimeMode.ARRIVAL_BY) transitOptions.arrivalTime = dateTime;
+      else if(this.navigationState.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
+    }
+
+    // this.googleMapsService.getDirections('Frans Halsstraat, Oud-Beijerland', 'Wijnhaven 107, Rotterdam', this.travelMode, transitOptions).subscribe(data => {
+    this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, transitOptions).subscribe(data => {
+      const firstLeg = data.routes[0].legs[0];
+      this.directionsRenderer.setDirections(data);
+      this.directions = firstLeg.steps;
+
+      if(this.travelMode == google.maps.TravelMode.TRANSIT) {
+        this.timeInfo = "Departure: " + firstLeg.departure_time.text + " - Arrival: " + firstLeg.arrival_time.text;
+      } else {
+        this.timeInfo = "Duration: " + firstLeg.duration.text;
+      }
     })
   }
 
   getIconPosition(direction: google.maps.DirectionsStep) {
     if(this.appService.darkMode){
-      // TODO
-      return "-105px";
+      switch (direction["maneuver"]) {
+        case "turn-sharp-left":
+          return "-191px";
+          break;
+        case "uturn-right":
+          return "-321px";
+          break;
+        case "turn-slight-right":
+          return "-86px";
+          break;
+        case "merge":
+          return "-268px";
+          break;
+        case "roundabout-left":
+          return "-248px";
+          break;
+        case "roundabout-right":
+          return "-124px";
+          break;
+        case "uturn-left":
+          return "-464px";
+          break;
+        case "turn-slight-left":
+          return "-446px";
+          break;
+        case "turn-left":
+          return "-16px";
+          break;
+        case "ramp-right":
+          return "-341px";
+          break;
+        case "turn-right":
+          return "-68px";
+          break;
+        case "fork-right":
+          return "-214px";
+          break;
+        case "straight":
+          return "-105px";
+          break;
+        case "fork-left":
+          return "-287px";
+          break;
+        case "ferry-train":
+          return "-395px";
+          break;
+        case "turn-sharp-right":
+          return "-179px";
+          break;
+        case "ramp-left":
+          return "-516px";
+          break;
+        case "ferry":
+          return "-360px";
+          break;
+
+        default:
+          return "-105px";
+      }
     } else {
       switch (direction["maneuver"]) {
-      case "turn-sharp-left":
-        return "0px";
-        break;
-      case "uturn-right":
-        return "-34px";
-        break;
-      case "turn-slight-right":
-        return "-51px";
-        break;
-      case "merge":
-        return "-142px";
-        break;
-      case "roundabout-left":
-        return "-196px";
-        break;
-      case "roundabout-right":
-        return "-231px";
-        break;
-      case "uturn-left":
-        return "-304px";
-        break;
-      case "turn-slight-left":
-        return "-378px";
-        break;
-      case "turn-left":
-        return "-414px";
-        break;
-      case "ramp-right":
-        return "-430px";
-        break;
-      case "turn-right":
-        return "-483px";
-        break;
-      case "fork-right":
-        return "-499px";
-        break;
-      case "straight":
-        return "-533px";
-        break;
-      case "fork-left":
-        return "-549px";
-        break;
-      case "ferry-train":
-        return "-566px";
-        break;
-      case "turn-sharp-right":
-        return "-583px";
-        break;
-      case "ramp-left":
-        return "-598px";
-        break;
-      case "ferry":
-        return "-614px";
-        break;
-      
-      default:
-        return "-533px";
-        break;
-    }
+        case "turn-sharp-left":
+          return "0px";
+          break;
+        case "uturn-right":
+          return "-34px";
+          break;
+        case "turn-slight-right":
+          return "-51px";
+          break;
+        case "merge":
+          return "-142px";
+          break;
+        case "roundabout-left":
+          return "-196px";
+          break;
+        case "roundabout-right":
+          return "-231px";
+          break;
+        case "uturn-left":
+          return "-304px";
+          break;
+        case "turn-slight-left":
+          return "-378px";
+          break;
+        case "turn-left":
+          return "-414px";
+          break;
+        case "ramp-right":
+          return "-430px";
+          break;
+        case "turn-right":
+          return "-483px";
+          break;
+        case "fork-right":
+          return "-499px";
+          break;
+        case "straight":
+          return "-533px";
+          break;
+        case "fork-left":
+          return "-549px";
+          break;
+        case "ferry-train":
+          return "-566px";
+          break;
+        case "turn-sharp-right":
+          return "-583px";
+          break;
+        case "ramp-left":
+          return "-598px";
+          break;
+        case "ferry":
+          return "-614px";
+          break;
+        
+        default:
+          return "-533px";
+      }
     }
     
   }

@@ -28,8 +28,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "src/themes/hro-theme.scss",
-              "./node_modules/leaflet/dist/leaflet.css"
+              "src/themes/hro-theme.scss"
             ],
             "stylePreprocessorOptions": {
               "includePaths": [

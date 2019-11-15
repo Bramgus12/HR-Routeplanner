@@ -49,9 +49,9 @@ export class GoogleMapsService {
     });
   }
 
-  getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode){
+  getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode, transitOptions?: google.maps.TransitOptions){
     return new Observable<google.maps.DirectionsResult>(observer => {
-      this.directions.route({ origin, destination, travelMode }, (result, status) => {
+      this.directions.route({ origin, destination, travelMode, transitOptions }, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           observer.next(result);
         } else {
@@ -62,4 +62,14 @@ export class GoogleMapsService {
     })
   }
 
+}
+
+export interface TravelMode {
+  name: string,
+  value: google.maps.TravelMode
+}
+
+export interface TransitMode {
+  name: string,
+  value: google.maps.TransitMode
 }
