@@ -106,8 +106,8 @@ export class MapsNavigationComponent implements OnInit {
     if(!this.navigationState.departNow){
       const time = this.navigationState.time.split(':'),
         dateTime = new Date();
-      dateTime.setHours(time[0]);
-      dateTime.setMinutes(time[1]);
+      dateTime.setHours(parseInt(time[0]));
+      dateTime.setMinutes(parseInt(time[1]));
 
       if(this.navigationState.timeMode == TimeMode.ARRIVAL_BY) transitOptions.arrivalTime = dateTime;
       else if(this.navigationState.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
