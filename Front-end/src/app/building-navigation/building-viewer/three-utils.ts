@@ -2,6 +2,7 @@
  * Common functions for managing a three.js scene.
  */
 import * as THREE from 'three';
+import { Node } from './node';
 
 export class ThreeUtils {
 
@@ -36,6 +37,10 @@ export class ThreeUtils {
   static tweenValue(from: number, to: number, step: number){
     const difference: number = to - from;
     return Math.abs(difference) < step ? to : from + Math.abs(step) * (Math.abs(difference)/difference);
+  }
+
+  static nodeToVector(node:Node): THREE.Vector3{
+    return new THREE.Vector3(node.x, node.y, node.z);
   }
 
 }

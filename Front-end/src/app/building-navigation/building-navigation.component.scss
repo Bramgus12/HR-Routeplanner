@@ -6,7 +6,6 @@
   left: 0px;
   display: block;
   height: calc(80vh - 56px);
-  // height: 100%;
   
   @include media-phone(){
     top: 64px;
@@ -24,9 +23,7 @@
   text-align: center;
   height: 20vh;
   background-color: white;
-  // padding: 20px;
   display: flex;
-  // align-content: stretch;
   justify-content: center;
 
   button {

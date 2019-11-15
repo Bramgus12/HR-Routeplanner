@@ -8,6 +8,16 @@ export interface Node {
   z: number;
 }
 
+export interface NodeConnection {
+  node1: Node;
+  node2: Node;
+  node1Vector: THREE.Vector3;
+  node2Vector: THREE.Vector3;
+  node1Distance: number;
+  node2Distance: number;
+  distance: number;
+}
+
 // Test route data
 export const testRoute: Node[] = [
   {

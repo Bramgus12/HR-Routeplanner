@@ -16,11 +16,18 @@ export class BuildingNavigationComponent implements OnInit {
   ngOnInit() {
   }
 
-  forward(){
-    this.buildingViewer.forward();
+  forwardPressed(){
+    this.buildingViewer.nodePath.forward(true);
   }
-  backward(){
-    this.buildingViewer.backward();
+  forwardReleased(){
+    this.buildingViewer.nodePath.forward(false);
+  }
+
+  backwardPressed(){
+    this.buildingViewer.nodePath.backward(true);
+  }
+  backwardReleased(){
+    this.buildingViewer.nodePath.backward(false);
   }
 
 }

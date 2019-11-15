@@ -119,12 +119,4 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  backward(){
-    this.nodePath.prev();
-  }
-
-  forward(){
-    this.nodePath.next();
-  }
-
 }

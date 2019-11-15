@@ -2,15 +2,25 @@ import * as THREE from 'three';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-import { Node, testRoute } from './node'
+import { Node, testRoute, NodeConnection } from './node'
 import { BuildingViewerComponent } from './building-viewer.component';
 import { FloorCollection } from './floor-collection';
+import { ThreeUtils } from './three-utils';
 
 export class NodePath{
   private nodes: Node[] = [];
-  private currentNode: Node;
+  private nodeConnections: NodeConnection[] = [];
+  private currentConnection: NodeConnection;
+
   private myLocation: THREE.Mesh;
   private pathLine: Line2;
+  private drawCooldown: number;
+  
+  private velocity: number = 7;
+  private direction: number = 0;
+
+  private totalDistance: number = 0;
+  private travelledDistance: number = 0;
 
   constructor(private buildingViewer: BuildingViewerComponent){
     // Create sphere for showing my location
@@ -18,17 +28,74 @@ export class NodePath{
     const sphereMaterial: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff});
     this.myLocation = new THREE.Mesh(sphereGeometry, sphereMaterial);
     this.buildingViewer.scene.add(this.myLocation);
+    this.currentConnection = null;
     // Create a test route for now.
     this.create(testRoute);
   }
 
   create(nodes: Node[]){
     this.nodes = nodes;
-    if(nodes.length > 0){
-      this.currentNode = nodes[0];
-      this.myLocation.position.set(this.currentNode.x, this.currentNode.y+0.5, this.currentNode.z)
+
+    this.nodeConnections = [];
+    this.totalDistance = 0;
+    this.travelledDistance = 0;
+    this.currentConnection = null;
+    for(let i: number = 0; i < nodes.length-1; i++){
+      const node1: Node = nodes[i];
+      const node2: Node = nodes[i+1];
+      const node1Vector: THREE.Vector3 = ThreeUtils.nodeToVector(node1);
+      const node2Vector: THREE.Vector3 = ThreeUtils.nodeToVector(node2);
+      const distance: number = node1Vector.distanceTo(node2Vector);
+
+      this.nodeConnections.push({
+        node1: node1,
+        node2: node2,
+        node1Vector: node1Vector,
+        node2Vector: node2Vector,
+        node1Distance: this.totalDistance,
+        node2Distance: this.totalDistance + distance,
+        distance: node1Vector.distanceTo(node2Vector)
+      });
+
+      this.totalDistance += distance;
+
+      if(i == 0){
+        this.currentConnection = this.nodeConnections[i];
+        this.myLocation.position.set(this.nodeConnections[i].node1.x, this.nodeConnections[i].node1.y+0.5, this.nodeConnections[i].node1.z)
+      }
     }
 
+  }
+
+  getConnectionByDistance(distance: number): NodeConnection | null{
+    for(let i:number = 0; i < this.nodeConnections.length; i++){
+      const nodeConnection: NodeConnection = this.nodeConnections[i];
+      if(distance >= nodeConnection.node1Distance && distance < nodeConnection.node2Distance ){
+        return nodeConnection;
+      }
+    }
+    return null;
+  }
+
+  setTravelledDistance(distance: number): number{
+    const start: number = this.travelledDistance;
+    if(distance > this.totalDistance){
+      distance = this.totalDistance;
+    }
+    else if (distance < 0){
+      distance = 0;
+    }
+    this.travelledDistance = distance;
+    const nodeConnection: NodeConnection = this.getConnectionByDistance(distance);
+    if(nodeConnection !== null){
+      this.currentConnection = nodeConnection;
+      const myLocationDistance: number = distance - nodeConnection.node1Distance;
+      const myLocationTranslation =  new THREE.Vector3().subVectors(nodeConnection.node2Vector, nodeConnection.node1Vector).normalize().multiply(new THREE.Vector3(myLocationDistance,myLocationDistance,myLocationDistance));
+      this.myLocation.position.set( nodeConnection.node1Vector.x + myLocationTranslation.x, nodeConnection.node1Vector.y + myLocationTranslation.y+0.5, nodeConnection.node1Vector.z + myLocationTranslation.z );
+      return this.travelledDistance - start;
+    }
+    this.currentConnection = null;
+    return this.travelledDistance - start;
   }
 
   draw(nodes: Node[]){
@@ -63,30 +130,15 @@ export class NodePath{
   }
 
   onLoad(){
-    const visibleFloorCollections: FloorCollection[] = this.buildingViewer.buildingModel.showFloorsInRange(this.currentNode.y-1, this.currentNode.y+1);
-    this.drawVisibleNodes(visibleFloorCollections);
+    this.drawVisibleNodes();
   }
 
-  private step(step: number){
-    if(this.nodes.length > 0){
-      const currentIndex: number = this.nodes.indexOf(this.currentNode);
-      const nextIndex: number = currentIndex+step < this.nodes.length && currentIndex+step >= 0 ? currentIndex+step : currentIndex;
-      const translation: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, new THREE.Vector3(this.currentNode.x, this.currentNode.y+0.5, this.currentNode.z));
-      this.translateMyLocation(translation);
-      this.currentNode = this.nodes[nextIndex];
-    }
-
-    const visibleFloorCollections: FloorCollection[] = this.buildingViewer.buildingModel.showFloorsInRange(this.currentNode.y-1, this.currentNode.y+1);
-    this.drawVisibleNodes(visibleFloorCollections);
-
+  forward(move: boolean){
+    this.direction = move ? 1 : 0;
   }
 
-  next(){
-    this.step(1);
-  }
-
-  prev(){
-    this.step(-1);
+  backward(move: boolean){
+    this.direction = move ? -1 : 0;
   }
 
   /**
@@ -107,7 +159,8 @@ export class NodePath{
   /**
    * Draw nodes in visible floor collections
    */
-  drawVisibleNodes(visibleCollections: FloorCollection[]){
+  drawVisibleNodes(){
+    const visibleCollections: FloorCollection[] = this.buildingViewer.buildingModel.showFloorsInRange(this.myLocation.position.y-1, this.myLocation.position.y+0.1);
     if(visibleCollections.length == 0){
       return;
     }
@@ -123,33 +176,15 @@ export class NodePath{
     this.draw(visibleNodes);
   }
 
-  translateMyLocation(translation: THREE.Vector3){
-    this.myLocation.position.x -= translation.x;
-    this.myLocation.position.y -= translation.y;
-    this.myLocation.position.z -= translation.z;
-    
-    this.buildingViewer.orbitControls.target.set(this.myLocation.position.x, this.myLocation.position.y, this.myLocation.position.z);
-    this.buildingViewer.camera.position.x -= translation.x;
-    this.buildingViewer.camera.position.y -= translation.y;
-    this.buildingViewer.camera.position.z -= translation.z;
-  }
-
   animate(delta: number){
-    const targetPosition: THREE.Vector3 = new THREE.Vector3(this.currentNode.x, this.currentNode.y+0.5, this.currentNode.z);
-    const targetDistance: number = this.myLocation.position.distanceTo(targetPosition);
-    if(targetDistance > 0){
-      const direction: THREE.Vector3 = new THREE.Vector3();
-      direction.subVectors(this.myLocation.position, targetPosition).normalize();
-      const velocity: number = 7;
-      const moveDistance: number = velocity * delta;
-      const translation: THREE.Vector3 = new THREE.Vector3(direction.x * moveDistance, direction.y * moveDistance, direction.z * moveDistance);
-      if(targetDistance < delta * velocity){
-        translation.subVectors(this.myLocation.position, targetPosition);
-      }
 
-      this.translateMyLocation(translation);
-      
+    if(this.direction != 0){
+      const difference: number = this.setTravelledDistance( this.travelledDistance + this.velocity * this.direction * delta );
+
+      this.drawVisibleNodes();
     }
+
+
   }
 
 }
