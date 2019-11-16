@@ -130,7 +130,7 @@ export class NodePath{
   }
 
   onLoad(){
-    this.drawVisibleNodes();
+    this.drawVisibleNodes(true);
   }
 
   forward(move: boolean){
@@ -159,8 +159,8 @@ export class NodePath{
   /**
    * Draw nodes in visible floor collections
    */
-  drawVisibleNodes(){
-    const visibleCollections: FloorCollection[] = this.buildingViewer.buildingModel.showFloorsInRange(this.myLocation.position.y-1, this.myLocation.position.y+0.1);
+  drawVisibleNodes(instant: boolean=false){
+    const visibleCollections: FloorCollection[] = this.buildingViewer.buildingModel.showFloorsInRange(this.myLocation.position.y-0.5, this.myLocation.position.y+0.02, instant);
     if(visibleCollections.length == 0){
       return;
     }
@@ -181,7 +181,9 @@ export class NodePath{
     if(this.direction != 0){
       const difference: number = this.setTravelledDistance( this.travelledDistance + this.velocity * this.direction * delta );
 
-      this.drawVisibleNodes();
+      if(difference != 0){
+        this.drawVisibleNodes();
+      }
     }
 
 

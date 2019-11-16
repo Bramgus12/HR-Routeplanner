@@ -13,34 +13,16 @@ export class FloorCollection{
     this.getBoundingBox();
   }
 
-  setVisible(visible: boolean){
-    this.floorModels.forEach(floorModel => {
-      floorModel.setVisible(visible);
-    });
-  }
-
   getYPos(): number | null{
     if(this.floorModels.length > 0){
-      return this.floorModels[0].basePosition.y;
+      return this.floorModels[0].floorRoot.position.y;
     }
     return null;
   }
 
-  moveToBase(){
+  setState(state: number){
     this.floorModels.forEach(floorModel => {
-      floorModel.moveToBase();
-    });
-  }
-
-  moveUp(){
-    this.floorModels.forEach(floorModel => {
-      floorModel.moveUp();
-    });
-  }
-
-  moveDown(){
-    this.floorModels.forEach(floorModel => {
-      floorModel.moveDown();
+      floorModel.setState(state);
     });
   }
 

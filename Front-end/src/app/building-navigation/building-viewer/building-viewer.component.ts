@@ -47,6 +47,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     
     // Scene
     this.scene = new THREE.Scene();
+    // this.scene.background = new THREE.Color(0xffffff);
 
     // Clock for delta time
     this.clock = new THREE.Clock();
