@@ -98,7 +98,7 @@ export class NodePath{
     return this.travelledDistance - start;
   }
 
-  draw(nodes: Node[]){
+  draw(vectors: THREE.Vector3[]){
     if(this.pathLine !== undefined){
       this.buildingViewer.scene.remove(this.pathLine);
     }
@@ -117,8 +117,8 @@ export class NodePath{
     const pathGeometry: LineGeometry = new LineGeometry();
 
     const positions: number[] = [];
-    nodes.forEach(node => {
-      positions.push( node.x, node.y+0.5, node.z );
+    vectors.forEach(vector => {
+      positions.push( vector.x, vector.y, vector.z );
     });
 
     pathGeometry.setPositions(positions);
@@ -156,6 +156,22 @@ export class NodePath{
     return nodes;
   }
 
+  getConnectionsInRange(min: number, max: number, startAtCurrentConnection: boolean = false): NodeConnection[]{
+    const nodeConnections: NodeConnection[] = [];
+    const currentIndex: number = this.nodeConnections.indexOf(this.currentConnection);
+    if(startAtCurrentConnection && currentIndex == -1){
+      return nodeConnections;
+    }
+    for(let i: number = startAtCurrentConnection ? currentIndex : 0; i < this.nodeConnections.length; i++){
+      const nodeConnection: NodeConnection = this.nodeConnections[i];
+      if (nodeConnection.node1Vector.y >= min && nodeConnection.node1Vector.y <= max || nodeConnection.node2Vector.y >= min && nodeConnection.node2Vector.y <= max){
+        nodeConnections.push(nodeConnection);
+      }
+    }
+
+    return nodeConnections;
+  }
+
   /**
    * Draw nodes in visible floor collections
    */
@@ -172,8 +188,26 @@ export class NodePath{
       min = bbox.min.y + yPos < min ? bbox.min.y + yPos : min;
       max = bbox.max.y + yPos > max ? bbox.max.y + yPos : max;
     });
-    const visibleNodes: Node[] = this.getNodesInRange(min, max);
-    this.draw(visibleNodes);
+
+    const visibleConnections: NodeConnection[] = this.getConnectionsInRange(min, max, true);
+    const visibleVectors: THREE.Vector3[] = [];
+
+    visibleVectors.push(this.myLocation.position);
+
+    for(let i: number = 0; i < visibleConnections.length; i++){
+      if(i > 0){
+        const vector: THREE.Vector3 = new THREE.Vector3().copy(visibleConnections[i].node1Vector);
+        vector.y += 0.5;
+        visibleVectors.push( vector );
+      }
+      if(i+1 == visibleConnections.length){
+        const vector: THREE.Vector3 = new THREE.Vector3().copy(visibleConnections[i].node2Vector);
+        vector.y += 0.5;
+        visibleVectors.push( vector );
+      }
+    }
+
+    this.draw(visibleVectors);
   }
 
   animate(delta: number){
