@@ -104,6 +104,14 @@ export class BuildingModel{
     return visibleFloorCollections;
   }
 
+  getVisibleFloorModels(): FloorModel[]{
+    let visibleFloorsModels: FloorModel[] = [];
+    this.floorsCollections.forEach(floorsCollection => {
+      visibleFloorsModels = visibleFloorsModels.concat(floorsCollection.getVisibleFloorModels());
+    });
+    return visibleFloorsModels;
+  }
+
   getObjectsByBuildingPart(part: string): THREE.Object3D[]{
     return ThreeUtils.getObjectsByFilter(this.root, (object: THREE.Object3D) => object.userData.buildingPart === part );
   }

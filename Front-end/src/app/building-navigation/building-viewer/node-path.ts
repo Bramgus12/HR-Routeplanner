@@ -6,6 +6,7 @@ import { Node, testRoute, NodeConnection } from './node'
 import { BuildingViewerComponent } from './building-viewer.component';
 import { FloorCollection } from './floor-collection';
 import { ThreeUtils } from './three-utils';
+import { FloorModel } from './floor-model';
 
 export class NodePath{
   private nodes: Node[] = [];
@@ -14,13 +15,14 @@ export class NodePath{
 
   private myLocation: THREE.Mesh;
   private pathLine: Line2;
-  private drawCooldown: number;
   
   private velocity: number = 7;
   private direction: number = 0;
 
   private totalDistance: number = 0;
   private travelledDistance: number = 0;
+
+  private visibilityRaycaster: THREE.Raycaster = new THREE.Raycaster();
 
   constructor(private buildingViewer: BuildingViewerComponent){
     // Create sphere for showing my location
@@ -211,15 +213,49 @@ export class NodePath{
   }
 
   animate(delta: number){
-
+    
+    const camera: THREE.PerspectiveCamera = this.buildingViewer.camera;
     if(this.direction != 0){
       const difference: number = this.setTravelledDistance( this.travelledDistance + this.velocity * this.direction * delta );
 
       if(difference != 0){
         this.drawVisibleNodes();
+
+        // Move camera to my location.
+        const cameraTranslation: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, this.buildingViewer.orbitControls.target);
+        this.buildingViewer.orbitControls.target.x += cameraTranslation.x;
+        this.buildingViewer.orbitControls.target.y += cameraTranslation.y;
+        this.buildingViewer.orbitControls.target.z += cameraTranslation.z;
+        
+        camera.position.x += cameraTranslation.x;
+        camera.position.y += cameraTranslation.y;
+        camera.position.z += cameraTranslation.z;
+
       }
+ 
     }
 
+    // Check if my location is visible to the camera
+    const visibleFloorModels: FloorModel[] = this.buildingViewer.buildingModel.getVisibleFloorModels();
+    const wallMeshes: THREE.Mesh[] = [];
+    visibleFloorModels.forEach(floorModel => {
+      if(floorModel.wallObstruction == true) floorModel.wallObstruction = false;
+      wallMeshes.push(floorModel.wallMesh);
+    });
+    
+    const myLocationDistance: number = camera.position.distanceTo(this.myLocation.position);
+    this.visibilityRaycaster.far = myLocationDistance;
+    const myLocationDirection: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, camera.position).normalize();
+    this.visibilityRaycaster.set(camera.position, myLocationDirection);
+    const intersects: THREE.Intersection[] = this.visibilityRaycaster.intersectObjects(wallMeshes);
+
+    intersects.forEach(intersect => {
+      visibleFloorModels.forEach(floorModel => {
+        if(floorModel.wallMesh === intersect.object){
+          floorModel.wallObstruction = true;
+        }
+      });
+    });
 
   }
 

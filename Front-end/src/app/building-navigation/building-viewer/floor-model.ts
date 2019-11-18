@@ -8,26 +8,20 @@ export class FloorModel{
   static readonly APPEAR: number = 2;
   static readonly DISAPPEAR: number = 3;
   private state: number = 0;
+  public wallObstruction: boolean = false;
 
   readonly hiddenOpacity: number = 0;
   readonly visibleOpacity: number = 1;
   readonly hiddenScale: number = 0.0001;
   readonly visibleScale: number = 1;
   readonly fadeSpeed: number = 6;
-
-  private floorMesh: THREE.Mesh;
-  private wallMesh: THREE.Mesh;
+  private opacity: number = 0;
+  
+  readonly floorMesh: THREE.Mesh;
+  readonly wallMesh: THREE.Mesh;
   private floorMaterial: THREE.MeshStandardMaterial;
   private wallMaterial: THREE.MeshStandardMaterial;
   private wallBoundingBox: THREE.Box3;
-
-  get opacity(): number{
-    return this.floorMaterial.opacity;
-  }
-  set opacity(value: number){
-    this.wallMaterial.opacity = value;
-    this.floorMaterial.opacity = value;
-  }
 
   get visible(): boolean{
     return this.floorRoot.visible;
@@ -96,6 +90,10 @@ export class FloorModel{
 
   }
 
+  getState(){
+    return this.state;
+  }
+
   animate(delta: number){
 
     if(this.state == FloorModel.APPEAR){
@@ -113,6 +111,17 @@ export class FloorModel{
       if(this.opacity == this.hiddenOpacity && this.wallMesh.scale.y == this.hiddenScale){
         this.setState(FloorModel.HIDDEN);
       }
+    }
+
+    if(this.floorMaterial.opacity != this.opacity){
+      this.floorMaterial.opacity = this.opacity;
+    }
+
+    if(this.wallObstruction){
+      this.wallMaterial.opacity = 0.8;
+    }
+    else if(this.wallMaterial.opacity != this.opacity){
+      this.wallMaterial.opacity = this.opacity;
     }
 
   }

@@ -41,6 +41,16 @@ export class FloorCollection{
     return boundingBox;
   }
 
+  getVisibleFloorModels(): FloorModel[]{
+    const visibleFloorModels: FloorModel[] = [];
+    this.floorModels.forEach(floorModel => {
+      if(floorModel.getState() != FloorModel.HIDDEN){
+        visibleFloorModels.push(floorModel);
+      }
+    });
+    return visibleFloorModels;
+  }
+
   animate(delta: number){
     this.floorModels.forEach(floorModel => {
       floorModel.animate(delta);
