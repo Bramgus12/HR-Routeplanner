@@ -94,10 +94,41 @@ export class NodePath{
       const myLocationDistance: number = distance - nodeConnection.node1Distance;
       const myLocationTranslation =  new THREE.Vector3().subVectors(nodeConnection.node2Vector, nodeConnection.node1Vector).normalize().multiply(new THREE.Vector3(myLocationDistance,myLocationDistance,myLocationDistance));
       this.myLocation.position.set( nodeConnection.node1Vector.x + myLocationTranslation.x, nodeConnection.node1Vector.y + myLocationTranslation.y+0.5, nodeConnection.node1Vector.z + myLocationTranslation.z );
-      return this.travelledDistance - start;
     }
-    this.currentConnection = null;
-    return this.travelledDistance - start;
+    else{
+      this.currentConnection = null;
+    }
+    const difference: number = this.travelledDistance - start;
+    
+    if(difference != 0){
+      this.drawVisibleNodes();
+
+      // Move camera to my location.
+      const cameraTranslation: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, this.buildingViewer.orbitControls.target);
+      this.buildingViewer.orbitControls.target.x += cameraTranslation.x;
+      this.buildingViewer.orbitControls.target.y += cameraTranslation.y;
+      this.buildingViewer.orbitControls.target.z += cameraTranslation.z;
+      
+      const camera: THREE.PerspectiveCamera = this.buildingViewer.camera;
+      camera.position.x += cameraTranslation.x;
+      camera.position.y += cameraTranslation.y;
+      camera.position.z += cameraTranslation.z;
+
+    }
+
+    return difference;
+  }
+
+  getTravelledDistance(): number{
+    return this.travelledDistance;
+  }
+
+  setTravelledPercentage(percentage: number){
+    this.setTravelledDistance(percentage * this.totalDistance);
+  }
+
+  getTravelledPercentage(): number{
+    return this.travelledDistance/this.totalDistance;
   }
 
   draw(vectors: THREE.Vector3[]){
@@ -214,28 +245,13 @@ export class NodePath{
 
   animate(delta: number){
     
-    const camera: THREE.PerspectiveCamera = this.buildingViewer.camera;
     if(this.direction != 0){
       const difference: number = this.setTravelledDistance( this.travelledDistance + this.velocity * this.direction * delta );
-
-      if(difference != 0){
-        this.drawVisibleNodes();
-
-        // Move camera to my location.
-        const cameraTranslation: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, this.buildingViewer.orbitControls.target);
-        this.buildingViewer.orbitControls.target.x += cameraTranslation.x;
-        this.buildingViewer.orbitControls.target.y += cameraTranslation.y;
-        this.buildingViewer.orbitControls.target.z += cameraTranslation.z;
-        
-        camera.position.x += cameraTranslation.x;
-        camera.position.y += cameraTranslation.y;
-        camera.position.z += cameraTranslation.z;
-
-      }
  
     }
 
     // Check if my location is visible to the camera
+    // const camera: THREE.PerspectiveCamera = this.buildingViewer.camera;
     // const visibleFloorModels: FloorModel[] = this.buildingViewer.buildingModel.getVisibleFloorModels();
     // const wallMeshes: THREE.Mesh[] = [];
     // visibleFloorModels.forEach(floorModel => {

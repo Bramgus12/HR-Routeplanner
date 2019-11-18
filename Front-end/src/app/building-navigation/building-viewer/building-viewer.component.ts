@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit, Host, Inject } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DevGui } from './dev-gui';
 import { BuildingModel } from './building-model';
 import { NodePath } from './node-path';
+import { BuildingNavigationComponent } from '../building-navigation.component';
 
 @Component({
   selector: 'app-building-viewer',

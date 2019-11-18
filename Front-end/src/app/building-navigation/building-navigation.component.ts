@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { BuildingViewerComponent } from './building-viewer/building-viewer.component';
+import { MatSliderChange, MatSlider } from '@angular/material';
 
 @Component({
   selector: 'app-building-navigation',
@@ -8,13 +9,18 @@ import { BuildingViewerComponent } from './building-viewer/building-viewer.compo
   styleUrls: ['./building-navigation.component.scss']
 })
 export class BuildingNavigationComponent implements OnInit {
-
   @ViewChild(BuildingViewerComponent) buildingViewer: BuildingViewerComponent;
+  @ViewChild(MatSlider) travelledDistanceSlider: MatSlider;
+  get sliderValue(): number {
+    return this.buildingViewer.nodePath.getTravelledPercentage() * this.travelledDistanceSlider.max;
+  }
+  set sliderValue(value: number) {
+    this.travelledDistanceSlider.value = value;
+  }
 
   constructor(private router: Router) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   forwardPressed(){
     this.buildingViewer.nodePath.forward(true);
@@ -28,6 +34,10 @@ export class BuildingNavigationComponent implements OnInit {
   }
   backwardReleased(){
     this.buildingViewer.nodePath.backward(false);
+  }
+
+  onSliderChange(event: MatSliderChange){
+    this.buildingViewer.nodePath.setTravelledPercentage(event.value/event.source.max);
   }
 
 }
