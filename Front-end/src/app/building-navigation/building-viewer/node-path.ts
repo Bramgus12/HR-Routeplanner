@@ -236,26 +236,26 @@ export class NodePath{
     }
 
     // Check if my location is visible to the camera
-    const visibleFloorModels: FloorModel[] = this.buildingViewer.buildingModel.getVisibleFloorModels();
-    const wallMeshes: THREE.Mesh[] = [];
-    visibleFloorModels.forEach(floorModel => {
-      if(floorModel.wallObstruction == true) floorModel.wallObstruction = false;
-      wallMeshes.push(floorModel.wallMesh);
-    });
+    // const visibleFloorModels: FloorModel[] = this.buildingViewer.buildingModel.getVisibleFloorModels();
+    // const wallMeshes: THREE.Mesh[] = [];
+    // visibleFloorModels.forEach(floorModel => {
+    //   if(floorModel.wallObstruction == true) floorModel.wallObstruction = false;
+    //   wallMeshes.push(floorModel.wallMesh);
+    // });
     
-    const myLocationDistance: number = camera.position.distanceTo(this.myLocation.position);
-    this.visibilityRaycaster.far = myLocationDistance;
-    const myLocationDirection: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, camera.position).normalize();
-    this.visibilityRaycaster.set(camera.position, myLocationDirection);
-    const intersects: THREE.Intersection[] = this.visibilityRaycaster.intersectObjects(wallMeshes);
+    // const myLocationDistance: number = camera.position.distanceTo(this.myLocation.position);
+    // this.visibilityRaycaster.far = myLocationDistance;
+    // const myLocationDirection: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, camera.position).normalize();
+    // this.visibilityRaycaster.set(camera.position, myLocationDirection);
+    // const intersects: THREE.Intersection[] = this.visibilityRaycaster.intersectObjects(wallMeshes);
 
-    intersects.forEach(intersect => {
-      visibleFloorModels.forEach(floorModel => {
-        if(floorModel.wallMesh === intersect.object){
-          floorModel.wallObstruction = true;
-        }
-      });
-    });
+    // intersects.forEach(intersect => {
+    //   visibleFloorModels.forEach(floorModel => {
+    //     if(floorModel.wallMesh === intersect.object){
+    //       floorModel.wallObstruction = true;
+    //     }
+    //   });
+    // });
 
   }
 

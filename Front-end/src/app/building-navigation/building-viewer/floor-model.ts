@@ -117,10 +117,10 @@ export class FloorModel{
       this.floorMaterial.opacity = this.opacity;
     }
 
-    if(this.wallObstruction){
-      this.wallMaterial.opacity = 0.8;
-    }
-    else if(this.wallMaterial.opacity != this.opacity){
+    // if(this.wallObstruction){
+    //   this.wallMaterial.opacity = 0.8;
+    // }
+    if(this.wallMaterial.opacity != this.opacity){
       this.wallMaterial.opacity = this.opacity;
     }
 
