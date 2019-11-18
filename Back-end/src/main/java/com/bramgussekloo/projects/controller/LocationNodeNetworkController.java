@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.FileHandling.FileException;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
@@ -42,10 +41,10 @@ public class LocationNodeNetworkController {
     })
     @PostMapping
     private ResponseEntity createLocationNodeNetwork(
-            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestBody LocationNodeNetwork locationNodeNetwork
+            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(locationNodeNetwork));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file));
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -116,12 +115,12 @@ public class LocationNodeNetworkController {
     }
 
     @PostMapping("/upload")
-    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file){
+    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) throws IOException{
         try {
             LocationNodeNetworkStatements.uploadFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (FileException e){
-            throw new IllegalArgumentException(e.getMsg());
+        } catch (IOException e){
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 

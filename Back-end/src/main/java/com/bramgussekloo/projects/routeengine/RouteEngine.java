@@ -4,7 +4,6 @@ import com.bramgussekloo.projects.dataclasses.ConnectedNode;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.carrotsearch.hppc.IntIndexedContainer;
-import com.graphhopper.routing.AStar;
 import com.graphhopper.routing.Dijkstra;
 import com.graphhopper.routing.Path;
 import com.graphhopper.routing.util.EncodingManager;
