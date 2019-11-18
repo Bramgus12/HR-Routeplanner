@@ -92,34 +92,25 @@ public class LocationNodeNetworkController {
     @PutMapping("/{locationName}")
     private ResponseEntity updateLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to update", required = true) @PathVariable String locationName,
-            @ApiParam(value = "The updated locationNodeNetwork") @RequestBody LocationNodeNetwork locationNodeNetwork
+            @ApiParam(value = "The updated locationNodeNetwork") @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, locationNodeNetwork));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file));
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes",response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes", response = Node.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/room")
-    private ResponseEntity getAllRooms(){
+    private ResponseEntity getAllRooms() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
-        } catch (IOException e){
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @PostMapping("/upload")
-    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) throws IOException{
-        try {
-            LocationNodeNetworkStatements.uploadFile(file);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
