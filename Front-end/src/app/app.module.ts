@@ -25,11 +25,10 @@ import { keys } from './3rdparty/api_keys';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { RouterModule } from '@angular/router'; 
 
 @NgModule({
   imports: [
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
     FormsModule,
@@ -38,8 +37,7 @@ import { RouterModule } from '@angular/router';
     NgxMaterialTimepickerModule,
     // LeafletModule.forRoot(),
     AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    RouterModule
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   declarations: [
     AppComponent,
