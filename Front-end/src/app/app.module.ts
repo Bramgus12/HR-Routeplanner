@@ -4,10 +4,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule }   from '@angular/forms';
 
+import { AgmCoreModule } from '@agm/core';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
-import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
-import { AgmCoreModule } from '@agm/core';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -17,7 +17,6 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 
 import { BuildingNavigationComponent } from './building-navigation/building-navigation.component';
 import { BuildingViewerComponent } from './building-navigation/building-viewer/building-viewer.component';
-
 import { MapsNavigationComponent } from './maps-navigation/maps-navigation.component';
 
 import { keys } from './3rdparty/api_keys';
