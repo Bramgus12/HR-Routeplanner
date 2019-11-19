@@ -46,7 +46,7 @@ Important files
 
 ```
 .
-+-- dist
++-- dist <-- contains build project (run "ng build [--prod]" to build project)
 +-- src
     +-- app
         +-- 3rdparty <-- services for 3rdparty APIs
