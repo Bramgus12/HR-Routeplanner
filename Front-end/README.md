@@ -3,11 +3,50 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
 
 #### Index:
+- [Installation](#installation)
+- [File structure](#file-structure)
 - [Angular](#angular)
 - [Three.js](#threejs)
 - [Navigation APIs](#navigation-apis)
 
 ---
+
+## Installation
+
+### Install NodeJS
+The front-end uses [NodeJS](https://nodejs.org/) to run [angular](https://angular.io/), Node also installs NPM which is the pakage manager for NodeJS
+
+
+### Install `@angular/cli`
+```
+  npm install -g @angular/cli
+```
+
+### Install node dependencies
+Make sure you are in the `Front-end` directory and run
+```
+  npm install
+```
+
+### Install `api_keys.ts`
+* Download `api_keys.ts` from google drive or other safe storage location
+* Place the file in `src/app/3rdparty`
+
+Now you are good to go
+
+### Start local development server
+```
+  ng serve
+```
+
+---
+
+## File structure
+
+
+
+---
+
 ## Angular
 
 #### Development server
@@ -62,8 +101,4 @@ export class ...Component implements OnInit {
 
 ## Navigation APIs
 
-* [openroute service](https://openrouteservice.org/) for general navigation
-  * limited request rates (GeocodeSearch: 1000*, Directions: 2000*)(* per 24 hours)
-* [openOV](https://openov.nl/) / [OVAPI](https://github.com/skywave/KV78Turbo-OVAPI/wiki) for public transport
-  * openOV has a lot of datasets, but a route planner has to be made by ourselves
-  * OVAPI isn't meant for mass requests, but a good example of how to create a REST based backend application
+* Google Maps using `@agm/core` and `@types/googlemaps`
