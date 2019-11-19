@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class FileService {
-    public static void uploadFile(MultipartFile file, String folder) throws FileException, IOException {
+    public static void uploadFile(MultipartFile file, String folder) throws IOException {
         if (FileService.class.getResource("FileService.class").toString().toLowerCase().contains("file")) {
             Path copyLocation = Paths.get("src/main/resources/" + folder + "/" + file.getOriginalFilename());
             Files.copy(file.getInputStream(), copyLocation);
@@ -24,7 +24,7 @@ public class FileService {
             OutputStream os = Files.newOutputStream(copyLocation);
             os.write(file.getBytes());
         } else {
-            throw new FileException("An error occurred.");
+            throw new IOException("An error occurred.");
         }
     }
 }

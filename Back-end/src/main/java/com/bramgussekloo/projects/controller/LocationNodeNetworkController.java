@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.FileHandling.FileException;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
@@ -42,10 +41,10 @@ public class LocationNodeNetworkController {
     })
     @PostMapping
     private ResponseEntity createLocationNodeNetwork(
-            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestBody LocationNodeNetwork locationNodeNetwork
+            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(locationNodeNetwork));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file));
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -93,35 +92,26 @@ public class LocationNodeNetworkController {
     @PutMapping("/{locationName}")
     private ResponseEntity updateLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to update", required = true) @PathVariable String locationName,
-            @ApiParam(value = "The updated locationNodeNetwork") @RequestBody LocationNodeNetwork locationNodeNetwork
+            @ApiParam(value = "The updated locationNodeNetwork") @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, locationNodeNetwork));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file));
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes",response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes", response = Node.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/room")
-    private ResponseEntity getAllRooms(){
+    private ResponseEntity getAllRooms() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    @PostMapping("/upload")
-    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file){
-        try {
-            LocationNodeNetworkStatements.uploadFile(file);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (FileException e){
-            throw new IllegalArgumentException(e.getMsg());
         }
     }
 
