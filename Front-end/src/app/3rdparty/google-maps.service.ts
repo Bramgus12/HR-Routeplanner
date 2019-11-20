@@ -22,6 +22,9 @@ export class GoogleMapsService {
     })
   }
 
+  /**
+   * Returns a list of locations
+   */
   getPlacePredictions(input: string){
     return new Observable<google.maps.places.AutocompletePrediction[]>(observer => {
       this.autocomplete.getPlacePredictions({ input, componentRestrictions: this.componentRestrictions, types: ['geocode'] }, (results, status) => {
@@ -36,6 +39,9 @@ export class GoogleMapsService {
     });
   }
 
+  /**
+   * Returns the geocode of a given location
+   */
   getGeocode(location: string){
     return new Observable(observer => {
       this.geocoder.geocode({'address': location, componentRestrictions: this.componentRestrictions}, (results, status) => {
@@ -49,6 +55,9 @@ export class GoogleMapsService {
     });
   }
 
+  /**
+   * Returns the possible directions from the 'origin' to 'destination' locations
+   */
   getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode, transitOptions?: google.maps.TransitOptions){
     return new Observable<google.maps.DirectionsResult>(observer => {
       this.directions.route({ origin, destination, travelMode, transitOptions }, (result, status) => {

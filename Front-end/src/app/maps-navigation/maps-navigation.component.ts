@@ -86,11 +86,17 @@ export class MapsNavigationComponent implements OnInit {
     }
   }
 
+  /**
+   * Gets called when google maps is loaded into the html DOM
+   */
   onMapReady(map: google.maps.Map){
     this.directionsRenderer.setMap(map);
     this.getDirections();
   }
 
+  /**
+   * Gets called when the "Depart now" slide-toggle changed
+   */
   onDepartNowChange(){
     if(!this.navigationState.departNow) this.navigationState.time = new Date().toLocaleTimeString(undefined, {
       hour: '2-digit',
@@ -100,6 +106,9 @@ export class MapsNavigationComponent implements OnInit {
     this.getDirections();
   }
 
+  /**
+   * Loads the directions from google maps
+   */
   getDirections(){
     const transitOptions: google.maps.TransitOptions = { modes: this.transitMode };
 
@@ -127,6 +136,9 @@ export class MapsNavigationComponent implements OnInit {
     })
   }
 
+  /**
+   * Returns the pixel position based on the type of direction maneuver
+   */
   getIconPosition(direction: google.maps.DirectionsStep) {
     if(this.appService.darkMode){
       switch (direction["maneuver"]) {

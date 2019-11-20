@@ -89,6 +89,9 @@ export class HomepageComponent implements OnInit {
     })
   }
 
+  /**
+   * Gets called when the "Depart now" slide-toggle is changed
+   */
   departNowUpdate(departNow: boolean){
     if(!departNow) this.navigationModel.time = new Date().toLocaleTimeString(undefined, {
       hour: '2-digit',
@@ -96,6 +99,9 @@ export class HomepageComponent implements OnInit {
     });
   }
 
+  /**
+   * Gets called when #navigationForm is submitted
+   */
   goToNavigation(){
     // TODO check which navigation component to navigate to
 

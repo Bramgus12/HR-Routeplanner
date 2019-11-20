@@ -14,10 +14,16 @@ export class AppService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
+  /**
+   * Causes the sidebar to trigger (open or close)
+   */
   toggle(){
     this.trigger.next(null);
   }
 
+  /**
+   * Sets the dark mode (on or off)
+   */
   setDarkmode(mode: boolean){
     if(mode) this.renderer.addClass(document.body, 'dark-theme');
     else this.renderer.removeClass(document.body, 'dark-theme');
