@@ -1,22 +1,22 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.FileHandling.FileException;
 import com.bramgussekloo.projects.dataclasses.XlsxReader;
 import com.bramgussekloo.projects.statements.XlsxReadingStatements;
 import io.swagger.annotations.Api;
-
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.springframework.web.bind.annotation.*;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 // Controller for xlsx reader
-@Api (value = "Keuzevakken lijst")
+@Api(value = "Keuzevakken lijst")
 @RestController
 @RequestMapping("/api/kv-lijst")
 public class xlsxReadingController {
@@ -32,23 +32,29 @@ public class xlsxReadingController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping
-    private ResponseEntity getElectionCourseList() {
+    private ResponseEntity getElectionCourseList(@RequestParam MultipartFile file) {
         try {
-            //WIP
-//            return ResponseEntity.status(HttpStatus.OK).body(XlsxReadingStatements.());
+            XlsxReadingStatements.uploadFile(file);
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @PostMapping("/upload")
-    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file){
+    private ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             XlsxReadingStatements.uploadFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (FileException e){
-            throw new IllegalArgumentException(e.getMsg());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
+    }
+    // puts the Error in the right format
+    @ExceptionHandler
+    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        e.printStackTrace();
+        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
 
