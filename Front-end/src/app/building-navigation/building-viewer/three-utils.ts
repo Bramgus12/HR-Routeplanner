@@ -2,7 +2,7 @@
  * Common functions for managing a three.js scene.
  */
 import * as THREE from 'three';
-import { Node } from './node';
+import { Node } from 'src/app/shared/dataclasses';
 
 export class ThreeUtils {
 

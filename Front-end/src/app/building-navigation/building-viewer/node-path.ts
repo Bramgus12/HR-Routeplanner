@@ -2,11 +2,12 @@ import * as THREE from 'three';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-import { Node, testRoute, NodeConnection } from './node'
+import { testRoute } from './node-test'
 import { BuildingViewerComponent } from './building-viewer.component';
 import { FloorCollection } from './floor-collection';
 import { ThreeUtils } from './three-utils';
 import { FloorModel } from './floor-model';
+import { Node, NodeConnection } from 'src/app/shared/dataclasses';
 
 export class NodePath{
   private nodes: Node[] = [];
@@ -31,8 +32,8 @@ export class NodePath{
     this.myLocation = new THREE.Mesh(sphereGeometry, sphereMaterial);
     this.buildingViewer.scene.add(this.myLocation);
     this.currentConnection = null;
-    // Create a test route for now.
-    this.create(testRoute);
+    // // Create a test route for now.
+    // this.create(testRoute);
   }
 
   create(nodes: Node[]){

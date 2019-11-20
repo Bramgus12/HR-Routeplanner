@@ -5,6 +5,8 @@ import { DevGui } from './dev-gui';
 import { BuildingModel } from './building-model';
 import { NodePath } from './node-path';
 import { BuildingNavigationComponent } from '../building-navigation.component';
+import { BuildingViewerService } from './building-viewer.service';
+import { Node } from 'src/app/shared/dataclasses';
 
 @Component({
   selector: 'app-building-viewer',
@@ -25,7 +27,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
   private devGui: DevGui;
 
-  constructor() {
+  constructor(private service: BuildingViewerService) {
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -82,7 +84,13 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     // Stop render loop
     window.cancelAnimationFrame(this.nextFrameId);
     this.scene = undefined;
-  }  
+  }
+
+  createRoute(locationName: string, from: number, to: number){
+    this.service.getRoute(locationName, from, to).subscribe(nodes => {
+      this.nodePath.create(nodes);
+    });
+  }
 
   // Main render loop for 3D view.
   animate() {

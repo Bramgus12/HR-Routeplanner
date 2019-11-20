@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { BuildingViewerComponent } from './building-viewer/building-viewer.component';
 import { MatSliderChange, MatSlider } from '@angular/material';
 
@@ -11,6 +11,11 @@ import { MatSliderChange, MatSlider } from '@angular/material';
 export class BuildingNavigationComponent implements OnInit {
   @ViewChild(BuildingViewerComponent) buildingViewer: BuildingViewerComponent;
   @ViewChild(MatSlider) travelledDistanceSlider: MatSlider;
+
+  private locationName: string;
+  private from: number;
+  private to: number;
+
   get sliderValue(): number {
     return this.buildingViewer.nodePath.getTravelledPercentage() * this.travelledDistanceSlider.max;
   }
@@ -18,9 +23,19 @@ export class BuildingNavigationComponent implements OnInit {
     this.travelledDistanceSlider.value = value;
   }
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+   const locationName: string = this.activatedRoute.snapshot.queryParams.locationName;
+   const from: number = parseInt(this.activatedRoute.snapshot.queryParams.from);
+   const to: number = parseInt(this.activatedRoute.snapshot.queryParams.to);
+   if(typeof locationName == "string" && !isNaN(from) && !isNaN(to) ){
+     this.locationName = locationName;
+     this.from = from;
+     this.to = to;
+     this.buildingViewer.createRoute(locationName, from, to);
+   }
+  }
 
   forwardPressed(){
     this.buildingViewer.nodePath.forward(true);
