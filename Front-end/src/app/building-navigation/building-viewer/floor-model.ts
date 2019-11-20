@@ -16,6 +16,7 @@ export class FloorModel{
   readonly visibleScale: number = 1;
   readonly fadeSpeed: number = 6;
   private opacity: number = 0;
+  private obstructedOpacity: number = 0.8;
   
   readonly floorMesh: THREE.Mesh;
   readonly wallMesh: THREE.Mesh;
@@ -117,10 +118,10 @@ export class FloorModel{
       this.floorMaterial.opacity = this.opacity;
     }
 
-    // if(this.wallObstruction){
-    //   this.wallMaterial.opacity = 0.8;
-    // }
-    if(this.wallMaterial.opacity != this.opacity){
+    if(this.wallObstruction && this.opacity >= this.obstructedOpacity){
+      this.wallMaterial.opacity = this.obstructedOpacity;
+    }
+    else if(this.wallMaterial.opacity != this.opacity){
       this.wallMaterial.opacity = this.opacity;
     }
 

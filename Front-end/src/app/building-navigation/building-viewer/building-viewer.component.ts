@@ -37,12 +37,11 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     
     // Camera
     this.camera = new THREE.PerspectiveCamera(50, 1280/720, 0.01, 200);
-    this.camera.position.set(46, 30, -15);
+    this.camera.position.set(10, 10, 10);
 
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     this.orbitControls.enableDamping = true;
     this.orbitControls.dampingFactor = 0.05;
-    this.orbitControls.target.set(22, 2, -34);
     this.orbitControls.enableKeys = false;
     this.orbitControls.update();
     
