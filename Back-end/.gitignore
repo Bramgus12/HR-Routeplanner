@@ -102,3 +102,8 @@ Database_config.properties
 # Static folder for front-end resources
 /src/main/resources/static/*
 !/src/main/resources/static/.gitkeep
+/bin/
+/.vscode/
+/.settings/
+/.classpath
+/.project

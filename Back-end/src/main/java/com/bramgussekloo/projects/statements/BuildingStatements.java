@@ -14,11 +14,7 @@ public class BuildingStatements {
         ArrayList<Building> list = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building");
         while (result.next()){
-            Integer id = result.getInt("id");
-            Integer address_id = result.getInt("address_id");
-            String name = result.getString("name");
-            Building building = new Building(id, address_id, name);
-            list.add(building);
+            list.add(getResult(result.getInt("id"), result));
         }
         return list;
     }
@@ -27,9 +23,7 @@ public class BuildingStatements {
         Connection conn = new DatabaseConnection().getConnection();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
         result.next();
-        Integer address_id = result.getInt("address_id");
-        String name = result.getString("name");
-        return new Building(id, address_id, name);
+        return getResult(id, result);
     }
 
     public static Building createBuilding(Building building) throws SQLException{
@@ -39,7 +33,7 @@ public class BuildingStatements {
         conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + addressId + ", '" + name + "'); ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
         resultSet.next();
-        return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
+        return getResult(resultSet.getInt("id"), resultSet);
     }
 
     public static Building deleteBuilding(Integer id) throws SQLException{
@@ -47,7 +41,7 @@ public class BuildingStatements {
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id + ";");
         conn.createStatement().execute("DELETE FROM building WHERE id=" + id);
         resultSet.next();
-        return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
+        return getResult(id, resultSet);
     }
 
     public static Building updateBuilding(Building building) throws SQLException{
@@ -58,6 +52,12 @@ public class BuildingStatements {
         conn.createStatement().execute("UPDATE building SET address_id=" + address_id + ", name='" + name + "' WHERE id=" + id + "; ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE id=" + id);
         resultSet.next();
-        return new Building(resultSet.getInt("id"), resultSet.getInt("address_id"), resultSet.getString("name"));
+        return getResult(id, resultSet);
+    }
+
+    private static Building getResult(Integer id, ResultSet resultSet) throws SQLException{
+        Integer address_id = resultSet.getInt("address_id");
+        String name = resultSet.getString("name");
+        return new Building(id, address_id, name);
     }
 }

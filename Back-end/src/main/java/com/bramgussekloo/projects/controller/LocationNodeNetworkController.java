@@ -7,6 +7,7 @@ import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class LocationNodeNetworkController {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -40,11 +42,12 @@ public class LocationNodeNetworkController {
     })
     @PostMapping
     private ResponseEntity createLocationNodeNetwork(
-            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestBody LocationNodeNetwork locationNodeNetwork
+            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(locationNodeNetwork));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -62,6 +65,7 @@ public class LocationNodeNetworkController {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -79,6 +83,7 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllNodesByType(locationName, type));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -91,11 +96,27 @@ public class LocationNodeNetworkController {
     @PutMapping("/{locationName}")
     private ResponseEntity updateLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to update", required = true) @PathVariable String locationName,
-            @ApiParam(value = "The updated locationNodeNetwork") @RequestBody LocationNodeNetwork locationNodeNetwork
+            @ApiParam(value = "The updated locationNodeNetwork") @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, locationNodeNetwork));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file));
         } catch (IOException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Get all nodes that are a room")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes", response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/room")
+    private ResponseEntity getAllRooms() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -103,7 +124,6 @@ public class LocationNodeNetworkController {
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

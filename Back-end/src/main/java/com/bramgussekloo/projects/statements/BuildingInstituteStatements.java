@@ -14,11 +14,7 @@ public class BuildingInstituteStatements {
         ArrayList<BuildingInstitute> list = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute");
         while (result.next()) {
-            Integer id = result.getInt("id");
-            Integer building_id = result.getInt("building_id");
-            Integer institute_id = result.getInt("institute_id");
-            BuildingInstitute buildingInstitute = new BuildingInstitute(id, building_id, institute_id);
-            list.add(buildingInstitute);
+            list.add(getResult(result.getInt("id"), result));
         }
         return list;
     }
@@ -27,9 +23,7 @@ public class BuildingInstituteStatements {
         Connection conn = new DatabaseConnection().getConnection();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute WHERE id=" + id);
         result.next();
-        Integer building_id = result.getInt("building_id");
-        Integer institute_id = result.getInt("institute_id");
-        return new BuildingInstitute(id, building_id, institute_id);
+        return getResult(id, result);
     }
 
     public static BuildingInstitute createBuildingInstitute(BuildingInstitute buildingInstitute) throws SQLException{
@@ -38,7 +32,8 @@ public class BuildingInstituteStatements {
         Integer institute_id = buildingInstitute.getInstituteId();
         conn.createStatement().execute("INSERT INTO building_institute VALUES (DEFAULT , " + building_id + ", " + institute_id + ");");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building_institute WHERE building_id=" + building_id + " AND institute_id=" + institute_id + ";");
-        return new BuildingInstitute(resultSet.getInt("id"), resultSet.getInt("building_id"), resultSet.getInt("institute_id"));
+        resultSet.next();
+        return getResult(resultSet.getInt("id"), resultSet);
     }
 
     public static BuildingInstitute deleteBuildingInstitute(Integer id) throws SQLException{
@@ -46,7 +41,7 @@ public class BuildingInstituteStatements {
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building_institute WHERE id=" + id + ";");
         conn.createStatement().execute("DELETE FROM building_institute WHERE id=" + id);
         resultSet.next();
-        return new BuildingInstitute(resultSet.getInt("id"), resultSet.getInt("building_id"), resultSet.getInt("institute_id"));
+        return getResult(id, resultSet);
     }
 
     public static BuildingInstitute updateBuildingInstitute(BuildingInstitute buildingInstitute) throws SQLException{
@@ -56,6 +51,14 @@ public class BuildingInstituteStatements {
         Integer institute_id = buildingInstitute.getInstituteId();
         conn.createStatement().execute("UPDATE building_institute SET building_id=" + building_id + ", institute_id=" + institute_id + " WHERE id=" + id );
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building_institute WHERE id=" + id + ";");
-        return new BuildingInstitute(resultSet.getInt("id"), resultSet.getInt("building_id"), resultSet.getInt("institute_id"));
+        resultSet.next();
+        return getResult(id, resultSet);
     }
+
+    private static BuildingInstitute getResult(Integer id, ResultSet resultSet) throws SQLException{
+        Integer building_id = resultSet.getInt("building_id");
+        Integer institute_id = resultSet.getInt("institute_id");
+        return new BuildingInstitute(id, building_id, institute_id);
+    }
+
 }
