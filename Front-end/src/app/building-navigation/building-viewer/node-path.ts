@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
-import { testRoute } from './node-test'
 import { BuildingViewerComponent } from './building-viewer.component';
 import { FloorCollection } from './floor-collection';
 import { ThreeUtils } from './three-utils';
