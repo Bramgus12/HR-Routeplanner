@@ -44,8 +44,7 @@ public class LocationNodeNetworkStatements {
         File f = getFile(file.getOriginalFilename());
         if (!f.exists()) {
             ObjectMapper mapper = new ObjectMapper();
-            FileService.uploadFile(file, "Locations", file.getOriginalFileName());
-
+            FileService.uploadFile(file, "Locations", file.getOriginalFilename());
             File fileRef = getFile(file.getOriginalFilename());
             if (fileRef.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
                 return mapper.readValue(fileRef, LocationNodeNetwork.class);
