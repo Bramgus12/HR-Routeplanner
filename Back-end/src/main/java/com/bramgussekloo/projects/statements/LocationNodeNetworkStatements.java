@@ -52,8 +52,9 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
+        File f = getFile(file.getOriginalFilename());
+        if (!f.exists()) {
+            ObjectMapper mapper = new ObjectMapper();
             FileService.uploadFile(file, "Locations");
             File fileRef = getFile(file.getOriginalFilename());
             if (fileRef.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
@@ -61,8 +62,8 @@ public class LocationNodeNetworkStatements {
             } else {
                 throw new IOException(file.getOriginalFilename() + ".json already exists. Try put if you wanna change it.");
             }
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
+        } else {
+            throw new IOException("File already exists");
         }
     }
 

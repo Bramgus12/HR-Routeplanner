@@ -30,6 +30,7 @@ public class LocationNodeNetworkController {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -46,6 +47,7 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -63,6 +65,7 @@ public class LocationNodeNetworkController {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -80,6 +83,7 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllNodesByType(locationName, type));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -97,6 +101,7 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file));
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -111,6 +116,7 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
         } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -118,7 +124,6 @@ public class LocationNodeNetworkController {
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
