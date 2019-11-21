@@ -12,14 +12,14 @@ import java.nio.file.StandardCopyOption;
 
 @Service
 public class FileService {
-    public static void uploadFile(MultipartFile file, String folder) throws IOException {
+    public static void uploadFile(MultipartFile file, String folder, String fileName) throws IOException {
         if (FileService.class.getResource("FileService.class").toString().toLowerCase().contains("file")) {
-            Path copyLocation = Paths.get("src/main/resources/" + folder + "/" + file.getOriginalFilename());
+            Path copyLocation = Paths.get("src/main/resources/" + folder + "/" + fileName);
             Files.copy(file.getInputStream(), copyLocation);
             OutputStream os = Files.newOutputStream(copyLocation);
             os.write(file.getBytes());
         } else if (FileService.class.getResource("FileService.class").toString().toLowerCase().contains("jar")) {
-            Path copyLocation = Paths.get("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/" + folder + "/" + file.getOriginalFilename());
+            Path copyLocation = Paths.get("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/" + folder + "/" + fileName);
             Files.copy(file.getInputStream(), copyLocation);
             OutputStream os = Files.newOutputStream(copyLocation);
             os.write(file.getBytes());

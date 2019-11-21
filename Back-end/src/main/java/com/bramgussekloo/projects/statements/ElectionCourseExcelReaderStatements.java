@@ -13,10 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElectionCourseExcelReaderStatements {
+    private static String fileNameVar = "kv-lijst.xlsx";
     public static void uploadFile(MultipartFile file) throws IOException {
-        File f = getFile("ElectionCourse", file.getOriginalFilename());
+        File f = getFile(fileNameVar);
         if (!f.exists()) {
-            FileService.uploadFile(file, "ElectionCourse");
+            FileService.uploadFile(file, "ElectionCourse", "kv-lijst.xlsx");
         } else {
             throw new IOException("File already exists. Try using PUT if you want to update it.");
         }
@@ -30,82 +31,72 @@ public class ElectionCourseExcelReaderStatements {
         }
     }
 
-    private static File getFile(String resourceFolderName, String fileName) throws IOException {
+    private static File getFile(String fileName) throws IOException {
         if (ElectionCourseExcelReaderStatements.class.getResource("ElectionCourseExcelReaderStatements.class").toString().contains("jar")) {
-            File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/" + resourceFolderName + "/" + fileName);
-            if (!file.exists()) {
-                throw new IOException("File not found");
-            } else {
-                return file;
-            }
+            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/ElectionCourse/" + fileName);
         } else {
-            File resource = new File("src/main/resources/" + resourceFolderName + "/" + fileName);
-            if (!resource.exists()) {
-                throw new IOException("File not found");
-            } else {
-                return resource;
-            }
+            return new File("src/main/resources/ElectionCourse/" + fileName);
         }
     }
 
     public static List<ElectionCourse> getExcelContent() throws IOException {
         try {
-            String fileName = "kv-lijst.xlsx";
             Workbook workbook = null;
-            FileInputStream excelFile = new FileInputStream(getFile("ElectionCourse", fileName));
+            File f = getFile(fileNameVar);
+            if (f.exists()) {
+                FileInputStream excelFile = new FileInputStream(f);
 
-            //Find the file extension by splitting file name in substring  and getting only extension name
+                //Find the file extension by splitting file name in substring  and getting only extension name
 //            String fileExtensionName = fileName.substring(fileName.indexOf("."));
 
-            //Check condition if the file is a .xls file or .xlsx file
+                //Check condition if the file is a .xls file or .xlsx file
 //            if(fileExtensionName.equals(".xls")){
 //                //If it is .xls file then create object of HSSFWorkbook class
 //                workbook = new HSSFWorkbook(excelFile);
 //            }
 //            else if(fileExtensionName.equals(".xlsx")) {
-            //If it is .xlsx file then create object of XSSFWorkbook class
-            workbook = new XSSFWorkbook(excelFile);
+                //If it is .xlsx file then create object of XSSFWorkbook class
+                workbook = new XSSFWorkbook(excelFile);
 //            }
 
-            Sheet worksheet = workbook.getSheetAt(0);
+                Sheet worksheet = workbook.getSheetAt(0);
 
-            /**
-             * Works up to this point.
-             *
-             */
-            DataFormatter formatter = new DataFormatter();
-            List<ElectionCourse> rows = new ArrayList<>();
-            //Create a loop to get the cell values of a row for one iteration
-            for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
-                Row row = worksheet.getRow(i);
-                if (row.getLastCellNum() < row.getPhysicalNumberOfCells()) continue;
+                DataFormatter formatter = new DataFormatter();
+                List<ElectionCourse> rows = new ArrayList<>();
+                //Create a loop to get the cell values of a row for one iteration
+                for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+                    Row row = worksheet.getRow(i);
+                    if (row.getLastCellNum() < row.getPhysicalNumberOfCells()) continue;
 
-                String courseCode = formatter.formatCellValue(row.getCell(0));
-                String name = formatter.formatCellValue(row.getCell(1));
-                String period = formatter.formatCellValue(row.getCell(2));
-                String groupNumber = formatter.formatCellValue(row.getCell(3));
-                String teacher = formatter.formatCellValue(row.getCell(4));
-                String dayOfTheWeek = formatter.formatCellValue(row.getCell(5));
-                String startTime = formatter.formatCellValue(row.getCell(6));
-                String endTime = formatter.formatCellValue(row.getCell(7));
-                String location = formatter.formatCellValue(row.getCell(8));
-                String classroom = formatter.formatCellValue(row.getCell(9));
+                    String courseCode = formatter.formatCellValue(row.getCell(0));
+                    String name = formatter.formatCellValue(row.getCell(1));
+                    String period = formatter.formatCellValue(row.getCell(2));
+                    String groupNumber = formatter.formatCellValue(row.getCell(3));
+                    String teacher = formatter.formatCellValue(row.getCell(4));
+                    String dayOfTheWeek = formatter.formatCellValue(row.getCell(5));
+                    String startTime = formatter.formatCellValue(row.getCell(6));
+                    String endTime = formatter.formatCellValue(row.getCell(7));
+                    String location = formatter.formatCellValue(row.getCell(8));
+                    String classroom = formatter.formatCellValue(row.getCell(9));
 
-                rows.add(new ElectionCourse(
-                        courseCode,
-                        name,
-                        period,
-                        groupNumber,
-                        teacher,
-                        dayOfTheWeek,
-                        startTime,
-                        endTime,
-                        location,
-                        classroom
-                ));
+                    rows.add(new ElectionCourse(
+                            courseCode,
+                            name,
+                            period,
+                            groupNumber,
+                            teacher,
+                            dayOfTheWeek,
+                            startTime,
+                            endTime,
+                            location,
+                            classroom
+                    ));
+                }
+                return rows;
+            } else {
+                throw new IOException("File does not exist.");
             }
-            return rows;
-        } catch (IOException e) {
+        } catch(IOException e){
             throw new IOException("File not found");
         }
     }
@@ -118,7 +109,7 @@ public class ElectionCourseExcelReaderStatements {
             for (File f : files) {
                 if (f.exists()) {
                     if (f.delete()) {
-                        FileService.uploadFile(file, "ElectionCourse");
+                        FileService.uploadFile(file, "ElectionCourse", fileNameVar);
                     } else {
                         throw new IOException("File deletion failed");
                     }
