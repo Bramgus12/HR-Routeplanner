@@ -17,7 +17,7 @@ public class ElectionCourseExcelReaderStatements {
     public static void uploadFile(MultipartFile file) throws IOException {
         File f = getFile(fileNameVar);
         if (!f.exists()) {
-            FileService.uploadFile(file, "ElectionCourse", "kv-lijst.xlsx");
+            FileService.uploadFile(file, "ElectionCourse", fileNameVar);
         } else {
             throw new IOException("File already exists. Try using PUT if you want to update it.");
         }
@@ -92,6 +92,7 @@ public class ElectionCourseExcelReaderStatements {
                             classroom
                     ));
                 }
+                excelFile.close();
                 return rows;
             } else {
                 throw new IOException("File does not exist.");

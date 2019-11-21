@@ -50,7 +50,7 @@ public class ElectionCourseExcelReaderController {
     @ApiOperation(value = "Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectionCourse.class, responseContainer = "List"),
-            @ApiResponse(code = 402, message = "No Content")
+            @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping
     private ResponseEntity updateFile(@RequestParam MultipartFile file){
