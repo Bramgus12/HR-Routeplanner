@@ -8,8 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -17,27 +15,14 @@ public class LocationNodeNetworkStatements {
 
 
     private static File getFile(String locationName) throws IOException {
-        ClassLoader classLoader = LocationNodeNetworkStatements.class.getClassLoader();
         if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
-            File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName);
-            if (!file.exists()) {
-                throw new IOException("File not found");
-            } else {
-                return file;
-            }
+            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName);
         } else {
-            File resource = new File("src/main/resources/Locations/" + locationName);
-            System.out.println(resource.getAbsolutePath());
-            if (!resource.exists()) {
-                throw new IOException("File not found");
-            } else {
-                return resource;
-            }
+            return new File("src/main/resources/Locations/" + locationName);
         }
     }
 
     private static File getLocationsFolder() {
-        ClassLoader classLoader = LocationNodeNetworkStatements.class.getClassLoader();
         if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
             return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/");
         } else {
@@ -48,7 +33,11 @@ public class LocationNodeNetworkStatements {
     public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         File file = getFile(locationName + ".json");
-        return mapper.readValue(file, LocationNodeNetwork.class);
+        if (file.exists()) {
+            return mapper.readValue(file, LocationNodeNetwork.class);
+        } else {
+            throw new IOException("File not found");
+        }
     }
 
     public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file) throws IOException {
