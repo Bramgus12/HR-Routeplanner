@@ -7,7 +7,7 @@ import { map, startWith, throttleTime, debounceTime } from 'rxjs/operators';
 import { HomepageService } from './homepage.service';
 import { AppService } from '../app.service'; 
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
-import { NavigationState, Building } from '../shared/dataclasses';
+import { NavigationState, Building, TimeMode, TimeModeOption } from '../shared/dataclasses';
 import { GoogleMapsService } from '../3rdparty/google-maps.service';
 
 @Component({
@@ -17,10 +17,14 @@ import { GoogleMapsService } from '../3rdparty/google-maps.service';
 })
 export class HomepageComponent implements OnInit {
 
-  navigationModel: NavigationState = { from: '', to: '', departNow: true, time: '' }
+  navigationModel: NavigationState = { from: '', to: '', departNow: true, timeMode: TimeMode.DEPART_BY, time: '' }
   fromSuggestions: string[] = [];
   toSuggestions: string[] = [];
   buildings: string[] = [];
+  timeModeOptions: TimeModeOption[] = [
+    { name: "Arrival by", value: TimeMode.ARRIVAL_BY },
+    { name: "Depart by", value: TimeMode.DEPART_BY }
+  ];
   timepickerTheme: NgxMaterialTimepickerTheme = {
     container: {
       buttonColor: '#d32f2f'
@@ -85,6 +89,9 @@ export class HomepageComponent implements OnInit {
     })
   }
 
+  /**
+   * Gets called when the "Depart now" slide-toggle is changed
+   */
   departNowUpdate(departNow: boolean){
     if(!departNow) this.navigationModel.time = new Date().toLocaleTimeString(undefined, {
       hour: '2-digit',
@@ -92,6 +99,9 @@ export class HomepageComponent implements OnInit {
     });
   }
 
+  /**
+   * Gets called when #navigationForm is submitted
+   */
   goToNavigation(){
     // TODO check which navigation component to navigate to
 

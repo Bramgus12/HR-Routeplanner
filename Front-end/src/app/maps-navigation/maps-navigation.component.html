@@ -1,7 +1,4 @@
-
 <section>
-  <!-- <div style="width: 600px; height: 600px; margin: 10px auto;" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)"></div> -->
-
   <div class="map-container">
     <agm-map
       [latitude]="lat"
@@ -15,9 +12,51 @@
   
   <!-- TODO convert to directions component -->
   <div class="directions">
+    <div class="settings-bar">
+      <mat-form-field>
+        <mat-label>Travel mode</mat-label>
+        <mat-select [(ngModel)]="travelMode" (selectionChange)="getDirections()">
+          <mat-option *ngFor="let mode of travelModes" [value]="mode.value">
+            {{ mode.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <ng-container *ngIf="travelMode == 'TRANSIT'">
+        <mat-form-field>
+          <mat-label>Preferred transit</mat-label>
+          <mat-select [(ngModel)]="transitMode" (selectionChange)="getDirections()" multiple>
+            <mat-option *ngFor="let mode of transitModes" [value]="mode.value">
+              {{ mode.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-slide-toggle [(ngModel)]="navigationState.departNow" (change)="onDepartNowChange()">Depart now</mat-slide-toggle>
+
+        <div class="time-settings" *ngIf="!navigationState.departNow">
+          <mat-form-field>
+            <mat-label>Time mode</mat-label>
+            <mat-select [(ngModel)]="navigationState.timeMode" (selectionChange)="getDirections()">
+              <mat-option *ngFor="let option of timeModeOptions" [value]="option.value">
+                {{ option.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput placeholder="Time" [ngxTimepicker]="picker" [format]="24" [(ngModel)]="navigationState.time" (change)="getDirections()">
+            <mat-icon matSuffix>schedule</mat-icon>
+            <ngx-material-timepicker #picker [ngxMaterialTimepickerTheme]="timepickerTheme" (closed)="getDirections()"></ngx-material-timepicker>
+          </mat-form-field>
+        </div>
+      </ng-container>
+    </div>
+
+    <p class="time-info">{{ timeInfo }}</p>
     <ul>
       <li *ngFor="let direction of directions">
-        <div class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(direction)"></div>
+        <div *ngIf="travelMode != 'TRANSIT'" class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(direction)" /></div>
         <span [innerHTML]="direction.instructions | safeHTML"></span>
       </li>
     </ul>

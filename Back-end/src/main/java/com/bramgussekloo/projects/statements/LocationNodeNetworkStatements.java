@@ -16,20 +16,9 @@ public class LocationNodeNetworkStatements {
 
     private static File getFile(String locationName) throws IOException {
         if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
-            File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName);
-            if (!file.exists()) {
-                throw new IOException("File not found");
-            } else {
-                return file;
-            }
+            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName);
         } else {
-            File resource = new File("src/main/resources/Locations/" + locationName);
-            System.out.println(resource.getAbsolutePath());
-            if (!resource.exists()) {
-                throw new IOException("File not found");
-            } else {
-                return resource;
-            }
+            return new File("src/main/resources/Locations/" + locationName);
         }
     }
 
@@ -44,21 +33,27 @@ public class LocationNodeNetworkStatements {
     public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         File file = getFile(locationName + ".json");
-        return mapper.readValue(file, LocationNodeNetwork.class);
+        if (file.exists()) {
+            return mapper.readValue(file, LocationNodeNetwork.class);
+        } else {
+            throw new IOException("File not found");
+        }
     }
 
     public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            FileService.uploadFile(file, "Locations", file.getOriginalFilename());
+        File f = getFile(file.getOriginalFilename());
+        if (!f.exists()) {
+            ObjectMapper mapper = new ObjectMapper();
+            FileService.uploadFile(file, "Locations", file.getOriginalFileName());
+
             File fileRef = getFile(file.getOriginalFilename());
             if (fileRef.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
                 return mapper.readValue(fileRef, LocationNodeNetwork.class);
             } else {
                 throw new IOException(file.getOriginalFilename() + ".json already exists. Try put if you wanna change it.");
             }
-        } catch (IOException e) {
-            throw new IOException(e.getMessage());
+        } else {
+            throw new IOException("File already exists");
         }
     }
 

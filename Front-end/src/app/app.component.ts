@@ -19,6 +19,7 @@ export class AppComponent implements OnInit{
   constructor(private router: Router, private titleService: Title, private appService: AppService){}
 
   ngOnInit(){
+    /*This sets the title of each loaded page/component*/
     this.router.events.pipe(
       filter(event => event instanceof ActivationEnd),
       map((event: ActivationEnd) => event.snapshot.data)

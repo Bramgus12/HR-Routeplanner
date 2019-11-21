@@ -15,6 +15,9 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
   }
 
+  /**
+   * Gets called when the menu button is pressed
+   */
   triggerSidenav(){ this.appService.toggle(); }
 
 }
