@@ -102,3 +102,6 @@ Database_config.properties
 # Static folder for front-end resources
 /src/main/resources/static/*
 !/src/main/resources/static/.gitkeep
+
+/src/main/resources/Locations/*
+!/src/main/resources/Locations/.gitkeep
