@@ -1,7 +1,7 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.dataclasses.XlsxReader;
-import com.bramgussekloo.projects.statements.XlsxReadingStatements;
+import com.bramgussekloo.projects.dataclasses.ElectionCourse;
+import com.bramgussekloo.projects.statements.ElectionCourseExcelReaderStatements;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -19,7 +19,7 @@ import java.io.IOException;
 @Api(value = "Keuzevakken lijst")
 @RestController
 @RequestMapping("/api/kv-lijst")
-public class xlsxReadingController {
+public class ElectionCourseExcelReaderController {
 
     /**
      * Gets all Election Course as an Object and save them into a List
@@ -28,13 +28,13 @@ public class xlsxReadingController {
      */
     @ApiOperation(value = "Get a list of all Election Course from the excel file")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = XlsxReader.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list", response = ElectionCourse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping
     private ResponseEntity getElectionCourseList() {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(XlsxReadingStatements.getExcelContent());
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseExcelReaderStatements.getExcelContent());
         } catch (IOException e) {
             // File not found, throw new msg;
             throw new IllegalArgumentException(e.getMessage());
@@ -44,7 +44,7 @@ public class xlsxReadingController {
     @PostMapping("/upload")
     private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) throws IOException {
         try{
-            XlsxReadingStatements.uploadFile(file);
+            ElectionCourseExcelReaderStatements.uploadFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         catch(IOException e){
