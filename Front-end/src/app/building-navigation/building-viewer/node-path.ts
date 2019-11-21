@@ -207,6 +207,9 @@ export class NodePath{
       if (nodeConnection.node1Vector.y >= min && nodeConnection.node1Vector.y <= max || nodeConnection.node2Vector.y >= min && nodeConnection.node2Vector.y <= max){
         nodeConnections.push(nodeConnection);
       }
+      else {
+        break;
+      }
     }
 
     return nodeConnections;
