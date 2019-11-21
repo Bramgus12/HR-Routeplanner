@@ -8,8 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -17,7 +15,6 @@ public class LocationNodeNetworkStatements {
 
 
     private static File getFile(String locationName) throws IOException {
-        ClassLoader classLoader = LocationNodeNetworkStatements.class.getClassLoader();
         if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
             File file = new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName);
             if (!file.exists()) {
@@ -37,7 +34,6 @@ public class LocationNodeNetworkStatements {
     }
 
     private static File getLocationsFolder() {
-        ClassLoader classLoader = LocationNodeNetworkStatements.class.getClassLoader();
         if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
             return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/");
         } else {

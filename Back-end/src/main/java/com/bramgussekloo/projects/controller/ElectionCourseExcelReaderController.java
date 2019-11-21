@@ -6,13 +6,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.models.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 
 // Controller for xlsx reader
@@ -37,24 +40,36 @@ public class ElectionCourseExcelReaderController {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseExcelReaderStatements.getExcelContent());
         } catch (IOException e) {
             // File not found, throw new msg;
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    private ResponseEntity updateFile(@RequestParam MultipartFile file){
+        try {
+            ElectionCourseExcelReaderStatements.updateFile(file);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (IOException e){
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @PostMapping("/upload")
-    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) throws IOException {
+    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) {
         try{
             ElectionCourseExcelReaderStatements.uploadFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         catch(IOException e){
-            throw new IOException(e.getMessage());
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
