@@ -105,3 +105,9 @@ Database_config.properties
 
 /src/main/resources/Locations/*
 !/src/main/resources/Locations/.gitkeep
+
+/bin/
+/.vscode/
+/.settings/
+/.classpath
+/.project

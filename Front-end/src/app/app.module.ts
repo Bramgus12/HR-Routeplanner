@@ -20,7 +20,9 @@ import { BuildingViewerComponent } from './building-navigation/building-viewer/b
 import { MapsNavigationComponent } from './maps-navigation/maps-navigation.component';
 
 import { keys } from './3rdparty/api_keys';
-import { SafeHTMLPipe } from './pipes/safe-html.pipe'; 
+import { SafeHTMLPipe } from './pipes/safe-html.pipe';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   imports: [
@@ -32,6 +34,7 @@ import { SafeHTMLPipe } from './pipes/safe-html.pipe';
     MaterialModule,
     NgxMaterialTimepickerModule,
     AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   declarations: [
     AppComponent,
