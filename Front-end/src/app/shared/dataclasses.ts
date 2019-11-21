@@ -16,7 +16,18 @@ export interface NavigationState {
   from: string,
   to: string,
   departNow: boolean,
+  timeMode: TimeMode,
   time: string
+}
+
+export enum TimeMode {
+  ARRIVAL_BY,
+  DEPART_BY
+}
+
+export interface TimeModeOption {
+  name: string,
+  value: TimeMode
 }
 
 export class GeoLocation {
