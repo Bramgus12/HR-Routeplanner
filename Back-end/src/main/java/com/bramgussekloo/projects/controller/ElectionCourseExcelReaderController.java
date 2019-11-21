@@ -6,16 +6,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.models.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.util.ResourceBundle;
 
 
 // Controller for xlsx reader
@@ -45,6 +42,16 @@ public class ElectionCourseExcelReaderController {
         }
     }
 
+    /**
+     * Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again.
+     *
+     * @return void
+     */
+    @ApiOperation(value = "Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectionCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 402, message = "No Content")
+    })
     @PutMapping
     private ResponseEntity updateFile(@RequestParam MultipartFile file){
         try {
@@ -56,6 +63,16 @@ public class ElectionCourseExcelReaderController {
         }
     }
 
+    /**
+     * Upload Excel file in Election Course folder if file doesn't exist.
+     *
+     * @return void
+     */
+    @ApiOperation(value = "Upload Excel file in Election Course folder if file doesn't exist.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully uploaded", response = ElectionCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
     @PostMapping("/upload")
     private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) {
         try{
