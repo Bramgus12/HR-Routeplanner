@@ -3,6 +3,7 @@ package com.bramgussekloo.projects.dataclasses;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+
 @ApiModel(description = "Model of the node")
 public class Node {
 
