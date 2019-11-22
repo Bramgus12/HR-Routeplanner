@@ -33,7 +33,7 @@ import { environment } from '../environments/environment';
     RoutingModule,
     MaterialModule,
     NgxMaterialTimepickerModule,
-    AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] })
+    AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] }),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   declarations: [
