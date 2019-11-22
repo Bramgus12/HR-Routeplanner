@@ -1,1 +1,26 @@
 <app-building-viewer></app-building-viewer>
+<div [class.mat-elevation-z12]="!isActive" class="navigation-controls-container"
+  (window:keydown.arrowleft)="backwardPressed()"
+  (window:keyup.arrowleft)="backwardReleased()"
+  (window:keydown.arrowright)="forwardPressed()"
+  (window:keyup.arrowright)="forwardReleased()"
+>
+
+  <mat-slider color="primary"
+    step="0.2"
+    [(ngModel)] = "sliderValue"
+    (input)="onSliderChange($event)"></mat-slider>
+  <div class="navigation-buttons-container">
+    <button mat-raised-button color="primary" 
+      (mousedown)="backwardPressed()"
+      (touchstart)="backwardPressed()"
+      (mouseup)="backwardReleased()"
+      (touchend)="backwardReleased()">Backward</button>
+    <button mat-raised-button color="primary" 
+      (mousedown)="forwardPressed()" 
+      (touchstart)="forwardPressed()" 
+      (mouseup)="forwardReleased()"
+      (touchend)="forwardReleased()">Forward</button>
+  </div>
+
+</div>

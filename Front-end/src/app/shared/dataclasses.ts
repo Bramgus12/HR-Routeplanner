@@ -43,3 +43,23 @@ export class GeoLocation {
     return this.latitute + ',' + this.longtitute;
   }
 }
+
+export interface Node {
+  number: number;
+  type: string;
+  code: string;
+  label: string;
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface NodeConnection {
+  node1: Node;
+  node2: Node;
+  node1Vector: THREE.Vector3;
+  node2Vector: THREE.Vector3;
+  node1Distance: number;
+  node2Distance: number;
+  distance: number;
+}

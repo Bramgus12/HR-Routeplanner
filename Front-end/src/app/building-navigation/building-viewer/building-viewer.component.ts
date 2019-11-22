@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy, AfterViewInit, Host, Inject } from '@angular/core';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { DevGui } from './dev-gui';
 import { BuildingModel } from './building-model';
 import { NodePath } from './node-path';
+import { BuildingNavigationComponent } from '../building-navigation.component';
+import { BuildingViewerService } from './building-viewer.service';
+import { Node } from 'src/app/shared/dataclasses';
 
 @Component({
   selector: 'app-building-viewer',
@@ -24,7 +27,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
   private devGui: DevGui;
 
-  constructor() {
+  constructor(private service: BuildingViewerService) {
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -36,17 +39,17 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     
     // Camera
     this.camera = new THREE.PerspectiveCamera(50, 1280/720, 0.01, 200);
-    this.camera.position.set(46, 30, -15);
+    this.camera.position.set(10, 10, 10);
 
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
     this.orbitControls.enableDamping = true;
     this.orbitControls.dampingFactor = 0.05;
-    this.orbitControls.target.set(22, 2, -34);
     this.orbitControls.enableKeys = false;
     this.orbitControls.update();
     
     // Scene
     this.scene = new THREE.Scene();
+    // this.scene.background = new THREE.Color(0xffffff);
 
     // Clock for delta time
     this.clock = new THREE.Clock();
@@ -81,7 +84,13 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     // Stop render loop
     window.cancelAnimationFrame(this.nextFrameId);
     this.scene = undefined;
-  }  
+  }
+
+  createRoute(locationName: string, from: number, to: number){
+    this.service.getRoute(locationName, from, to).subscribe(nodes => {
+      this.nodePath.create(nodes);
+    });
+  }
 
   // Main render loop for 3D view.
   animate() {
@@ -117,14 +126,6 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }
-  }
-
-  onArrowLeft(){
-    this.nodePath.prev();
-  }
-
-  onArrowRight(){
-    this.nodePath.next();
   }
 
 }

@@ -37,9 +37,11 @@ export class BuildingModel{
     // Setup floor collections and materials
     const floorRoots: THREE.Object3D[] = this.getObjectsByBuildingPart("FloorRoot");
     floorRoots.forEach(floorRoot => {
+      // floorRoot.visible = false;
       if( typeof floorRoot.userData.floorNumber === 'number' ){
         const floorCollection = this.getFloorCollectionByNumber(floorRoot.userData.floorNumber, true);
         const floorModel = new FloorModel(floorCollection, floorRoot);
+        floorModel.setState(FloorModel.HIDDEN);
         floorCollection.addFloorModel(floorModel);
       }
     });
@@ -80,23 +82,34 @@ export class BuildingModel{
     return floorCollections;
   }
 
-  showFloorsInRange(min: number, max: number): FloorCollection[]{
+  showFloorsInRange(min: number, max: number, instant: boolean=false): FloorCollection[]{
     const visibleFloorCollections: FloorCollection[] = this.getFloorsInRange(min, max);
     this.floorsCollections.forEach(floorCollection => {
       const visible: boolean = visibleFloorCollections.indexOf(floorCollection) >= 0;
 
       // floorCollection.setVisible( visible );
-      if(visible){
-        floorCollection.moveToBase();
+      if(visible && instant){
+        floorCollection.setState(FloorModel.VISIBLE);
       }
-      else if(floorCollection.getYPos() < min){
-        floorCollection.moveDown();
+      else if(!visible && instant){
+        floorCollection.setState(FloorModel.HIDDEN);
       }
-      else{
-        floorCollection.moveUp();
+      else if(visible){
+        floorCollection.setState(FloorModel.APPEAR);
+      }
+      else if(!visible){
+        floorCollection.setState(FloorModel.DISAPPEAR);
       }
     });
     return visibleFloorCollections;
+  }
+
+  getVisibleFloorModels(): FloorModel[]{
+    let visibleFloorsModels: FloorModel[] = [];
+    this.floorsCollections.forEach(floorsCollection => {
+      visibleFloorsModels = visibleFloorsModels.concat(floorsCollection.getVisibleFloorModels());
+    });
+    return visibleFloorsModels;
   }
 
   getObjectsByBuildingPart(part: string): THREE.Object3D[]{

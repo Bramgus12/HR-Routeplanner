@@ -3,26 +3,37 @@ import { FloorCollection } from './floor-collection';
 import { ThreeUtils } from './three-utils';
 
 export class FloorModel{
-  private floorMesh: THREE.Mesh;
-  private wallMesh: THREE.Mesh;
+  static readonly HIDDEN: number = 0;
+  static readonly VISIBLE: number = 1;
+  static readonly APPEAR: number = 2;
+  static readonly DISAPPEAR: number = 3;
+  private state: number = 0;
+  public wallObstruction: boolean = false;
+
+  readonly hiddenOpacity: number = 0;
+  readonly visibleOpacity: number = 1;
+  readonly hiddenScale: number = 0.0001;
+  readonly visibleScale: number = 1;
+  readonly fadeSpeed: number = 6;
+  readonly slowFadeSpeed: number = 0.8;
+  private opacity: number = 0;
+  private obstructedOpacity: number = 0.85;
+  
+  readonly floorMesh: THREE.Mesh;
+  readonly wallMesh: THREE.Mesh;
   private floorMaterial: THREE.MeshStandardMaterial;
   private wallMaterial: THREE.MeshStandardMaterial;
   private wallBoundingBox: THREE.Box3;
-  readonly basePosition: THREE.Vector3 = new THREE.Vector3();
-  readonly upPosition: THREE.Vector3 = new THREE.Vector3();
-  readonly downPosition: THREE.Vector3 = new THREE.Vector3();
 
-  private fromPosition: THREE.Vector3 = new THREE.Vector3();
-  private toPosition: THREE.Vector3 = new THREE.Vector3();
+  get visible(): boolean{
+    return this.floorRoot.visible;
+  }
+  set visible(value: boolean){
+    this.floorRoot.visible = value;
+  }
 
-  constructor(private collection: FloorCollection, private floorRoot: THREE.Object3D){
-    this.basePosition.copy(floorRoot.position);
-    this.toPosition.copy(floorRoot.position);
-    this.fromPosition.copy(floorRoot.position);
-    this.upPosition.copy(floorRoot.position);
-    this.downPosition.copy(floorRoot.position);
-    this.downPosition.y -= 20;
-    this.upPosition.y += 20;
+  constructor(private collection: FloorCollection, readonly floorRoot: THREE.Object3D){
+
     this.floorMesh = ThreeUtils.getMeshByBuildingPart(floorRoot, "Floor");
     this.wallMesh = ThreeUtils.getMeshByBuildingPart(floorRoot, "Wall");
 
@@ -38,42 +49,85 @@ export class FloorModel{
     this.floorMaterial.transparent = true;
     this.wallMaterial.transparent = true;
 
+    this.floorMaterial.side = THREE.FrontSide;
+    this.wallMaterial.side = THREE.FrontSide;
+
     this.wallBoundingBox = new THREE.Box3().setFromObject(this.wallMesh);
-  }
-
-  setOpacity(opacity: number){
-    this.wallMaterial.opacity = opacity;
-    this.floorMaterial.opacity = opacity;
-  }
-
-  setVisible(visible: boolean){
-    this.floorRoot.visible = visible;
-  }
-
-  moveToBase(){
-    this.fromPosition.copy(this.floorRoot.position);
-    this.toPosition.copy(this.basePosition);
-  }
-
-  moveUp(){
-    this.fromPosition.copy(this.floorRoot.position);
-    this.toPosition.copy(this.upPosition);
-  }
-
-  moveDown(){
-    this.fromPosition.copy(this.floorRoot.position);
-    this.toPosition.copy(this.downPosition);
   }
 
   getBoundingBox(): THREE.Box3{
     return this.wallBoundingBox;
   }
 
-  animate(delta: number){
-    if( this.floorRoot.position.distanceTo(this.toPosition) > 0 ){
-      this.floorRoot.position.y = ThreeUtils.tweenValue(this.floorRoot.position.y, this.toPosition.y, 50*delta);
+  setState(state: number){
+
+    if(state == FloorModel.HIDDEN){
+      this.visible = false
+      this.opacity = this.hiddenOpacity;
+      this.state = state;
+      this.wallMesh.scale.y = this.hiddenScale;
+      this.floorMesh.scale.y = this.hiddenScale;
+    }
+    else if(state == FloorModel.VISIBLE){
+      this.visible = true
+      this.opacity = this.visibleOpacity;
+      this.state = state;
+      this.wallMesh.scale.y = this.visibleScale;
+      this.floorMesh.scale.y = this.visibleScale;
+    }
+    else if(state == FloorModel.APPEAR && this.state != FloorModel.APPEAR && this.state != FloorModel.VISIBLE){
+      this.visible = true;
+      this.opacity = this.hiddenOpacity;
+      this.state = state;
+      this.wallMesh.scale.y = this.hiddenScale;
+      this.floorMesh.scale.y = this.hiddenScale;
+    }
+    else if(state == FloorModel.DISAPPEAR && this.state != FloorModel.DISAPPEAR && this.state != FloorModel.HIDDEN){
+      this.visible = true;
+      this.opacity = this.visibleOpacity;
+      this.state = state;
+      this.wallMesh.scale.y = this.visibleScale;
+      this.floorMesh.scale.y = this.visibleScale;
     }
 
-    this.setVisible(this.floorRoot.position.y != this.upPosition.y && this.floorRoot.position.y != this.downPosition.y);
+  }
+
+  getState(){
+    return this.state;
+  }
+
+  animate(delta: number){
+
+    if(this.state == FloorModel.APPEAR){
+      this.opacity = ThreeUtils.tweenValue(this.opacity, this.visibleOpacity, this.fadeSpeed * delta);
+      this.wallMesh.scale.y = ThreeUtils.tweenValue(this.wallMesh.scale.y, this.visibleScale, this.fadeSpeed * delta);
+      this.floorMesh.scale.y = ThreeUtils.tweenValue(this.floorMesh.scale.y, this.visibleScale, this.fadeSpeed * delta);
+      if(this.opacity == this.visibleOpacity && this.wallMesh.scale.y == this.visibleScale){
+        this.setState(FloorModel.VISIBLE);
+      }
+    }
+    else if(this.state == FloorModel.DISAPPEAR){
+      this.opacity = ThreeUtils.tweenValue(this.opacity, this.hiddenOpacity, this.fadeSpeed * delta);
+      this.wallMesh.scale.y = ThreeUtils.tweenValue(this.wallMesh.scale.y, this.hiddenScale, this.fadeSpeed * delta);
+      this.floorMesh.scale.y = ThreeUtils.tweenValue(this.floorMesh.scale.y, this.hiddenScale, this.fadeSpeed * delta);
+      if(this.opacity == this.hiddenOpacity && this.wallMesh.scale.y == this.hiddenScale){
+        this.setState(FloorModel.HIDDEN);
+      }
+    }
+
+    if(this.wallObstruction && this.opacity >= this.obstructedOpacity){
+      this.wallMaterial.opacity = ThreeUtils.tweenValue(this.wallMaterial.opacity, this.obstructedOpacity, delta * this.slowFadeSpeed);
+    }
+    else if(this.wallMaterial.opacity != this.opacity && this.opacity == this.visibleOpacity){
+      this.wallMaterial.opacity = ThreeUtils.tweenValue(this.wallMaterial.opacity, this.opacity, delta * this.slowFadeSpeed);
+    }
+    else if(this.wallMaterial.opacity != this.opacity){
+      this.wallMaterial.opacity = this.opacity;
+    }
+
+    if(this.floorMaterial.opacity != this.opacity){
+      this.floorMaterial.opacity = this.opacity;
+    }
+
   }
 }

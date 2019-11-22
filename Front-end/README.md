@@ -124,6 +124,14 @@ export class ...Component implements OnInit {
 }
 ```
 
+### Drawing a route in the building navigation page.
+To draw call the routing engine from the building navigation page, provide the parameters `locationName` `to` and `from` in the url.
+
+For example:
+```
+http://localhost:8080/building-navigation?locationName=Wijnhaven&from=0&to=744
+```
+
 ---
 
 ## Navigation APIs

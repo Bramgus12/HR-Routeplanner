@@ -1,0 +1,56 @@
+@import 'helpers';
+
+:host {
+  position: absolute;
+  top: 56px;
+  left: 0px;
+  display: block;
+  height: calc(80vh - 56px);
+  
+  @include media-phone(){
+    top: 64px;
+    height: calc(80vh - 64px);
+  }
+
+  width: 100%;
+  overflow: hidden;
+}
+
+.navigation-controls-container {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  height: 20vh;
+  background-color: white;
+  
+  .mat-slider{
+    width: calc(100% - 20px);
+    margin: 5px 10px;
+  }
+
+  .navigation-buttons-container{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    height: 50%;
+    align-items: stretch;
+
+    button {
+      flex-basis: 0;
+      flex-grow: 1;
+      margin: 5px;
+      height: calc(100% - 10px);
+      // max-height: 50px;
+    }
+    button:first-child{
+      margin-left: 10px;
+    }
+    button:last-child{
+      margin-right: 10px;
+    }
+
+  }
+
+}
