@@ -106,6 +106,9 @@ Database_config.properties
 /src/main/resources/Locations/*
 !/src/main/resources/Locations/.gitkeep
 
+/src/main/resources/ElectionCourse/*
+!/src/main/resources/ElectionCourse/.gitkeep
+
 /bin/
 /.vscode/
 /.settings/

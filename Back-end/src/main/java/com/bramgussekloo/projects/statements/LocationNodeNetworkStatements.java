@@ -44,7 +44,7 @@ public class LocationNodeNetworkStatements {
         File f = getFile(file.getOriginalFilename());
         if (!f.exists()) {
             ObjectMapper mapper = new ObjectMapper();
-            FileService.uploadFile(file, "Locations");
+            FileService.uploadFile(file, "Locations", file.getOriginalFilename());
             File fileRef = getFile(file.getOriginalFilename());
             if (fileRef.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
                 return mapper.readValue(fileRef, LocationNodeNetwork.class);
@@ -94,7 +94,7 @@ public class LocationNodeNetworkStatements {
             if (resource.delete()) {
                 if (locationName.equals(Objects.requireNonNull(file.getOriginalFilename()).replace(".json", ""))) {
                     ObjectMapper mapper = new ObjectMapper();
-                    FileService.uploadFile(file, "Locations");
+                    FileService.uploadFile(file, "Locations", file.getOriginalFilename());
                     return mapper.readValue(resource, LocationNodeNetwork.class);
                 } else {
                     throw new IOException("locationName in URL and locationName in JSON are not the same.");
