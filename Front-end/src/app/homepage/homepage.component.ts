@@ -86,7 +86,7 @@ export class HomepageComponent implements OnInit {
     this.toFormControl.valueChanges.subscribe((value: string) => {
       if(value != ""){
         this.toSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()))
-        // TODO get classroom suggestions
+        this.toSuggestions.concat(this.rooms.filter(val => val.toLowerCase().includes(value.toLowerCase())));
       } else {
         this.navigationModel.to = value;
         this.toSuggestions = [];
