@@ -21,6 +21,7 @@ export class HomepageComponent implements OnInit {
   fromSuggestions: string[] = [];
   toSuggestions: string[] = [];
   buildings: string[] = [];
+  rooms: string[] = [];
   timeModeOptions: TimeModeOption[] = [
     { name: "Arrival by", value: TimeMode.ARRIVAL_BY },
     { name: "Depart by", value: TimeMode.DEPART_BY }
@@ -59,16 +60,20 @@ export class HomepageComponent implements OnInit {
         clockHandColor: '#d32f2f',
         clockFaceTimeInactiveColor: '#fff'
       }
-    }
+    };
 
     this.service.getBuildings().subscribe(data => {
       this.buildings = data.map(val => val.name)
-    })
+    });
+
+    this.service.getRoomNodes().subscribe(data => {
+      this.rooms = data.map(val => val.code);
+    });
 
     this.fromFormControl.valueChanges.pipe(debounceTime(500)).subscribe((value: string) => {
-      if(value != "" ){
-        this.fromSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()))
-        // TODO get classroom suggestions
+      if(value.length != 0){
+        this.fromSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()));
+        this.fromSuggestions.concat(this.rooms.filter(val => val.toLowerCase().includes(value.toLowerCase())));
 
         // Only check if suggetions is empty
         if(this.fromSuggestions.length == 0) this.mapsService.getPlacePredictions(value).subscribe(result => this.fromSuggestions = result.map(val => val.description));
@@ -79,7 +84,7 @@ export class HomepageComponent implements OnInit {
     });
 
     this.toFormControl.valueChanges.subscribe((value: string) => {
-      if(value != "" ){
+      if(value != ""){
         this.toSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()))
         // TODO get classroom suggestions
       } else {
