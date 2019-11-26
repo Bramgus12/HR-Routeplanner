@@ -73,10 +73,11 @@ export class HomepageComponent implements OnInit {
     this.fromFormControl.valueChanges.pipe(debounceTime(500)).subscribe((value: string) => {
       if(value.length != 0){
         this.fromSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()));
-        this.fromSuggestions.concat(this.rooms.filter(val => val.toLowerCase().includes(value.toLowerCase())));
+        this.fromSuggestions = this.fromSuggestions.concat(this.rooms.filter(val => val.toLowerCase().includes(value.toLowerCase())));
 
         // Only check if suggetions is empty
         if(this.fromSuggestions.length == 0) this.mapsService.getPlacePredictions(value).subscribe(result => this.fromSuggestions = result.map(val => val.description));
+        this.fromSuggestions.sort();
       } else {
         this.navigationModel.from = value;
         this.fromSuggestions = [];
@@ -84,9 +85,10 @@ export class HomepageComponent implements OnInit {
     });
 
     this.toFormControl.valueChanges.subscribe((value: string) => {
-      if(value != ""){
+      if(value.length != 0){
         this.toSuggestions = this.buildings.filter(val => val.toLowerCase().includes(value.toLowerCase()))
-        this.toSuggestions.concat(this.rooms.filter(val => val.toLowerCase().includes(value.toLowerCase())));
+        this.toSuggestions = this.toSuggestions.concat(this.rooms.filter(val => val.toLowerCase().includes(value.toLowerCase())));
+        this.toSuggestions.sort();
       } else {
         this.navigationModel.to = value;
         this.toSuggestions = [];
