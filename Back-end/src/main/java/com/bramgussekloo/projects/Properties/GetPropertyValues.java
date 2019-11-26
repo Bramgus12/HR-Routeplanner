@@ -1,27 +1,23 @@
-package com.bramgussekloo.projects.database;
+package com.bramgussekloo.projects.Properties;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class getPropertiesValues {
-    InputStream inputStream;
-
-    public getPropertiesValues() {
-
-    }
+public class GetPropertyValues {
+    private static InputStream inputStream;
 
     /**
      * Get values from properties file
      * Resource: https://crunchify.com/java-properties-file-how-to-read-config-properties-values-in-java/
      */
-    public String[] getPropValues(String propFileName) {
+    public static String[] getDatabasePropValues(String propFileName) {
         String[] result = {"", "", ""};
         try {
             Properties prop = new Properties();
-
-            inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
+            inputStream = GetPropertyValues.class.getClassLoader().getResourceAsStream(propFileName);
             if (inputStream != null) {
                 prop.load(inputStream);
             } else {
@@ -30,7 +26,6 @@ public class getPropertiesValues {
             String db_url = prop.getProperty("db_url");
             String db_username = prop.getProperty("db_username");
             String db_password = prop.getProperty("db_password");
-
             result[0] = db_url;
             result[1] = db_username;
             result[2] = db_password;
@@ -46,5 +41,22 @@ public class getPropertiesValues {
             }
         }
         return result;
+    }
+
+    public static File getResourcePath( String FolderName, String fileName) throws IOException {
+        Properties properties = new Properties();
+        inputStream = GetPropertyValues.class.getClassLoader().getResourceAsStream("file_path.properties");
+        if (inputStream != null){
+            properties.load(inputStream);
+        } else {
+            throw new IOException("Property file file_path.properties not found");
+        }
+        if (!fileName.isEmpty()) {
+            String file_path = properties.getProperty("file_path") + FolderName + "/" + fileName;
+            return new File(file_path);
+        } else {
+            String file_path = properties.getProperty("file_path") + FolderName;
+            return new File(file_path);
+        }
     }
 }
