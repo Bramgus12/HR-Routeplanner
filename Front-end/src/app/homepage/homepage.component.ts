@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { Observable, interval } from 'rxjs';
+import { Observable, interval, forkJoin } from 'rxjs';
 import { map, startWith, throttleTime, debounceTime } from 'rxjs/operators';
 
 import { HomepageService } from './homepage.service';
 import { AppService } from '../app.service'; 
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
-import { NavigationState, Building, TimeMode, TimeModeOption } from '../shared/dataclasses';
+import { NavigationState, Building, TimeMode, TimeModeOption, Address } from '../shared/dataclasses';
 import { GoogleMapsService } from '../3rdparty/google-maps.service';
 
 @Component({
@@ -110,12 +110,39 @@ export class HomepageComponent implements OnInit {
    * Gets called when #navigationForm is submitted
    */
   goToNavigation(){
-    // TODO check which navigation component to navigate to
+    const retrieveAddresses: Observable<Address>[] = [];
+    
+    if(this.buildings.includes(this.navigationModel.to)){
+      retrieveAddresses.push(this.service.getBuildingAddress(this.navigationModel.to));
+    } else if(this.rooms.includes(this.navigationModel.to)){
+      retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.to));
+    } else {
+      // Inform the user that the input is wrong
+      return;
+    } 
 
-    // Ways of sending data to other components (no data-binding) using states!
-    // https://stackoverflow.com/a/54365098
-    // Other alternatives: https://stackoverflow.com/a/44865817
-    this.router.navigate([this.componentUrl], { state: this.navigationModel })
+    if(this.buildings.includes(this.navigationModel.from)){
+      retrieveAddresses.push(this.service.getBuildingAddress(this.navigationModel.from));
+    } else if(this.rooms.includes(this.navigationModel.from)){
+      retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.from));
+    }
+    
+    forkJoin(retrieveAddresses).subscribe(results => {
+      const toAddr = results[0];
+      this.navigationModel.to = `${toAddr.street} ${toAddr.number}, ${toAddr.city}`;
+
+      if(results.length == 2){
+        const fromAddr = results[1];
+        this.navigationModel.from = `${fromAddr.street} ${fromAddr.number}, ${fromAddr.city}`;
+      }
+
+      // TODO choose the correct component to navigate to here!
+
+      /* Ways of sending data to other components (no data-binding) using states!
+      https://stackoverflow.com/a/54365098
+      Other alternatives: https://stackoverflow.com/a/44865817 */
+      this.router.navigate([this.componentUrl], { state: this.navigationModel })
+    })
   }
 
 }
