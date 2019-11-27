@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { Observable, interval } from 'rxjs';
 import { map, startWith, throttleTime, debounceTime } from 'rxjs/operators';
 
+import { HomepageService } from './homepage.service';
 import { AppService } from '../app.service'; 
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { NavigationState, Building, TimeMode, TimeModeOption } from '../shared/dataclasses';
@@ -43,7 +44,7 @@ export class HomepageComponent implements OnInit {
   //Temp
   componentUrl = 'building-navigation';
 
-  constructor(private appService: AppService, private mapsService: GoogleMapsService, private router: Router) { }
+  constructor(private service: HomepageService, private appService: AppService, private mapsService: GoogleMapsService, private router: Router) { }
 
   ngOnInit() {
     if(this.appService.darkMode) this.timepickerTheme = {
@@ -61,11 +62,11 @@ export class HomepageComponent implements OnInit {
       }
     };
 
-    this.appService.getBuildings().subscribe(data => {
+    this.service.getBuildings().subscribe(data => {
       this.buildings = data.map(val => val.name)
     });
 
-    this.appService.getRoomNodes().subscribe(data => {
+    this.service.getRoomNodes().subscribe(data => {
       this.rooms = data.map(val => val.code);
     });
 
