@@ -10,6 +10,7 @@ from . SolidifyFloorFunctions import solidifyFloors
 from . WireframeVisibilityFunctions import showWireframes
 from . NodeNetworkFunctions import createNode, connectRoomNodes
 from . AmbientOcclusionFunctions import setupAmbientOcclusion
+from . UpdateWallColorsFunctions import updateWallColors
 
 class FloorplanToolsPanel(Panel):
     bl_idname = "FLOORPLAN_PT_PANEL"
@@ -50,6 +51,9 @@ class FloorplanToolsPanel(Panel):
         row = layout.row()
         row.operator('floorplan.hide_wireframes', text="Hide Wireframes")
         row.operator('floorplan.show_wireframes', text="Show Wireframes")
+
+        row = layout.row()
+        row.operator('floorplan.update_wall_colors', text="Update Wall Colors")
 
         row = layout.row()
         row.label(text="Node Network")
@@ -196,6 +200,14 @@ class HideWireframes(Operator):
 
     def execute(self, context):
         return showWireframes(False)
+
+class UpdateWallColors(Operator):
+    bl_idname = "floorplan.update_wall_colors"
+    bl_label = "Update wall colors."
+    bl_description = "Update the color of each wall to the color given in the custom property of the floor root."
+
+    def execute(self, context):
+        return updateWallColors()
 
 class BakeAmbientOcclusion(Operator):
     bl_idname = "floorplan.bake_ao"

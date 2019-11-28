@@ -61,3 +61,9 @@ def solidifyObject(obj, thickness=0.1):
     modifier = obj.modifiers.new(name='Solidify', type='SOLIDIFY')
     modifier.thickness = thickness
     return modifier
+
+def hexToRgb(h):
+    '''Returns the rgb integers of a hex color value.'''
+    h = h.lstrip('#')
+    hlen = len(h)
+    return tuple( int(h[i:i+hlen//3], 16) for i in range(0, hlen, hlen//3) )
