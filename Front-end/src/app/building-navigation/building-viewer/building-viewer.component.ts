@@ -27,6 +27,8 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
   private devGui: DevGui;
 
+  currentFloor: string = "0";
+
   constructor(private service: BuildingViewerService) {
     // Renderer
     this.renderer = new THREE.WebGLRenderer({

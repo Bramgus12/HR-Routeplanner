@@ -29,6 +29,7 @@ export class NodePath{
     const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(0.2, 8, 8);
     const sphereMaterial: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff});
     this.myLocation = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    this.myLocation.visible = false;
     this.buildingViewer.scene.add(this.myLocation);
     this.currentConnection = null;
     // // Create a test route for now.
@@ -37,6 +38,7 @@ export class NodePath{
 
   create(nodes: Node[]){
     this.nodes = nodes;
+    this.myLocation.visible = true;
 
     this.nodeConnections = [];
     this.totalDistance = 0;
@@ -225,11 +227,18 @@ export class NodePath{
     }
     let min = visibleCollections[0].getBoundingBox().min.y + visibleCollections[0].getYPos();
     let max = visibleCollections[0].getBoundingBox().max.y + visibleCollections[0].getYPos();
+    let currentFloorFound: boolean = false;
     visibleCollections.forEach(floorCollection => {
       const bbox: THREE.Box3 = floorCollection.getBoundingBox();
       const yPos: number = floorCollection.getYPos();
       min = bbox.min.y + yPos < min ? bbox.min.y + yPos : min;
       max = bbox.max.y + yPos > max ? bbox.max.y + yPos : max;
+
+      // Find current floor
+      if( !currentFloorFound && this.myLocation.position.y >= bbox.min.y + yPos && this.myLocation.position.y < bbox.max.y + yPos ){
+        this.buildingViewer.currentFloor = floorCollection.number.toString();
+        currentFloorFound = true;
+      }
     });
 
     const visibleConnections: NodeConnection[] = this.getConnectionsInRange(min, max, true);
@@ -255,34 +264,33 @@ export class NodePath{
 
   animate(delta: number){
     
-    if(this.direction != 0){
+    if(this.nodes.length > 0){
+
       const difference: number = this.setTravelledDistance( this.travelledDistance + this.velocity * this.direction * delta );
- 
-    }
-
-    // Check if my location is visible to the camera
-    const camera: THREE.PerspectiveCamera = this.buildingViewer.camera;
-    const visibleFloorModels: FloorModel[] = this.buildingViewer.buildingModel.getVisibleFloorModels();
-    const wallMeshes: THREE.Mesh[] = [];
-    visibleFloorModels.forEach(floorModel => {
-      if(floorModel.wallObstruction == true) floorModel.wallObstruction = false;
-      wallMeshes.push(floorModel.wallMesh);
-    });
-    
-    const myLocationDistance: number = camera.position.distanceTo(this.myLocation.position);
-    this.visibilityRaycaster.far = myLocationDistance;
-    const myLocationDirection: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, camera.position).normalize();
-    this.visibilityRaycaster.set(camera.position, myLocationDirection);
-    const intersects: THREE.Intersection[] = this.visibilityRaycaster.intersectObjects(wallMeshes);
-
-    intersects.forEach(intersect => {
+      
+      // Check if my location is visible to the camera
+      const camera: THREE.PerspectiveCamera = this.buildingViewer.camera;
+      const visibleFloorModels: FloorModel[] = this.buildingViewer.buildingModel.getVisibleFloorModels();
+      const wallMeshes: THREE.Mesh[] = [];
       visibleFloorModels.forEach(floorModel => {
-        if(floorModel.wallMesh === intersect.object){
-          floorModel.wallObstruction = true;
-        }
+        if(floorModel.wallObstruction == true) floorModel.wallObstruction = false;
+        wallMeshes.push(floorModel.wallMesh);
       });
-    });
-
+      
+      const myLocationDistance: number = camera.position.distanceTo(this.myLocation.position);
+      this.visibilityRaycaster.far = myLocationDistance;
+      const myLocationDirection: THREE.Vector3 = new THREE.Vector3().subVectors(this.myLocation.position, camera.position).normalize();
+      this.visibilityRaycaster.set(camera.position, myLocationDirection);
+      const intersects: THREE.Intersection[] = this.visibilityRaycaster.intersectObjects(wallMeshes);
+  
+      intersects.forEach(intersect => {
+        visibleFloorModels.forEach(floorModel => {
+          if(floorModel.wallMesh === intersect.object){
+            floorModel.wallObstruction = true;
+          }
+        });
+      });
+    }
   }
 
 }
