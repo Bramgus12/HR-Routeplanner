@@ -44,7 +44,7 @@ export class FloorModel{
     this.wallMaterial.aoMapIntensity = 0.7;
 
     this.floorMaterial.color.set(0xffffff);
-    this.wallMaterial.color.set(0xffffff);
+    // this.wallMaterial.color.set(0xffffff);
     
     this.floorMaterial.transparent = true;
     this.wallMaterial.transparent = true;
