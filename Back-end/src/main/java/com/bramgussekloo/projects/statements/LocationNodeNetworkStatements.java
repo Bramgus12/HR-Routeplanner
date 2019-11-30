@@ -2,6 +2,8 @@ package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.FileHandling.FileService;
 import com.bramgussekloo.projects.Properties.GetPropertyValues;
+import com.bramgussekloo.projects.dataclasses.Address;
+import com.bramgussekloo.projects.dataclasses.Building;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -24,14 +27,19 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file) throws IOException {
+    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, String stringaddress) throws IOException, SQLException {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         if (!f.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             FileService.uploadFile(file, "Locations", file.getOriginalFilename());
             File fileRef = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
             if (f.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
-                return mapper.readValue(fileRef, LocationNodeNetwork.class);
+                Address address = mapper.readValue(stringaddress, Address.class);
+                Address newAddress = AddressStatements.createAddress(address);
+                LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
+                Building building = new Building(null, newAddress.getId(), locationNodeNetwork.getLocationName());
+                BuildingStatements.createBuilding(building);
+                return locationNodeNetwork;
             } else {
                 throw new IOException(file.getOriginalFilename() + ".json already exists. Try put if you wanna change it.");
             }
