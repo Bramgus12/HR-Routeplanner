@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
@@ -42,11 +43,12 @@ public class LocationNodeNetworkController {
     })
     @PostMapping
     private ResponseEntity createLocationNodeNetwork(
-            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam MultipartFile file
+            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
+            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @RequestParam("address") String address
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file));
-        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, address));
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }

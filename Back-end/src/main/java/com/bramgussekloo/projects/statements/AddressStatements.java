@@ -1,8 +1,14 @@
 package com.bramgussekloo.projects.statements;
 
+import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.database.DatabaseConnection;
+import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
+import com.bramgussekloo.projects.dataclasses.Node;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,6 +30,33 @@ public class AddressStatements {
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=" + id);
         result.next();
         return getResult(id, result);
+    }
+
+    public static Address getAddressByRoomNumber(String code) throws SQLException, IOException {
+        Connection conn = new DatabaseConnection().getConnection();
+        File folder = GetPropertyValues.getResourcePath("Locations", "");
+        File[] listOfFiles = folder.listFiles();
+        String locationName = "";
+        assert listOfFiles != null;
+        for (File file : listOfFiles) {
+            if (file.isFile() && !file.toString().contains(".gitkeep")) {
+                ObjectMapper mapper = new ObjectMapper();
+                LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
+                for (Node node : network.getNodes()){
+                    if (node.getType().equals("Room") && node.getCode().toLowerCase().replace(".", "").equals(code.toLowerCase())){
+                        locationName = network.getLocationName();
+                        break;
+                    }
+                }
+            }
+        }
+        if (locationName.isEmpty()){
+            throw new IOException("Room cannot be found in the locationNodeNetworks");
+        } else {
+            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=(SELECT address_id FROM building WHERE name='" + locationName + "');");
+            resultSet.next();
+            return getResult(resultSet.getInt("id"), resultSet);
+        }
     }
 
     public static Address createAddress(Address address) throws SQLException {
