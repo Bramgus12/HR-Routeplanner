@@ -32,7 +32,7 @@ public class AddressStatements {
         return getResult(id, result);
     }
 
-    public static Address getAddressByRoomNumber(String code) throws SQLException, IOException {
+    public static Address getAddressByRoomCode(String code) throws SQLException, IOException {
         Connection conn = new DatabaseConnection().getConnection();
         File folder = GetPropertyValues.getResourcePath("Locations", "");
         File[] listOfFiles = folder.listFiles();
@@ -43,19 +43,45 @@ public class AddressStatements {
                 ObjectMapper mapper = new ObjectMapper();
                 LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
                 for (Node node : network.getNodes()){
-                    if (node.getType().equals("Room") && node.getCode().toLowerCase().replace(".", "").equals(code.toLowerCase())){
+                    if (node.getType().equals("Room") && node.getCode().toLowerCase().equals(code.toLowerCase())){
                         locationName = network.getLocationName();
                         break;
                     }
                 }
             }
         }
+        System.out.println(code);
         if (locationName.isEmpty()){
             throw new IOException("Room cannot be found in the locationNodeNetworks");
         } else {
             ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=(SELECT address_id FROM building WHERE name='" + locationName + "');");
             resultSet.next();
             return getResult(resultSet.getInt("id"), resultSet);
+        }
+    }
+
+    public static Address getAddressByBuildingName(String buildingName) throws SQLException, IOException {
+        Connection conn = new DatabaseConnection().getConnection();
+        File folder = GetPropertyValues.getResourcePath("Locations", "");
+        File[] listOfFiles = folder.listFiles();
+        String name = "";
+        assert listOfFiles != null;
+        for (File file : listOfFiles) {
+            if (file.isFile() && !file.toString().contains(".gitkeep")) {
+                ObjectMapper mapper = new ObjectMapper();
+                LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
+                if (network.getLocationName().equals(buildingName)) {
+                    name = buildingName;
+                    break;
+                }
+            }
+        }
+        if (!name.isEmpty()) {
+            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=(SELECT building.address_id FROM building WHERE name='" + name + "')");
+            resultSet.next();
+            return getResult(resultSet.getInt("id"), resultSet);
+        } else {
+            throw new IOException("Building does not exist");
         }
     }
 

@@ -1,7 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.dataclasses.Address;
-import com.bramgussekloo.projects.dataclasses.RoomNumber;
 import com.bramgussekloo.projects.statements.AddressStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -79,8 +78,25 @@ public class AddressController {
             @ApiParam(value = "The code of the room, you want to have the address of", required = true) @RequestParam String code
     ){
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByRoomNumber(code));
+            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByRoomCode(code));
         } catch (Exception e){
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Get an address by building name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/building/{BuildingName}")
+    private ResponseEntity getAddressByBuildingName(
+            @ApiParam(value = "The name of a building", required = true) @RequestParam String BuildingName
+    ) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByBuildingName(BuildingName));
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
