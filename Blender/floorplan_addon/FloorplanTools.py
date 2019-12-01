@@ -53,7 +53,7 @@ class FloorplanToolsPanel(Panel):
         row.operator('floorplan.show_wireframes', text="Show Wireframes")
 
         row = layout.row()
-        row.operator('floorplan.update_wall_colors', text="Update Viewport Wall Colors")
+        row.operator('floorplan.update_wall_colors', text="Update Wall Colors")
 
         row = layout.row()
         row.label(text="Node Network")
