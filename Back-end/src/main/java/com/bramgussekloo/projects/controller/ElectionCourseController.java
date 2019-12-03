@@ -1,7 +1,10 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
+import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
+import com.bramgussekloo.projects.dataclasses.Institute;
 import com.bramgussekloo.projects.statements.ElectionCourseStatements;
+import com.bramgussekloo.projects.statements.InstituteStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 // Controller for xlsx reader
@@ -40,20 +44,107 @@ public class ElectionCourseController {
     }
 
     /**
-     *
-     * @param coursecode
-     * @return
+     * Add a specific Election Course description
+     * @param electionCourseDescription
+     * @return added ElectionCourseDescription object
      */
+    @ApiOperation(value = "Add a specific Election Course with its description")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully added an election course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @PostMapping
+    private ResponseEntity createElectionCourseDescription(@ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
 
-    @GetMapping("{coursecode}")
+    /**
+     * Lookup a specific Election Course for its description
+     * @param coursecode
+     * @return ElectionCourseDescription object
+     */
+    @ApiOperation(value = "Lookup a specific Election Course for its description")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/{coursecode}")
     private ResponseEntity getElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getElectionCourseDescription(coursecode));
         } catch (Exception e) {
             e.printStackTrace();
+            throw new IllegalArgumentException("The Election Course Code that you are trying to lookup doesn't exists!");
+        }
+    }
+
+    /**
+     * Lookup all Election Course with its description
+     * @return list of ElectionCourseDescription object
+     */
+    @ApiOperation(value = "Lookup all Election Course with its description")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved all existing courses with its description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/description")
+    private ResponseEntity getAllElectionCourseDescription() {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getAllElectionCourseDescription());
+        } catch (Exception e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
+    /**
+     * Update a specific Election Course for its description
+     * @param coursecode
+     * @return updated ElectionCourseDescription object
+     */
+    @ApiOperation(value = "Update a specific Election Course for its description")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @PutMapping("/{coursecode}")
+    private ResponseEntity updateElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode, @RequestBody ElectionCourseDescription electionCourseDescription) {
+        try {
+            if (coursecode == electionCourseDescription.getCourseCode()){
+                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourse(electionCourseDescription));
+            } else {
+                throw new IllegalArgumentException("Course Code doesn't exist!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     * Delete a specific Election Course with its description
+     * @param coursecode
+     * @return ElectionCourseDescription object of the deleted object
+     */
+    @ApiOperation(value = "Delete a specific Election Course with its description")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully deleted election course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @DeleteMapping("/{coursecode}")
+    private ResponseEntity deleteElectionCourseDescription(@ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.deleteElectionCourseDescription(coursecode));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
 
     /**
      * Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again.

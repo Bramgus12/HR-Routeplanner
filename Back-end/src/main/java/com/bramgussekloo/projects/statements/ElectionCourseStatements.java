@@ -132,8 +132,13 @@ public class ElectionCourseStatements {
     public static ElectionCourseDescription getElectionCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course WHERE electioncoursecode='" + courseCode + "';");
-        result.next();
-        return getResult(result);
+        if (result.next()){
+            return getResult(result);
+        }
+        else{
+            //debug this loop
+            return new ElectionCourseDescription();
+        }
     }
 
     public static ElectionCourseDescription updateElectionCourse(ElectionCourseDescription electionCourse) throws SQLException {

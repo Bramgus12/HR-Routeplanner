@@ -19,6 +19,10 @@ public class ElectionCourseDescription {
         Description = description;
     }
 
+    public ElectionCourseDescription(){
+
+    }
+
     public String getCourseCode() {
         return CourseCode;
     }
