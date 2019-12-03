@@ -2,18 +2,25 @@ package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.FileHandling.FileService;
 import com.bramgussekloo.projects.Properties.GetPropertyValues;
+import com.bramgussekloo.projects.database.DatabaseConnection;
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
+import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
+import com.bramgussekloo.projects.dataclasses.Institute;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElectionCourseExcelReaderStatements {
+public class ElectionCourseStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
     public static void uploadFile(MultipartFile file) throws IOException {
         File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
@@ -104,5 +111,50 @@ public class ElectionCourseExcelReaderStatements {
         } else {
             throw new IOException("There are more than one files on the server. Try to fix that.");
         }
+    }
+
+    public static ElectionCourseDescription createElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException{
+        Connection conn = new DatabaseConnection().getConnection();
+        conn.createStatement().execute("INSERT INTO election_course (electioncoursecode, electioncoursename, description) VALUES ('" + electionCourseDescription.getCourseCode() + "','" + electionCourseDescription.getName() + "', '" + electionCourseDescription.getDescription() + "');");
+        return getElectionCourseDescription(electionCourseDescription.getCourseCode());
+    }
+
+    public static List<ElectionCourseDescription> getAllElectionCourseDescription()throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        List<ElectionCourseDescription> allElectionCourseDescriptions = new ArrayList<>();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course");
+        while (result.next()) {
+            allElectionCourseDescriptions.add(getResult(result));
+        }
+        return allElectionCourseDescriptions;
+    }
+
+    public static ElectionCourseDescription getElectionCourseDescription(String courseCode) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course WHERE electioncoursecode='" + courseCode + "';");
+        result.next();
+        return getResult(result);
+    }
+
+    public static ElectionCourseDescription updateElectionCourse(ElectionCourseDescription electionCourse) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        String ElectionCourseCode = electionCourse.getCourseCode();
+        conn.createStatement().execute("UPDATE election_course SET electioncoursename ='" + electionCourse.getName() + "', description='"+ electionCourse.getDescription() +"' WHERE electioncoursecode='" + ElectionCourseCode + "';");
+        return getElectionCourseDescription(ElectionCourseCode);
+    }
+
+    public static ElectionCourseDescription deleteElectionCourseDescription(String courseCode) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course WHERE electioncoursecode='" + courseCode + "';");
+        conn.createStatement().execute("DELETE FROM election_course WHERE electioncoursecode ='" + courseCode + "';");
+        result.next();
+        return getResult(result);
+    }
+
+    private static ElectionCourseDescription getResult (ResultSet result) throws SQLException {
+        String ElectionCourseCode = result.getString("electioncoursecode");
+        String ElectionCourseName = result.getString("electioncoursename");
+        String ElectionCourseDescription = result.getString("description");
+        return new ElectionCourseDescription(ElectionCourseCode, ElectionCourseName, ElectionCourseDescription);
     }
 }

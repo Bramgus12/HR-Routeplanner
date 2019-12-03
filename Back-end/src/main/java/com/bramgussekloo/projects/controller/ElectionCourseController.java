@@ -1,11 +1,8 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
-import com.bramgussekloo.projects.statements.ElectionCourseExcelReaderStatements;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import com.bramgussekloo.projects.statements.ElectionCourseStatements;
+import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +13,10 @@ import java.io.IOException;
 
 
 // Controller for xlsx reader
-@Api(value = "Keuzevakken lijst")
+@Api(value = "Election Course list")
 @RestController
-@RequestMapping("/api/kv-lijst")
-public class ElectionCourseExcelReaderController {
+@RequestMapping("/api/election-course")
+public class ElectionCourseController {
 
     /**
      * Gets all Election Course as an Object and save them into a List
@@ -34,9 +31,25 @@ public class ElectionCourseExcelReaderController {
     @GetMapping
     private ResponseEntity getElectionCourseList() {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseExcelReaderStatements.getExcelContent());
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getExcelContent());
         } catch (IOException e) {
             // File not found, throw new msg;
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param coursecode
+     * @return
+     */
+
+    @GetMapping("{coursecode}")
+    private ResponseEntity getElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getElectionCourseDescription(coursecode));
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -55,7 +68,7 @@ public class ElectionCourseExcelReaderController {
     @PutMapping
     private ResponseEntity updateFile(@RequestParam MultipartFile file){
         try {
-            ElectionCourseExcelReaderStatements.updateFile(file);
+            ElectionCourseStatements.updateFile(file);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (IOException e){
             e.printStackTrace();
@@ -76,7 +89,7 @@ public class ElectionCourseExcelReaderController {
     @PostMapping("/upload")
     private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) {
         try{
-            ElectionCourseExcelReaderStatements.uploadFile(file);
+            ElectionCourseStatements.uploadFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }
         catch(IOException e){
