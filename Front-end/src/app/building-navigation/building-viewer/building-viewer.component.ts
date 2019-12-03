@@ -44,8 +44,6 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.camera.position.set(10, 10, 10);
 
     this.orbitControls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.orbitControls.enableDamping = true;
-    this.orbitControls.dampingFactor = 0.05;
     this.orbitControls.enableKeys = false;
     this.orbitControls.maxPolarAngle = (Math.PI/2)-(Math.PI/20);
     this.orbitControls.update();
