@@ -26,7 +26,7 @@ export class NodePath{
 
   constructor(private buildingViewer: BuildingViewerComponent){
     // Create sphere for showing my location
-    const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(0.2, 8, 8);
+    const sphereGeometry: THREE.SphereGeometry = new THREE.SphereGeometry(0.2, 16, 16);
     const sphereMaterial: THREE.MeshStandardMaterial = new THREE.MeshStandardMaterial({color: 0x0000ff});
     this.myLocation = new THREE.Mesh(sphereGeometry, sphereMaterial);
     this.myLocation.visible = false;
