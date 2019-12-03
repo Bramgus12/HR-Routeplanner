@@ -14,7 +14,7 @@ import { keys } from '../3rdparty/api_keys';
 })
 export class MapsNavigationComponent implements OnInit {
 
-  navigationState: NavigationState = { from: null, to: null, departNow: true, timeMode: TimeMode.DEPART_BY, time: '' };
+  navigationState: NavigationState = { from: null, to: null, departNow: true, timeMode: TimeMode.DEPART_BY, time: '', fromNode: null, toNode: null };
   directions: google.maps.DirectionsStep[] = [];
   travelModes: TravelMode[] = [];
   transitModes: TransitMode[] = [];

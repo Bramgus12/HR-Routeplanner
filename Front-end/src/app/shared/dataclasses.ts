@@ -17,7 +17,9 @@ export interface NavigationState {
   to: string,
   departNow: boolean,
   timeMode: TimeMode,
-  time: string
+  time: string,
+  fromNode: number,
+  toNode: number
 }
 
 export enum TimeMode {
