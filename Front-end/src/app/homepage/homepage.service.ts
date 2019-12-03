@@ -21,12 +21,12 @@ export class HomepageService {
   }
 
   getBuildingAddress(name: string){
-    const params = new HttpParams().set("name", name);
-    return this.http.get<Address>(this.API_URL + "building/address", { params });
+    const params = new HttpParams().set("BuildingName", name);
+    return this.http.get<Address>(this.API_URL + "address/building", { params });
   }
 
   getRoomAddress(code: string){
-    const params = new HttpParams().set("code", code);
-    return this.http.get<Address>(this.API_URL + "locationnodenetwork/address", { params })
+    const params = new HttpParams().set("RoomCode", code);
+    return this.http.get<Address>(this.API_URL + "address/room", { params })
   }
 }
