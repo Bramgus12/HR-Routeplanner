@@ -26,6 +26,13 @@ public class BuildingStatements {
         return getResult(id, result);
     }
 
+    public static Building getBuildingByName(String name) throws SQLException{
+        Connection conn = new DatabaseConnection().getConnection();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building WHERE name='" + name + "';");
+        result.next();
+        return getResult(result.getInt("id"), result);
+    }
+
     public static Building createBuilding(Building building) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
         Integer addressId = building.getAddress_id();

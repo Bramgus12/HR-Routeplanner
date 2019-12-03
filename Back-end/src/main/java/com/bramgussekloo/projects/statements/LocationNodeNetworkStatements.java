@@ -27,17 +27,15 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, String stringaddress) throws IOException, SQLException {
+    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, Integer addressId) throws IOException, SQLException {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         if (!f.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             FileService.uploadFile(file, "Locations", file.getOriginalFilename());
             File fileRef = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
             if (f.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
-                Address address = mapper.readValue(stringaddress, Address.class);
-                Address newAddress = AddressStatements.createAddress(address);
                 LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
-                Building building = new Building(null, newAddress.getId(), locationNodeNetwork.getLocationName());
+                Building building = new Building(null, addressId, locationNodeNetwork.getLocationName());
                 BuildingStatements.createBuilding(building);
                 return locationNodeNetwork;
             } else {
@@ -48,11 +46,15 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException {
+    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException, SQLException {
         File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
+            String networkName = locationNodeNetwork.getLocationName();
+            Building building = BuildingStatements.getBuildingByName(networkName);
+            BuildingStatements.deleteBuilding(building.getId());
+            AddressStatements.deleteAddress(building.getAddress_id());
             if (file.delete()) {
                 return locationNodeNetwork;
             } else {

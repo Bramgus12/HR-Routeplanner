@@ -21,20 +21,12 @@ public class Address {
     @ApiModelProperty(notes = "Postal code that belongs to the address", required = true)
     private String postal;
 
-    @ApiModelProperty(notes = "Latitude of the address", required = true)
-    private double latitude;
-
-    @ApiModelProperty(notes = "longitude of the address", required = true)
-    private double longitude;
-
-    public Address(Integer id, String street, Integer number, String city, String postal, double latitude, double longitude) {
+    public Address(Integer id, String street, Integer number, String city, String postal) {
         this.id = id;
         this.street = street;
         this.number = number;
         this.city = city;
         this.postal = postal;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     public Address() {
@@ -64,12 +56,5 @@ public class Address {
         return street;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
 }
 

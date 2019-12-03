@@ -91,12 +91,10 @@ public class AddressStatements {
         String street = address.getStreet();
         String postal = address.getPostal();
         String city = address.getCity();
-        double latitude = address.getLatitude();
-        double longitude = address.getLongitude();
         conn.createStatement().execute("INSERT INTO address VALUES (DEFAULT , '" + street +
-                "', " + number + ", '" + city + "', '" + postal + "', " + latitude + ", " + longitude + "); ");
+                "', " + number + ", '" + city + "', '" + postal + "'); ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE street='" +
-                street + "' AND number=" + number + " AND postal='" + postal + "' AND city='" + city + "' AND latitude=" + latitude + " AND longitude= " + longitude + ";");
+                street + "' AND number=" + number + " AND postal='" + postal + "' AND city='" + city + "';");
         resultSet.next();
         return getResult(resultSet.getInt("id"), resultSet);
     }
@@ -116,10 +114,8 @@ public class AddressStatements {
         String street = address.getStreet();
         String postal = address.getPostal();
         String city = address.getCity();
-        double latitude = address.getLatitude();
-        double longitude = address.getLongitude();
         conn.createStatement().execute("UPDATE address SET number=" + number + ", street='"
-                + street + "', postal='" + postal + "', city='" + city + "', latitude="+ latitude + ", longitude="+ longitude +" WHERE id=" + id + "; ");
+                + street + "', postal='" + postal + "', city='" + city + "' WHERE id=" + id + "; ");
         ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM address WHERE id=" + id + ";");
         resultSet.next();
         return getResult(id, resultSet);
@@ -130,8 +126,6 @@ public class AddressStatements {
         Integer numberResult = resultSet.getInt("number");
         String cityResult = resultSet.getString("city");
         String postalResult = resultSet.getString("postal");
-        double latitudeResult = resultSet.getDouble("latitude");
-        double longitudeResult = resultSet.getDouble("longitude");
-        return new Address(id, streetResult, numberResult, cityResult, postalResult, latitudeResult, longitudeResult);
+        return new Address(id, streetResult, numberResult, cityResult, postalResult);
     }
 }

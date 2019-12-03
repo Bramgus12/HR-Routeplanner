@@ -41,13 +41,13 @@ public class LocationNodeNetworkController {
             @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PostMapping
-    private ResponseEntity createLocationNodeNetwork(
+    @PostMapping("{AddressId}")
+    private ResponseEntity createLocationNodeNetwork (
             @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
-            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @RequestParam("address") String address
+            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @RequestParam Integer addressId
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, address));
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
@@ -66,7 +66,7 @@ public class LocationNodeNetworkController {
         try {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
