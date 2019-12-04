@@ -46,7 +46,7 @@ public class ElectionCourseController {
      * @param electionCourseDescription
      * @return added ElectionCourseDescription object
      */
-    @ApiOperation(value = "Add a specific Election Course with its description")
+    @ApiOperation(value = "Add a specific Election Course with its description, use https://www.freeformatter.com/json-escape.html to escape text")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added an election course description", response = ElectionCourseDescription.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
