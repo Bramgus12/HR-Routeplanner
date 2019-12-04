@@ -7,6 +7,11 @@ import { NodePath } from './node-path';
 import { BuildingNavigationComponent } from '../building-navigation.component';
 import { BuildingViewerService } from './building-viewer.service';
 import { Node } from 'src/app/shared/dataclasses';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { MeshStandardMaterial } from 'three';
 
 @Component({
   selector: 'app-building-viewer',
@@ -19,6 +24,8 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
+  private composer: EffectComposer;
+  private fxaaPass: ShaderPass
   public orbitControls: OrbitControls;
   private nextFrameId: number;
   private clock: THREE.Clock;
@@ -32,7 +39,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   constructor(private service: BuildingViewerService) {
     // Renderer
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: false,
       logarithmicDepthBuffer: false,
     });
     this.renderer.gammaOutput = true;
@@ -51,6 +58,15 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     // Scene
     this.scene = new THREE.Scene();
     // this.scene.background = new THREE.Color(0xffffff);
+
+    // Effect composer
+    this.composer = new EffectComposer(this.renderer);
+    const renderPass: RenderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+    this.composer.setPixelRatio( window.devicePixelRatio );
+
+    this.fxaaPass = new ShaderPass( FXAAShader );
+    this.composer.addPass(this.fxaaPass);
 
     // Clock for delta time
     this.clock = new THREE.Clock();
@@ -107,7 +123,8 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     this.buildingModel.animate(delta);
 
     // Render scene
-    this.renderer.render(this.scene, this.camera);
+    // this.renderer.render(this.scene, this.camera);
+    this.composer.render();
 
     // End monitoring frame
     this.devGui.stats.end();
@@ -123,7 +140,15 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     const width: number = this.threejsContainer.nativeElement.clientWidth;
     const height: number = this.threejsContainer.nativeElement.clientHeight;
     if (this.renderer.domElement.width != width || this.renderer.domElement.height != height) {
+      // fxaa
+      const pixelRatio: number = this.renderer.getPixelRatio();
+      const fxaaPassMaterial: THREE.ShaderMaterial = <THREE.ShaderMaterial> this.fxaaPass.material;
+      fxaaPassMaterial.uniforms[ 'resolution' ].value.x = 1 / ( width * pixelRatio );
+      fxaaPassMaterial.uniforms[ 'resolution' ].value.y = 1 / ( height * pixelRatio );
+
+      // renderer
       this.renderer.setSize(width, height);
+      this.composer.setSize(width, height);
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }
