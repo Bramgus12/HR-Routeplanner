@@ -22,4 +22,8 @@ export class SidenavComponent implements OnInit {
     this.appService.setDarkmode(event.checked);
   }
 
+  closeNav(){
+    this.appService.toggle();
+  }
+
 }
