@@ -2,9 +2,7 @@ package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
 import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
-import com.bramgussekloo.projects.dataclasses.Institute;
 import com.bramgussekloo.projects.statements.ElectionCourseStatements;
-import com.bramgussekloo.projects.statements.InstituteStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
-
+import java.util.ArrayList;
 
 // Controller for xlsx reader
 @Api(value = "Election Course list")
@@ -45,6 +42,7 @@ public class ElectionCourseController {
 
     /**
      * Add a specific Election Course description
+     * Validate for duplicate before adding data.
      * @param electionCourseDescription
      * @return added ElectionCourseDescription object
      */
@@ -56,7 +54,12 @@ public class ElectionCourseController {
     @PostMapping
     private ResponseEntity createElectionCourseDescription(@ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
+            Object[] conditions = ElectionCourseStatements.ifExist(electionCourseDescription).toArray();
+            if ( conditions[0].equals(false) && conditions[1].equals(false)) {
+                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
+            } else {
+                throw new IllegalArgumentException("Elective Course already exists! Add a new one!.");
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -76,9 +79,8 @@ public class ElectionCourseController {
     private ResponseEntity getElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getElectionCourseDescription(coursecode));
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("The Election Course Code that you are trying to lookup doesn't exists!");
+        }catch (Exception e){
+            throw new IllegalArgumentException("Unable to find this Election Course Code.");
         }
     }
 
@@ -96,7 +98,6 @@ public class ElectionCourseController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getAllElectionCourseDescription());
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -112,15 +113,32 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping("/{coursecode}")
-    private ResponseEntity updateElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode, @RequestBody ElectionCourseDescription electionCourseDescription) {
+    private ResponseEntity updateElectionCourseDescription(@ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
+                                                           @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
         try {
-            if (coursecode == electionCourseDescription.getCourseCode()){
-                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourse(electionCourseDescription));
+            if (coursecode.equals(electionCourseDescription.getCourseCode())){
+                ElectionCourseDescription oldData = ElectionCourseStatements.getElectionCourseDescription(coursecode);
+                ElectionCourseDescription newData = null;
+                newData.setCourseCode(oldData.getCourseCode());
+                boolean condition1 = false;
+                boolean condition2 = false;
+                if (!electionCourseDescription.getDescription().equals(oldData.getDescription())) {
+                    newData.setDescription(electionCourseDescription.getDescription());
+                    condition1 = true;
+                }
+                if (!electionCourseDescription.getName().equals(oldData.getName())){
+                    newData.setName(electionCourseDescription.getName());
+                    condition2 = true;
+                }
+                if (condition1 && condition2) {
+                    return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourseDescription(newData));
+                } else {
+                    throw new IllegalArgumentException("No changes means no updating!");
+                }
             } else {
-                throw new IllegalArgumentException("Course Code doesn't exist!");
+                throw new IllegalArgumentException("Election Course Code doesn't exist!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -140,7 +158,6 @@ public class ElectionCourseController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.deleteElectionCourseDescription(coursecode));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }

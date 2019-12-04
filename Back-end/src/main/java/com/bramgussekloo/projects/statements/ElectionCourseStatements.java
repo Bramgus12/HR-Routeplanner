@@ -5,21 +5,24 @@ import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import com.bramgussekloo.projects.database.DatabaseConnection;
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
 import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
-import com.bramgussekloo.projects.dataclasses.Institute;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * PDO implementation
+ * source: https://javaconceptoftheday.com/statement-vs-preparedstatement-vs-callablestatement-in-java/
+ */
 public class ElectionCourseStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
     public static void uploadFile(MultipartFile file) throws IOException {
@@ -115,7 +118,12 @@ public class ElectionCourseStatements {
 
     public static ElectionCourseDescription createElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException{
         Connection conn = new DatabaseConnection().getConnection();
-        conn.createStatement().execute("INSERT INTO election_course (electioncoursecode, electioncoursename, description) VALUES ('" + electionCourseDescription.getCourseCode() + "','" + electionCourseDescription.getName() + "', '" + electionCourseDescription.getDescription() + "');");
+
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO election_course (electioncoursecode, electioncoursename, description) VALUES (?,?,?);");
+        pstmt.setString(1,electionCourseDescription.getCourseCode());
+        pstmt.setString(2,electionCourseDescription.getName());
+        pstmt.setString(3,electionCourseDescription.getDescription());
+        pstmt.executeQuery();
         return getElectionCourseDescription(electionCourseDescription.getCourseCode());
     }
 
@@ -131,29 +139,51 @@ public class ElectionCourseStatements {
 
     public static ElectionCourseDescription getElectionCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course WHERE electioncoursecode='" + courseCode + "';");
-        if (result.next()){
-            return getResult(result);
-        }
-        else{
-            //debug this loop
-            return new ElectionCourseDescription();
-        }
+        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursecode=?;");
+        pstmt.setString(1,courseCode);
+        ResultSet result = pstmt.executeQuery();
+        result.next();
+        return getResult(result);
     }
 
-    public static ElectionCourseDescription updateElectionCourse(ElectionCourseDescription electionCourse) throws SQLException {
+    public static ElectionCourseDescription getElectionCourseDescriptionByName(String name) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        String ElectionCourseCode = electionCourse.getCourseCode();
-        conn.createStatement().execute("UPDATE election_course SET electioncoursename ='" + electionCourse.getName() + "', description='"+ electionCourse.getDescription() +"' WHERE electioncoursecode='" + ElectionCourseCode + "';");
+        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursename=?;");
+        pstmt.setString(1,name);
+        ResultSet result = pstmt.executeQuery();
+        result.next();
+        return getResult(result);
+    }
+
+    public static ElectionCourseDescription updateElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        String ElectionCourseCode = electionCourseDescription.getCourseCode();
+        PreparedStatement pstmt = conn.prepareStatement("UPDATE election_course SET electioncoursename =?, description=? WHERE electioncoursecode=?;");
+        pstmt.setString(1,electionCourseDescription.getName());
+        pstmt.setString(2,electionCourseDescription.getDescription());
+        pstmt.setString(3,ElectionCourseCode);
+        pstmt.executeQuery();
         return getElectionCourseDescription(ElectionCourseCode);
     }
 
     public static ElectionCourseDescription deleteElectionCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course WHERE electioncoursecode='" + courseCode + "';");
-        conn.createStatement().execute("DELETE FROM election_course WHERE electioncoursecode ='" + courseCode + "';");
-        result.next();
-        return getResult(result);
+        ElectionCourseDescription deletedElectionCourseDescription = getElectionCourseDescription(courseCode);
+        PreparedStatement deletePstmt = conn.prepareStatement("DELETE FROM election_course WHERE electioncoursecode =?;");
+        deletePstmt.setString(1,courseCode);
+        deletePstmt.executeQuery();
+        return deletedElectionCourseDescription;
+    }
+// TESTING
+    public static ArrayList ifExist(ElectionCourseDescription electionCourseDescription) throws SQLException {
+        ArrayList<Boolean> exists = new ArrayList();
+        String ElectionCourseCode = electionCourseDescription.getCourseCode();
+        String ElectionCourseName = electionCourseDescription.getName();
+        boolean check1 = getElectionCourseDescription(ElectionCourseCode).getCourseCode().isEmpty();
+        boolean check2 = getElectionCourseDescriptionByName(ElectionCourseName).getName().isEmpty();
+        exists.add(check1);
+        exists.add(check2);
+        return exists;
     }
 
     private static ElectionCourseDescription getResult (ResultSet result) throws SQLException {

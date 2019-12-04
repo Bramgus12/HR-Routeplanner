@@ -28,7 +28,6 @@ public class AddressController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAllAddresses());
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -43,9 +42,8 @@ public class AddressController {
     private ResponseEntity getAddress(@ApiParam(value = "the id of the address you want", required = true) @PathVariable Integer id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddress(id));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The ID that you are trying to retrieve doesn't exists!");
         }
     }
 
@@ -112,9 +110,8 @@ public class AddressController {
     private ResponseEntity deleteAddress(@ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Integer id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.deleteAddress(id));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The ID that you are trying to delete doesn't exists!");
         }
     }
 
@@ -136,9 +133,8 @@ public class AddressController {
             } else {
                 throw new IllegalArgumentException("ID's are different");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The ID that you are trying to update doesn't exist!");
         }
     }
 
