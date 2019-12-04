@@ -51,8 +51,11 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.plugin/spring-plugin-core
 	compile group: 'org.springframework.plugin', name: 'spring-plugin-core', version: '1.2.0.RELEASE'
 
-// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+	// https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '4.1.1'
+
+	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.1.RELEASE'
 
 
 }
