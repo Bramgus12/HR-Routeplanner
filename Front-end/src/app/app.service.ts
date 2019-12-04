@@ -7,8 +7,7 @@ export class AppService {
 
   trigger: EventEmitter<null> = new EventEmitter();
   darkMode: boolean = false;
-
-  private renderer: Renderer2;
+  renderer: Renderer2;
 
   constructor(rendererFactory: RendererFactory2) { 
     this.renderer = rendererFactory.createRenderer(null, null);
