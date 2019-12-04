@@ -73,7 +73,7 @@ public class AddressController {
             @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/room/{RoomCode}")
+    @GetMapping("/room")
     private ResponseEntity getAddressByRoomCode(
             @ApiParam(value = "The code of the room, you want to have the address of", required = true) @RequestParam String code
     ){
@@ -90,12 +90,12 @@ public class AddressController {
             @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/building/{BuildingName}")
+    @GetMapping("/building")
     private ResponseEntity getAddressByBuildingName(
-            @ApiParam(value = "The name of a building", required = true) @RequestParam String BuildingName
+            @ApiParam(value = "The name of a building", required = true) @RequestParam String name
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByBuildingName(BuildingName));
+            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByBuildingName(name));
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
