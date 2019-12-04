@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.sql.SQLException;
 
 // Controller for xlsx reader
 @Api(value = "Election Course list")
@@ -54,13 +54,15 @@ public class ElectionCourseController {
     @PostMapping
     private ResponseEntity createElectionCourseDescription(@ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
         try {
-            Object[] conditions = ElectionCourseStatements.ifExist(electionCourseDescription).toArray();
-            if ( conditions[0].equals(false) && conditions[1].equals(false)) {
-                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
-            } else {
-                throw new IllegalArgumentException("Elective Course already exists! Add a new one!.");
-            }
-        } catch (Exception e) {
+//            Object[] conditions = ElectionCourseStatements.ifExist(electionCourseDescription).toArray();
+//            if ( conditions[0].equals(false) && conditions[1].equals(false)) {
+//                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
+//            } else {
+//                throw new IllegalArgumentException("Elective Course already exists! Add a new one!.");
+//            }
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
+        } catch (SQLException e) {
+            e.getStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -118,23 +120,21 @@ public class ElectionCourseController {
         try {
             if (coursecode.equals(electionCourseDescription.getCourseCode())){
                 ElectionCourseDescription oldData = ElectionCourseStatements.getElectionCourseDescription(coursecode);
-                ElectionCourseDescription newData = null;
+                ElectionCourseDescription newData = new ElectionCourseDescription();
                 newData.setCourseCode(oldData.getCourseCode());
-                boolean condition1 = false;
-                boolean condition2 = false;
                 if (!electionCourseDescription.getDescription().equals(oldData.getDescription())) {
                     newData.setDescription(electionCourseDescription.getDescription());
-                    condition1 = true;
+
+                } else {
+                    newData.setDescription(oldData.getDescription());
                 }
+
                 if (!electionCourseDescription.getName().equals(oldData.getName())){
                     newData.setName(electionCourseDescription.getName());
-                    condition2 = true;
-                }
-                if (condition1 && condition2) {
-                    return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourseDescription(newData));
                 } else {
-                    throw new IllegalArgumentException("No changes means no updating!");
+                    newData.setName(oldData.getName());
                 }
+                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourseDescription(newData));
             } else {
                 throw new IllegalArgumentException("Election Course Code doesn't exist!");
             }

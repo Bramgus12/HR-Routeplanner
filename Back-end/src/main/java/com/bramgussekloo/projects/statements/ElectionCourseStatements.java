@@ -123,7 +123,7 @@ public class ElectionCourseStatements {
         pstmt.setString(1,electionCourseDescription.getCourseCode());
         pstmt.setString(2,electionCourseDescription.getName());
         pstmt.setString(3,electionCourseDescription.getDescription());
-        pstmt.executeQuery();
+        pstmt.executeUpdate();
         return getElectionCourseDescription(electionCourseDescription.getCourseCode());
     }
 
@@ -157,13 +157,13 @@ public class ElectionCourseStatements {
 
     public static ElectionCourseDescription updateElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        String ElectionCourseCode = electionCourseDescription.getCourseCode();
-        PreparedStatement pstmt = conn.prepareStatement("UPDATE election_course SET electioncoursename =?, description=? WHERE electioncoursecode=?;");
+        PreparedStatement pstmt = conn.prepareStatement("UPDATE election_course SET electioncoursename =?, description=?, electioncoursecode=? WHERE electioncoursecode=?;");
         pstmt.setString(1,electionCourseDescription.getName());
         pstmt.setString(2,electionCourseDescription.getDescription());
-        pstmt.setString(3,ElectionCourseCode);
-        pstmt.executeQuery();
-        return getElectionCourseDescription(ElectionCourseCode);
+        pstmt.setString(3,electionCourseDescription.getCourseCode());
+        pstmt.setString(4,electionCourseDescription.getCourseCode());
+        pstmt.executeUpdate();
+        return getElectionCourseDescription(electionCourseDescription.getCourseCode());
     }
 
     public static ElectionCourseDescription deleteElectionCourseDescription(String courseCode) throws SQLException {
@@ -171,20 +171,20 @@ public class ElectionCourseStatements {
         ElectionCourseDescription deletedElectionCourseDescription = getElectionCourseDescription(courseCode);
         PreparedStatement deletePstmt = conn.prepareStatement("DELETE FROM election_course WHERE electioncoursecode =?;");
         deletePstmt.setString(1,courseCode);
-        deletePstmt.executeQuery();
+        deletePstmt.executeUpdate();
         return deletedElectionCourseDescription;
     }
 // TESTING
-    public static ArrayList ifExist(ElectionCourseDescription electionCourseDescription) throws SQLException {
-        ArrayList<Boolean> exists = new ArrayList();
-        String ElectionCourseCode = electionCourseDescription.getCourseCode();
-        String ElectionCourseName = electionCourseDescription.getName();
-        boolean check1 = getElectionCourseDescription(ElectionCourseCode).getCourseCode().isEmpty();
-        boolean check2 = getElectionCourseDescriptionByName(ElectionCourseName).getName().isEmpty();
-        exists.add(check1);
-        exists.add(check2);
-        return exists;
-    }
+//    public static ArrayList ifExist(ElectionCourseDescription electionCourseDescription) throws SQLException {
+//        ArrayList<Boolean> exists = new ArrayList();
+//        String ElectionCourseCode = electionCourseDescription.getCourseCode();
+//        String ElectionCourseName = electionCourseDescription.getName();
+//        boolean check1 = getElectionCourseDescription(ElectionCourseCode).getCourseCode().isEmpty();
+//        boolean check2 = getElectionCourseDescriptionByName(ElectionCourseName).getName().isEmpty();
+//        exists.add(check1);
+//        exists.add(check2);
+//        return exists;
+//    }
 
     private static ElectionCourseDescription getResult (ResultSet result) throws SQLException {
         String ElectionCourseCode = result.getString("electioncoursecode");
