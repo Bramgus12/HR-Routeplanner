@@ -60,7 +60,7 @@ export class GoogleMapsService {
    */
   getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode, transitOptions?: google.maps.TransitOptions){
     return new Observable<google.maps.DirectionsResult>(observer => {
-      this.directions.route({ origin, destination, travelMode, transitOptions }, (result, status) => {
+      this.directions.route({ origin, destination, travelMode, transitOptions, provideRouteAlternatives: true }, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           observer.next(result);
         } else {

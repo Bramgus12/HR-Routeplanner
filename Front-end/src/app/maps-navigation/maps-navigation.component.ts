@@ -122,16 +122,17 @@ export class MapsNavigationComponent implements OnInit {
       else if(this.navigationState.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
     }
 
-    // this.googleMapsService.getDirections('Frans Halsstraat, Oud-Beijerland', 'Wijnhaven 107, Rotterdam', this.travelMode, transitOptions).subscribe(data => {
     this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, transitOptions).subscribe(data => {
       const firstLeg = data.routes[0].legs[0];
       this.directionsRenderer.setDirections(data);
       this.directions = firstLeg.steps;
 
-      if(this.travelMode == google.maps.TravelMode.TRANSIT) {
+      if(this.travelMode == google.maps.TravelMode.TRANSIT && firstLeg.hasOwnProperty("departure_time") && firstLeg.hasOwnProperty("arrival_time")) {
         this.timeInfo = "Departure: " + firstLeg.departure_time.text + " - Arrival: " + firstLeg.arrival_time.text;
-      } else {
+      } else if(firstLeg.hasOwnProperty("duration")){
         this.timeInfo = "Duration: " + firstLeg.duration.text;
+      } else {
+        this.timeInfo = "No info found";
       }
     })
   }
