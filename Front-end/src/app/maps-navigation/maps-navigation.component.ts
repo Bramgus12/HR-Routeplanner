@@ -123,7 +123,7 @@ export class MapsNavigationComponent implements OnInit {
     }
 
     this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, transitOptions).subscribe(data => {
-      const firstLeg = data.routes[0].legs[0];
+      const firstLeg = this.getFastestRoute(data.routes).legs[0];
       this.directionsRenderer.setDirections(data);
       this.directions = firstLeg.steps;
 
@@ -135,6 +135,13 @@ export class MapsNavigationComponent implements OnInit {
         this.timeInfo = "No info found";
       }
     })
+  }
+
+  getFastestRoute(routes: google.maps.DirectionsRoute[]){
+    const fastestTime = routes.reduce((fastestTime, route) => route.legs[0].duration.value < fastestTime ? route.legs[0].duration.value : fastestTime, Number.MAX_SAFE_INTEGER),
+      index = routes.findIndex(val => val.legs[0].duration.value == fastestTime);
+
+    return routes[index > -1 ? index : 0];
   }
 
   /**
