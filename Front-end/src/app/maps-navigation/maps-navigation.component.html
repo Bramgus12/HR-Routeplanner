@@ -57,7 +57,12 @@
     <ul>
       <li *ngFor="let direction of directions">
         <div *ngIf="travelMode != 'TRANSIT'" class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(direction)" /></div>
-        <span [innerHTML]="direction.instructions | safeHTML"></span>
+        <div [innerHTML]="direction.instructions | safeHTML"></div>
+        <ul class="steps">
+          <li *ngFor="let step of direction.steps">
+            <div [innerHTML]="step.instructions | safeHTML"></div>
+          </li>
+        </ul>
       </li>
     </ul>
   </div>

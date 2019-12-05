@@ -60,8 +60,17 @@ section {
           }
         }
 
-        span {
+        div {
           padding-left: 8px;
+        }
+
+        .steps li {
+          border-bottom: none;
+          padding: 3px 8px;
+
+          div {
+            padding-left: 16px;
+          }
         }
       }
     }
