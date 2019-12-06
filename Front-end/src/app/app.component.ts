@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Router, ActivationEnd } from '@angular/router';
 import { MatDrawer } from '@angular/material/sidenav';
@@ -32,6 +32,8 @@ export class AppComponent implements OnInit{
     if(savedDarkmode != null) this.appService.setDarkmode(savedDarkmode);
 
     this.appService.trigger.subscribe(() => {
+      if(this.sideDrawer.opened) this.sideDrawer.autoFocus = false;
+      else this.sideDrawer.autoFocus = true;
       this.sideDrawer.toggle();
     });
   }

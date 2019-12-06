@@ -14,7 +14,7 @@ import { keys } from '../3rdparty/api_keys';
 })
 export class MapsNavigationComponent implements OnInit {
 
-  navigationState: NavigationState = { from: null, to: null, departNow: true, timeMode: TimeMode.DEPART_BY, time: '' };
+  navigationState: NavigationState = { from: null, to: null, departNow: true, timeMode: TimeMode.DEPART_BY, time: '', fromNode: null, toNode: null };
   directions: google.maps.DirectionsStep[] = [];
   travelModes: TravelMode[] = [];
   transitModes: TransitMode[] = [];
@@ -25,6 +25,7 @@ export class MapsNavigationComponent implements OnInit {
     { name: "Depart by", value: TimeMode.DEPART_BY }
   ];
   timeInfo = "";
+  fastestRoute = false;
   timepickerTheme: NgxMaterialTimepickerTheme = {
     container: {
       buttonColor: '#d32f2f'
@@ -122,18 +123,26 @@ export class MapsNavigationComponent implements OnInit {
       else if(this.navigationState.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
     }
 
-    // this.googleMapsService.getDirections('Frans Halsstraat, Oud-Beijerland', 'Wijnhaven 107, Rotterdam', this.travelMode, transitOptions).subscribe(data => {
-    this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, transitOptions).subscribe(data => {
-      const firstLeg = data.routes[0].legs[0];
+    this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, this.fastestRoute, transitOptions).subscribe(data => {
+      const firstLeg =  this.fastestRoute ? this.getFastestRoute(data.routes).legs[0] : data.routes[0].legs[0];
       this.directionsRenderer.setDirections(data);
       this.directions = firstLeg.steps;
 
-      if(this.travelMode == google.maps.TravelMode.TRANSIT) {
+      if(this.travelMode == google.maps.TravelMode.TRANSIT && firstLeg.hasOwnProperty("departure_time") && firstLeg.hasOwnProperty("arrival_time")) {
         this.timeInfo = "Departure: " + firstLeg.departure_time.text + " - Arrival: " + firstLeg.arrival_time.text;
-      } else {
+      } else if(firstLeg.hasOwnProperty("duration")){
         this.timeInfo = "Duration: " + firstLeg.duration.text;
+      } else {
+        this.timeInfo = "No info found";
       }
     })
+  }
+
+  getFastestRoute(routes: google.maps.DirectionsRoute[]){
+    const fastestTime = routes.reduce((fastestTime, route) => route.legs[0].duration.value < fastestTime ? route.legs[0].duration.value : fastestTime, Number.MAX_SAFE_INTEGER),
+      index = routes.findIndex(val => val.legs[0].duration.value == fastestTime);
+
+    return routes[index > -1 ? index : 0];
   }
 
   /**

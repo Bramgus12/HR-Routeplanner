@@ -11,6 +11,7 @@ section {
 
     agm-map {
       height: 40vh;
+      color: #000;
     }
   }
 
@@ -51,7 +52,9 @@ section {
           display: inline-block;
           width: 16px;
           height: 16px;
+          margin-top: 4px;
           overflow: hidden;
+          vertical-align: top;
 
           img {
             position: relative;
@@ -59,8 +62,24 @@ section {
           }
         }
 
-        span {
+        .instructions {
+          display: inline-block;
           padding-left: 8px;
+        }
+
+        .transit-instructions {
+          padding-left: 8px;
+
+          mat-icon {
+            width: 16px;
+            height: 16px;
+            font-size: 16px;
+          }
+        }
+
+        .steps li {
+          border-bottom: none;
+          padding: 3px 8px;
         }
       }
     }

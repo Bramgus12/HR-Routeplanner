@@ -32,6 +32,8 @@
           </mat-select>
         </mat-form-field>
 
+        <mat-slide-toggle [(ngModel)]="fastestRoute" (change)="getDirections()">Fastest route</mat-slide-toggle>
+
         <mat-slide-toggle [(ngModel)]="navigationState.departNow" (change)="onDepartNowChange()">Depart now</mat-slide-toggle>
 
         <div class="time-settings" *ngIf="!navigationState.departNow">
@@ -57,7 +59,18 @@
     <ul>
       <li *ngFor="let direction of directions">
         <div *ngIf="travelMode != 'TRANSIT'" class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(direction)" /></div>
-        <span [innerHTML]="direction.instructions | safeHTML"></span>
+        <div class="instructions" [innerHTML]="direction.instructions | safeHTML"></div>
+        <div class="transit-instructions" *ngIf="direction.hasOwnProperty('transit')">
+          <mat-icon>transit_enterexit</mat-icon> {{ direction.transit.departure_stop.name }}<br>
+          <mat-icon>more_vert</mat-icon> <b>{{ direction.transit.line.short_name }} {{ direction.transit.headsign }}</b><br>
+          <mat-icon style="transform: rotate(-90deg);">transit_enterexit</mat-icon> {{ direction.transit.arrival_stop.name }}
+        </div>
+        <ul class="steps">
+          <li *ngFor="let step of direction.steps">
+            <div *ngIf="step.maneuver.length > 0" class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(step)" /></div>
+            <div class="instructions" [innerHTML]="step.instructions | safeHTML"></div>
+          </li>
+        </ul>
       </li>
     </ul>
   </div>
