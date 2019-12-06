@@ -32,6 +32,8 @@
           </mat-select>
         </mat-form-field>
 
+        <mat-slide-toggle [(ngModel)]="fastestRoute" (change)="getDirections()">Fastest route</mat-slide-toggle>
+
         <mat-slide-toggle [(ngModel)]="navigationState.departNow" (change)="onDepartNowChange()">Depart now</mat-slide-toggle>
 
         <div class="time-settings" *ngIf="!navigationState.departNow">

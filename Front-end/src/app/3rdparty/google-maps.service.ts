@@ -58,9 +58,9 @@ export class GoogleMapsService {
   /**
    * Returns the possible directions from the 'origin' to 'destination' locations
    */
-  getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode, transitOptions?: google.maps.TransitOptions){
+  getDirections(origin: string, destination: string, travelMode: google.maps.TravelMode, alternateRoutes: boolean, transitOptions?: google.maps.TransitOptions){
     return new Observable<google.maps.DirectionsResult>(observer => {
-      this.directions.route({ origin, destination, travelMode, transitOptions, provideRouteAlternatives: true }, (result, status) => {
+      this.directions.route({ origin, destination, travelMode, transitOptions, provideRouteAlternatives: alternateRoutes }, (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
           observer.next(result);
         } else {

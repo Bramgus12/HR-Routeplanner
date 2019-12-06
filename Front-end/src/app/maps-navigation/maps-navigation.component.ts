@@ -25,6 +25,7 @@ export class MapsNavigationComponent implements OnInit {
     { name: "Depart by", value: TimeMode.DEPART_BY }
   ];
   timeInfo = "";
+  fastestRoute = false;
   timepickerTheme: NgxMaterialTimepickerTheme = {
     container: {
       buttonColor: '#d32f2f'
@@ -122,8 +123,8 @@ export class MapsNavigationComponent implements OnInit {
       else if(this.navigationState.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
     }
 
-    this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, transitOptions).subscribe(data => {
-      const firstLeg = this.getFastestRoute(data.routes).legs[0];
+    this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, this.fastestRoute, transitOptions).subscribe(data => {
+      const firstLeg =  this.fastestRoute ? this.getFastestRoute(data.routes).legs[0] : data.routes[0].legs[0];
       this.directionsRenderer.setDirections(data);
       this.directions = firstLeg.steps;
 
