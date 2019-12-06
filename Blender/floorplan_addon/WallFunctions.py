@@ -1,7 +1,7 @@
 import bpy
 import bmesh
 import math
-from mathutils import Vector
+import mathutils
 
 from . GeneralFunctions import *
 
@@ -141,7 +141,7 @@ def createWalls():
 
                     intersection = lineIntersection( wallLine, networkLine )
                     if intersection != None:
-                        intersectionVector = Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
+                        intersectionVector = mathutils.Vector( (intersection[0], intersection[1], wallEdgeVector1.z) )
                         doorWidth = 1.0
                         doorDepth = wallThickness + 0.1
                         doorCutout = createDoorCutout(doorWidth, doorDepth)
@@ -217,22 +217,17 @@ def removeWalls():
 
 def lineIntersection(line1, line2, infinite=False):
     '''Calculate the point where two 2D lines cross.
-    Returns None if the lines don't intersect.
-    Source: https://stackoverflow.com/a/20677983'''
-    xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
-    ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+    Returns None if the lines don't intersect.'''
 
-    def det(a, b):
-        return a[0] * b[1] - a[1] * b[0]
+    intersect = mathutils.geometry.intersect_line_line_2d( 
+        mathutils.Vector( (line1[0][0], line1[0][1]) ),
+        mathutils.Vector( (line1[1][0], line1[1][1]) ),
+        mathutils.Vector( (line2[0][0], line2[0][1]) ),
+        mathutils.Vector( (line2[1][0], line2[1][1]) )
+    )
 
-    div = det(xdiff, ydiff)
-    if div == 0:
-       return None
-
-    d = (det(*line1), det(*line2))
-    x = det(d, xdiff) / div
-    y = det(d, ydiff) / div
-    if not infinite:
+    if intersect != None and not infinite:
+        x, y = intersect
         for line in (line1, line2):
             minX = min( (line[0][0], line[1][0]) )
             maxX = max( (line[0][0], line[1][0]) )
@@ -240,4 +235,4 @@ def lineIntersection(line1, line2, infinite=False):
             maxY = max( (line[0][1], line[1][1]) )
             if x < minX or x > maxX or y < minY or y > maxY:
                 return None
-    return x, y
+    return intersect

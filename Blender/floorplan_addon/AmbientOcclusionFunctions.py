@@ -4,6 +4,7 @@ import functools
 import re
 
 from . GeneralFunctions import *
+from . UpdateWallColorsFunctions import updateWallColors
 
 def setupAmbientOcclusion(operator, context):
 
@@ -198,7 +199,7 @@ def bakingListener(operator, bakingData, windowId):
             toggleSolidifyModifier(obj, True)
         print("Ambient Occlusion baking complete.")
         operator.done = True
-
+        updateWallColors()
         return None
 
     return 0.5
