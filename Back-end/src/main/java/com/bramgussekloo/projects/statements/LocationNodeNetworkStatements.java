@@ -1,6 +1,9 @@
 package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.FileHandling.FileService;
+import com.bramgussekloo.projects.Properties.GetPropertyValues;
+import com.bramgussekloo.projects.dataclasses.Address;
+import com.bramgussekloo.projects.dataclasses.Building;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,31 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class LocationNodeNetworkStatements {
 
-
-    private static File getFile(String locationName) throws IOException {
-        if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
-            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/" + locationName);
-        } else {
-            return new File("src/main/resources/Locations/" + locationName);
-        }
-    }
-
-    private static File getLocationsFolder() {
-        if (LocationNodeNetworkStatements.class.getResource("LocationNodeNetworkStatements.class").toString().contains("jar")) {
-            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/Locations/");
-        } else {
-            return new File("src/main/resources/Locations/");
-        }
-    }
-
     public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        File file = getFile(locationName + ".json");
+        File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (file.exists()) {
             return mapper.readValue(file, LocationNodeNetwork.class);
         } else {
@@ -40,14 +27,17 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file) throws IOException {
-        File f = getFile(file.getOriginalFilename());
+    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, Integer addressId) throws IOException, SQLException {
+        File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         if (!f.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             FileService.uploadFile(file, "Locations", file.getOriginalFilename());
-            File fileRef = getFile(file.getOriginalFilename());
-            if (fileRef.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
-                return mapper.readValue(fileRef, LocationNodeNetwork.class);
+            File fileRef = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
+            if (f.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
+                LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
+                Building building = new Building(null, addressId, locationNodeNetwork.getLocationName());
+                BuildingStatements.createBuilding(building);
+                return locationNodeNetwork;
             } else {
                 throw new IOException(file.getOriginalFilename() + ".json already exists. Try put if you wanna change it.");
             }
@@ -56,11 +46,15 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException {
-        File file = getFile(locationName + ".json");
+    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException, SQLException {
+        File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
+            String networkName = locationNodeNetwork.getLocationName();
+            Building building = BuildingStatements.getBuildingByName(networkName);
+            BuildingStatements.deleteBuilding(building.getId());
+            AddressStatements.deleteAddress(building.getAddress_id());
             if (file.delete()) {
                 return locationNodeNetwork;
             } else {
@@ -72,7 +66,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException {
-        File file = getFile(locationName + ".json");
+        File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         ArrayList<Node> nodeList = new ArrayList<>();
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
@@ -89,7 +83,7 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file) throws IOException {
-        File resource = getFile(locationName + ".json");
+        File resource = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (resource.exists()) {
             if (resource.delete()) {
                 if (locationName.equals(Objects.requireNonNull(file.getOriginalFilename()).replace(".json", ""))) {
@@ -108,21 +102,19 @@ public class LocationNodeNetworkStatements {
     }
 
     public static ArrayList<Node> getAllRooms() throws IOException {
-        File folder = getLocationsFolder();
+        File folder = GetPropertyValues.getResourcePath("Locations", "");
         File[] listOfFiles = folder.listFiles();
         ArrayList<Node> nodeArrayList = new ArrayList<>();
         assert listOfFiles != null;
-        for (File listOfFile : listOfFiles) {
-            if (listOfFile.isFile()) {
+        for (File file : listOfFiles) {
+            if (file.isFile() && !file.toString().contains(".gitkeep")) {
                 ObjectMapper mapper = new ObjectMapper();
-                LocationNodeNetwork network = mapper.readValue(listOfFile, LocationNodeNetwork.class);
+                LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
                 for (Node node : network.getNodes()) {
                     if (node.getType().equals("Room")) {
                         nodeArrayList.add(node);
                     }
                 }
-            } else {
-                break;
             }
         }
         return nodeArrayList;

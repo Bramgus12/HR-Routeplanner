@@ -1,6 +1,7 @@
 package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.FileHandling.FileService;
+import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ElectionCourseExcelReaderStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
     public static void uploadFile(MultipartFile file) throws IOException {
-        File f = getFile(fileNameVar);
+        File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
         if (!f.exists()) {
             FileService.uploadFile(file, "ElectionCourse", fileNameVar);
         } else {
@@ -23,26 +24,10 @@ public class ElectionCourseExcelReaderStatements {
         }
     }
 
-    private static File getElectionCourseFolder() {
-        if (LocationNodeNetworkStatements.class.getResource("ElectionCourseExcelReaderStatements.class").toString().contains("jar")) {
-            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/ElectionCourse/");
-        } else {
-            return new File("src/main/resources/ElectionCourse/");
-        }
-    }
-
-    private static File getFile(String fileName) throws IOException {
-        if (ElectionCourseExcelReaderStatements.class.getResource("ElectionCourseExcelReaderStatements.class").toString().contains("jar")) {
-            return new File("/usr/share/hr-routeplanner/ProjectC/Back-end/src/main/resources/ElectionCourse/" + fileName);
-        } else {
-            return new File("src/main/resources/ElectionCourse/" + fileName);
-        }
-    }
-
     public static List<ElectionCourse> getExcelContent() throws IOException {
         try {
             Workbook workbook = null;
-            File f = getFile(fileNameVar);
+            File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
             if (f.exists()) {
                 FileInputStream excelFile = new FileInputStream(f);
 
@@ -103,19 +88,17 @@ public class ElectionCourseExcelReaderStatements {
     }
 
     public static void updateFile(MultipartFile file) throws IOException {
-        File folder = getElectionCourseFolder();
+        File folder = GetPropertyValues.getResourcePath("ElectionCourse", "");
         File[] files = folder.listFiles();
         assert files != null;
-        if(files.length <= 1) {
+        if(files.length <= 2) {
             for (File f : files) {
-                if (f.exists()) {
+                if (f.exists() && !f.toString().contains(".gitkeep")) {
                     if (f.delete()) {
                         FileService.uploadFile(file, "ElectionCourse", fileNameVar);
                     } else {
                         throw new IOException("File deletion failed");
                     }
-                } else {
-                    throw new IOException("Resource doesnt exist. Try using post.");
                 }
             }
         } else {

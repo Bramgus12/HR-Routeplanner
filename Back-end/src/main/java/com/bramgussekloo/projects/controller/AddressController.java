@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-
 //Makes it a REST-controller
 @Api(value = "Address controller")
 @RestController
@@ -57,11 +56,47 @@ public class AddressController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping
-    private ResponseEntity createAddress(@ApiParam(value = "The Address that you want to add", required = true) @RequestBody Address address) {
+    private ResponseEntity createAddress(
+            @ApiParam(value = "The Address that you want to add", required = true) @RequestBody Address address
+    ) {
         try {
             Address result = AddressStatements.createAddress(address);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (SQLException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Get an address by Roomcode")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/room")
+    private ResponseEntity getAddressByRoomCode(
+            @ApiParam(value = "The code of the room, you want to have the address of", required = true) @RequestParam String code
+    ){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByRoomCode(code));
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Get an address by building name")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    @GetMapping("/building")
+    private ResponseEntity getAddressByBuildingName(
+            @ApiParam(value = "The name of a building", required = true) @RequestParam String name
+    ) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByBuildingName(name));
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -110,7 +145,6 @@ public class AddressController {
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

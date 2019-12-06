@@ -114,3 +114,5 @@ Database_config.properties
 /.settings/
 /.classpath
 /.project
+/src/main/resources/file_path.properties
+/src/main/resources/application.properties
