@@ -33,8 +33,11 @@ public class ElectionCourse {
     @ApiModelProperty(notes = "Location of Institute where the course will be given.", required = false)
     private String Location;
 
-    @ApiModelProperty(notes = "Classroom. By default:look on Hint", required = false)
+    @ApiModelProperty(notes = "Classroom. By default:look on Hint.", required = false)
     private String Classroom;
+
+    @ApiModelProperty(notes = "Election Course description.", required = false)
+    private String Description;
 
     public ElectionCourse(String courseCode, String name, String period, String groupNumber, String teacher, String dayOfTheWeek, String startTime, String endTime, String location, String classroom) {
         CourseCode = courseCode;
