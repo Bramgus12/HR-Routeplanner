@@ -32,9 +32,12 @@ def exportFloorplan(context, filePath):
 
             for roomNode in roomNodes:
                 if isSameLocation(roomNode.matrix_world.translation, vertex.co, 0.001):
-                    node['type'] = 'Room'
                     node['code'] = roomNode.get('roomCode')
                     node['label'] = roomNode.get('roomLabel')
+                    if roomNode.get('isEntrance'):
+                        node['type'] = 'Entrance'
+                    else:
+                        node['type'] = 'Room'
                     break
             for edge in nodeNetwork.data.edges:
                 if edge.vertices[0] == vertex.index or edge.vertices[1] == vertex.index:

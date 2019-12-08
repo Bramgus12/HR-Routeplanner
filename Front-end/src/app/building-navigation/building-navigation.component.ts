@@ -23,7 +23,10 @@ export class BuildingNavigationComponent implements OnInit {
     this.travelledDistanceSlider.value = value;
   }
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) { }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+    console.log(this.router.getCurrentNavigation().extras.state);
+    console.log(router.events);
+  }
 
   ngOnInit() {
    const locationName: string = this.activatedRoute.snapshot.queryParams.locationName;
