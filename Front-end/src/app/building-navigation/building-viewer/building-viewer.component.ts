@@ -75,9 +75,6 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
 
-    // Load building
-    this.buildingModel = new BuildingModel(this, 'assets/building-viewer/Wijnhaven.glb');
-
     // Create path
     this.nodePath = new NodePath(this);
 
@@ -85,6 +82,11 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     // This should be removed or commented out once the 3D viewer correctly.
     this.devGui = new DevGui();
 
+  }
+
+  loadBuilding(buildingName: string){
+    // Load building
+    this.buildingModel = new BuildingModel(this, `assets/building-viewer/${buildingName}.glb`);
   }
 
   ngAfterViewInit() {
@@ -120,7 +122,9 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
     // Update position of objects in the scene
     this.nodePath.animate(delta);
-    this.buildingModel.animate(delta);
+    if(this.buildingModel !== undefined){
+      this.buildingModel.animate(delta);
+    }
 
     // Render scene
     // this.renderer.render(this.scene, this.camera);
