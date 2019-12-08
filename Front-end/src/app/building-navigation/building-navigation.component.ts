@@ -47,6 +47,7 @@ export class BuildingNavigationComponent {
             for(let j = 0; j < buildings.length; j++){
               const building: Building = buildings[j];
               if(building.address_id == address.id){
+                this.buildingViewer.currentLocationName = building.name;
                 this.service.getNodes(building.name, "Entrance").subscribe( (entranceNodes: Node[]) => {
                   if(this.navigationState.from == this.navigationState.to) {
                     this.buildingViewer.createRoute(building.name, this.navigationState.fromNode, this.navigationState.toNode);

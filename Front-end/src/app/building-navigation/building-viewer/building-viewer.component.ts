@@ -35,6 +35,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   private devGui: DevGui;
 
   currentFloor: string = "0";
+  currentLocationName: string = "";
 
   constructor(private service: BuildingViewerService) {
     // Renderer
