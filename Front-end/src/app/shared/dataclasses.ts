@@ -12,26 +12,6 @@ export interface Building {
   name: string
 }
 
-export interface NavigationState {
-  from: string,
-  to: string,
-  progress: number,
-  steps: {
-    conponentUrl: string,
-    extras: {
-      /* Building nav */
-      building?: Building,
-      fromNode?: number,
-      toNode?: number,
-
-      /* Maps nav */
-      departNow?: boolean,
-      timeMode?: TimeMode,
-      time?: string
-    }
-  }[]
-}
-
 export enum TimeMode {
   ARRIVAL_BY,
   DEPART_BY
