@@ -86,10 +86,9 @@ public class LocationNodeNetworkStatements {
             String name = network.getLocationName();
             Building building = BuildingStatements.getBuildingByName(name);
             if (resource.delete()) {
-                BuildingStatements.deleteBuilding(building.getId());
                 FileService.uploadFile(file, "Locations", file.getOriginalFilename());
-                Building newBuilding = new Building(0, addressId, network.getLocationName());
-                BuildingStatements.createBuilding(newBuilding);
+                Building newBuilding = new Building(building.getId(), addressId, network.getLocationName());
+                BuildingStatements.updateBuilding(newBuilding);
                 return mapper.readValue(resource, LocationNodeNetwork.class);
             } else {
                 throw new IOException("File deletion did not go well");
