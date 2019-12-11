@@ -896,8 +896,14 @@ Deletes the locationNodeNetwork indicated by the locationName in the URL.
 
 ****
     
-### PUT `/api/locationnodenetwork/{locationName}`
+### PUT `/api/locationnodenetwork`
 Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one.
+
+**Requested parameters:**
+```properties
+addressId=[integer]
+locationName=[string]
+```
 
 **Upload a file with the following layout:**
 
