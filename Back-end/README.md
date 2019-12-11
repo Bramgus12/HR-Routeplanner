@@ -472,84 +472,6 @@ Get a specific building.
 
 ****
 
-
-    
-### POST `/api/building`
-Create a new building.
-
-**Requested body:**
-
-``` json
-{
-    "address_id": 0,
-    "name": "string"
-}
-``` 
-
-**Response:**
-
-``` json
-{
-    "id": 0,
-    "address_id": 0,
-    "name": "string"
-}
-``` 
-    
-**HTTP-statuses:** 400, 200
-
-[Back to navigation](#navigation)
-
-****
-
-### DELETE `/api/building/{id}`
-Delete a building by id.
-
-**Response:**
-
-``` json
-{
-    "id": 0,
-    "address_id": 0,
-    "name": "string"
-}
-``` 
-    
-**HTTP-statuses:** 400, 200
-
-[Back to navigation](#navigation)
-
-****
-
-### PUT `/api/building/{id}`
-Update a building.
-
-**Requested body:**
-
-``` json
-{
-    "id": 0,
-    "address_id": 0,
-    "name": "string"
-}
-``` 
-    
-**Response**
-
-``` json
-{
-    "id": 0,
-    "address_id": 0,
-    "name": "string"
-}
-``` 
-    
-**HTTP-statuses:** 400, 200
-
-[Back to navigation](#navigation)
-
-****
-
 ## Institute
 
 ****
@@ -1109,22 +1031,18 @@ Get all nodes that are a room
 ``` json
 [
     {
-        "number": 0,
-        "type": "String",
-        "code": "String",
-        "label": "String",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    {
-        "number": 0,
-        "type": "String",
-        "code": "String",
-        "label": "String",
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
+        "locationName": "string",
+        "nodes": [
+            {
+                "code": "string",
+                "label": "string",
+                "number": 0,
+                "type": "string",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        ]
     }
 ]
 ```
