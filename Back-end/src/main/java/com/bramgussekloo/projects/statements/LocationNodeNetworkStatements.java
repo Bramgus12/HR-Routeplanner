@@ -2,10 +2,7 @@ package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.FileHandling.FileService;
 import com.bramgussekloo.projects.Properties.GetPropertyValues;
-import com.bramgussekloo.projects.dataclasses.Address;
-import com.bramgussekloo.projects.dataclasses.Building;
-import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.dataclasses.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,9 +50,9 @@ public class LocationNodeNetworkStatements {
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
             String networkName = locationNodeNetwork.getLocationName();
             Building building = BuildingStatements.getBuildingByName(networkName);
-            BuildingStatements.deleteBuilding(building.getId());
-            AddressStatements.deleteAddress(building.getAddress_id());
             if (file.delete()) {
+                BuildingStatements.deleteBuilding(building.getId());
+                AddressStatements.deleteAddress(building.getAddress_id());
                 return locationNodeNetwork;
             } else {
                 throw new IOException("Deleting of file " + locationName + ".json has failed.");
@@ -101,20 +98,23 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static ArrayList<Node> getAllRooms() throws IOException {
+    public static ArrayList<NodesAndBuildingName> getAllRooms() throws IOException {
         File folder = GetPropertyValues.getResourcePath("Locations", "");
         File[] listOfFiles = folder.listFiles();
-        ArrayList<Node> nodeArrayList = new ArrayList<>();
+        ArrayList<NodesAndBuildingName> nodeArrayList = new ArrayList<>();
         assert listOfFiles != null;
         for (File file : listOfFiles) {
             if (file.isFile() && !file.toString().contains(".gitkeep")) {
                 ObjectMapper mapper = new ObjectMapper();
                 LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
+                ArrayList<Node> nodes = new ArrayList<>();
                 for (Node node : network.getNodes()) {
                     if (node.getType().equals("Room")) {
-                        nodeArrayList.add(node);
+                        nodes.add(node);
                     }
                 }
+                NodesAndBuildingName rnib = new NodesAndBuildingName(nodes, network.getLocationName());
+                nodeArrayList.add(rnib);
             }
         }
         return nodeArrayList;
