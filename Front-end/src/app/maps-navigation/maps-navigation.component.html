@@ -34,12 +34,12 @@
 
         <mat-slide-toggle [(ngModel)]="fastestRoute" (change)="getDirections()">Fastest route</mat-slide-toggle>
 
-        <mat-slide-toggle [(ngModel)]="navigationState.departNow" (change)="onDepartNowChange()">Depart now</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="stateData.departNow" (change)="onDepartNowChange()">Depart now</mat-slide-toggle>
 
-        <div class="time-settings" *ngIf="!navigationState.departNow">
+        <div class="time-settings" *ngIf="!stateData.departNow">
           <mat-form-field>
             <mat-label>Time mode</mat-label>
-            <mat-select [(ngModel)]="navigationState.timeMode" (selectionChange)="getDirections()">
+            <mat-select [(ngModel)]="stateData.timeMode" (selectionChange)="getDirections()">
               <mat-option *ngFor="let option of timeModeOptions" [value]="option.value">
                 {{ option.name }}
               </mat-option>
@@ -47,7 +47,7 @@
           </mat-form-field>
 
           <mat-form-field>
-            <input matInput placeholder="Time" [ngxTimepicker]="picker" [format]="24" [(ngModel)]="navigationState.time" (change)="getDirections()">
+            <input matInput placeholder="Time" [ngxTimepicker]="picker" [format]="24" [(ngModel)]="stateData.time" (change)="getDirections()">
             <mat-icon matSuffix>schedule</mat-icon>
             <ngx-material-timepicker #picker [ngxMaterialTimepickerTheme]="timepickerTheme" (closed)="getDirections()"></ngx-material-timepicker>
           </mat-form-field>

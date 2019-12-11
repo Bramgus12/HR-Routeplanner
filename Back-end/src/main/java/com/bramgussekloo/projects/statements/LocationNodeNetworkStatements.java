@@ -52,7 +52,6 @@ public class LocationNodeNetworkStatements {
             Building building = BuildingStatements.getBuildingByName(networkName);
             if (file.delete()) {
                 BuildingStatements.deleteBuilding(building.getId());
-                AddressStatements.deleteAddress(building.getAddress_id());
                 return locationNodeNetwork;
             } else {
                 throw new IOException("Deleting of file " + locationName + ".json has failed.");
@@ -79,17 +78,18 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file) throws IOException {
+    public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file, Integer addressId) throws IOException, SQLException {
         File resource = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (resource.exists()) {
+            ObjectMapper mapper = new ObjectMapper();
+            LocationNodeNetwork network = mapper.readValue(resource, LocationNodeNetwork.class);
+            String name = network.getLocationName();
+            Building building = BuildingStatements.getBuildingByName(name);
             if (resource.delete()) {
-                if (locationName.equals(Objects.requireNonNull(file.getOriginalFilename()).replace(".json", ""))) {
-                    ObjectMapper mapper = new ObjectMapper();
-                    FileService.uploadFile(file, "Locations", file.getOriginalFilename());
-                    return mapper.readValue(resource, LocationNodeNetwork.class);
-                } else {
-                    throw new IOException("locationName in URL and locationName in JSON are not the same.");
-                }
+                FileService.uploadFile(file, "Locations", file.getOriginalFilename());
+                Building newBuilding = new Building(building.getId(), addressId, network.getLocationName());
+                BuildingStatements.updateBuilding(newBuilding);
+                return mapper.readValue(resource, LocationNodeNetwork.class);
             } else {
                 throw new IOException("File deletion did not go well");
             }

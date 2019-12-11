@@ -6,9 +6,10 @@ import { map, startWith, throttleTime, debounceTime, delay } from 'rxjs/operator
 
 import { HomepageService } from './homepage.service';
 import { AppService } from '../app.service'; 
-import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
-import { NavigationState, Building, TimeMode, TimeModeOption, Address, Node } from '../shared/dataclasses';
 import { GoogleMapsService } from '../3rdparty/google-maps.service';
+import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
+import { Building, TimeMode, TimeModeOption, Address, Node } from '../shared/dataclasses';
+import { NavigationState, NavigationStep } from '../shared/navigation-state';
 
 @Component({
   selector: 'app-homepage',
@@ -17,7 +18,7 @@ import { GoogleMapsService } from '../3rdparty/google-maps.service';
 })
 export class HomepageComponent implements OnInit {
 
-  navigationModel: NavigationState = { from: '', to: '', departNow: true, timeMode: TimeMode.DEPART_BY, time: '', fromNode: 0, toNode: 0 }
+  navigationModel = { from: '', to: '', departNow: true, timeMode: TimeMode.DEPART_BY, time: '', fromNode: null, toNode: null }
   fromSuggestions: string[] = [];
   toSuggestions: string[] = [];
   buildings: Building[] = [];
@@ -120,7 +121,8 @@ export class HomepageComponent implements OnInit {
    * Gets called when #navigationForm is submitted
    */
   goToNavigation(){
-    const retrieveAddresses: Observable<Address>[] = [];
+    const retrieveAddresses: Observable<Address>[] = [],
+      navigationSteps: NavigationStep[] = [];
     let loadBuildingNav = false,
       componentUrl = 'maps-navigation';
 
@@ -133,7 +135,7 @@ export class HomepageComponent implements OnInit {
     
     if(this.buildings.filter(building => building.name == this.navigationModel.to).length > 0){
       retrieveAddresses.push(this.service.getBuildingAddress(this.navigationModel.to));
-    } else if(this.rooms.filter(room => room.code == this.navigationModel.to).length > 0){
+    } else if(this.navigationModel.toNode != null){
       retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.to));
     } else {
       this.errorMessage = "'To classroom / building' field has to be a building name or room code";
@@ -142,7 +144,7 @@ export class HomepageComponent implements OnInit {
 
     if(this.buildings.filter(building => building.name == this.navigationModel.from).length > 0){
       retrieveAddresses.push(this.service.getBuildingAddress(this.navigationModel.from));
-    } else if(this.rooms.filter(room => room.code == this.navigationModel.from).length > 0){
+    } else if(this.navigationModel.fromNode != null){
       retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.from));
       loadBuildingNav = true;
     }
@@ -158,12 +160,21 @@ export class HomepageComponent implements OnInit {
 
       if(loadBuildingNav || this.navigationModel.to == this.navigationModel.from){
         componentUrl = 'building-navigation';
+        navigationSteps.push({ componentUrl: componentUrl, data: { building: null, fromNode: this.navigationModel.fromNode, toNode: this.navigationModel.toNode }});
+      } else {
+        if(this.navigationModel.fromNode != null)
+          navigationSteps.push({ componentUrl: 'building-navigation', data: { building: null, fromNode: this.navigationModel.fromNode, toNode: null }})
+
+        navigationSteps.push({ componentUrl: componentUrl, data: { departNow: this.navigationModel.departNow, timeMode: this.navigationModel.timeMode, time: this.navigationModel.time }});
+
+        if(this.navigationModel.toNode != null)
+          navigationSteps.push({ componentUrl: 'building-navigation', data: { building: null, fromNode: null, toNode: this.navigationModel.toNode }});
       }
 
       /* Ways of sending data to other components (no data-binding) using states!
       https://stackoverflow.com/a/54365098
       Other alternatives: https://stackoverflow.com/a/44865817 */
-      this.router.navigate([componentUrl], { state: this.navigationModel })
+      this.router.navigateByUrl(componentUrl, { state: new NavigationState(this.navigationModel.from, this.navigationModel.to, navigationSteps) });
     }, error => this.errorMessage = "Failed to get the addresses from the API")
   }
 

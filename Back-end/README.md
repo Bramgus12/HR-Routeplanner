@@ -847,7 +847,7 @@ Put the address_id of the address that corresponds with the locationNodeNetwork 
 ****
 
 ### DELETE `/api/locationnodenetwork/{locationname}`
-Deletes the locationNodeNetwork indicated by the locationName in the URL.
+Deletes the locationNodeNetwork indicated by the locationName in the URL. This also deletes the buildingobject in the database.
 
 **Response:**
 
@@ -896,8 +896,14 @@ Deletes the locationNodeNetwork indicated by the locationName in the URL.
 
 ****
     
-### PUT `/api/locationnodenetwork/{locationName}`
-Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one.
+### PUT `/api/locationnodenetwork`
+Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one. This also updates the buildingobject in the database.
+
+**Requested parameters:**
+```properties
+addressId=[integer]
+locationName=[string]
+```
 
 **Upload a file with the following layout:**
 
