@@ -37,10 +37,16 @@ public class BuildingStatements {
         Connection conn = new DatabaseConnection().getConnection();
         Integer addressId = building.getAddress_id();
         String name = building.getName();
-        conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + addressId + ", '" + name + "'); ");
-        ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
-        resultSet.next();
-        return getResult(resultSet.getInt("id"), resultSet);
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
+        try {
+            result.next();
+            return getResult(result.getInt("id"), result);
+        } catch (SQLException e) {
+            conn.createStatement().execute("INSERT INTO building VALUES (DEFAULT, " + addressId + ", '" + name + "'); ");
+            ResultSet resultSet = conn.createStatement().executeQuery("SELECT * FROM building WHERE address_id=" + addressId + " AND name='" + name + "';");
+            resultSet.next();
+            return getResult(resultSet.getInt("id"), resultSet);
+        }
     }
 
     public static Building deleteBuilding(Integer id) throws SQLException{

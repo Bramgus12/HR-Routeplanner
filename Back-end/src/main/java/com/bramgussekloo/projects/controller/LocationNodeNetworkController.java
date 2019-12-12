@@ -1,8 +1,8 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -95,14 +95,15 @@ public class LocationNodeNetworkController {
             @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork", response = LocationNodeNetwork.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PutMapping("/{locationName}")
+    @PutMapping
     private ResponseEntity updateLocationNodeNetwork(
-            @ApiParam(value = "Name of the location you want to update", required = true) @PathVariable String locationName,
-            @ApiParam(value = "The updated locationNodeNetwork") @RequestParam MultipartFile file
+            @ApiParam(value = "Name of the location you want to update", required = true) @RequestParam String locationName,
+            @ApiParam(value = "The ID of the address that you want to pair this locationNodeNetwork with", required = true) @RequestParam Integer addressId,
+            @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file));
-        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file, addressId));
+        } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -110,7 +111,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes", response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName", response = NodesAndBuildingName.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/room")

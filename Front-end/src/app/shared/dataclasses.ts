@@ -12,16 +12,6 @@ export interface Building {
   name: string
 }
 
-export interface NavigationState {
-  from: string,
-  to: string,
-  departNow: boolean,
-  timeMode: TimeMode,
-  time: string,
-  fromNode: number,
-  toNode: number
-}
-
 export enum TimeMode {
   ARRIVAL_BY,
   DEPART_BY
