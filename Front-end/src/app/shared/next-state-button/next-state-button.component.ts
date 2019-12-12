@@ -13,13 +13,16 @@ export class NextStateButtonComponent {
 
   @Input() state: NavigationState;
 
-  constructor(private router: Router, private dialog: MatDialog) { }
+  constructor(private router: Router, private dialog: MatDialog) {}
 
   navigateToNextComponent(){
-    const dialogRef = this.dialog.open(NextStateDialog);
-    dialogRef.afterClosed().subscribe(data => {
-      if(data) this.router.navigateByUrl(this.state.nextComponentUrl, { state: this.state });
-    });
+    if(this.state instanceof NavigationState){
+      const dialogRef = this.dialog.open(NextStateDialog);
+      dialogRef.afterClosed().subscribe(data => {
+        if(data) this.router.navigateByUrl(this.state.nextComponentUrl, { state: this.state });
+      });
+    } else console.error(Error("State is missing or invalid!"));
+
   }
 
 }
