@@ -45,8 +45,7 @@ export class NavigationState {
   getNextStep(currentComponentUrl: string){
     this._progress +=1;
     const step = this.currentStep;
-
-    /* Boolean algebra \o/ */
+    
     if(step == null ||
       step.componentUrl == currentComponentUrl &&
       (step.componentUrl == "building-navigation" && step.data.hasOwnProperty("building") && step.data.hasOwnProperty("fromNode") && step.data.hasOwnProperty("toNode")) ||
@@ -77,7 +76,7 @@ export interface NavigationStep {
 }
 
 export interface BuildingStep {
-  building: Building,
+  locationName: string,
   fromNode: number,
   toNode: number,
 }

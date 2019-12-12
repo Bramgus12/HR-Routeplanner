@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Building, Node, Address } from '../shared/dataclasses';
+import { Building, LocationRooms, Address } from '../shared/dataclasses';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class HomepageService {
   }
 
   getRoomNodes(){
-    return this.http.get<Node[]>(this.API_URL + 'locationnodenetwork/room');
+    return this.http.get<LocationRooms[]>(this.API_URL + 'locationnodenetwork/room');
   }
 
   getBuildingAddress(name: string){
