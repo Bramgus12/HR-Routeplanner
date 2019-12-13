@@ -22,10 +22,12 @@ export class AppComponent implements OnInit{
     /*This sets the title of each loaded page/component*/
     this.router.events.pipe(
       filter(event => event instanceof ActivationEnd),
-      map((event: ActivationEnd) => event.snapshot.data)
-    ).subscribe(data => {
-      this.title = data['title'];
-      this.titleService.setTitle(data['title']);
+      map((event: ActivationEnd) => event.snapshot)
+    ).subscribe(snapshot => {
+      if(snapshot.hasOwnProperty("data")){
+        this.title = snapshot.data['title'];
+        this.titleService.setTitle(snapshot.data['title']);
+      }
     });
 
     const savedDarkmode = JSON.parse(localStorage.getItem("dark-theme"));
