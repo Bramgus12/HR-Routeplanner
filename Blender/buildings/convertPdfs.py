@@ -26,8 +26,6 @@ for path, subdirs, files in os.walk(root):
 
 pdfNum = 1
 
-tempDir = tempfile.TemporaryDirectory()
-
 for pdfPath in pdfPaths:
     print( "[{}/{}] Converting '{}' to png and json files.".format(pdfNum, len(pdfPaths), os.path.split(pdfPath)[-1] ) )
     pdfNum += 1
@@ -40,11 +38,12 @@ for pdfPath in pdfPaths:
         if formatMatch != None:
             floorplanFormat = formatMatch.group(0)
 
-    xmlPath = os.path.join( tempDir.name, os.path.basename(path_to_extension(pdfPath, "xml" )) )
+    pdftohtmlCommand = ["pdftohtml", "-xml", "-noroundcoord", "-hidden", "-stdout", pdfPath]
+    pdftohtmlProcess = subprocess.Popen(pdftohtmlCommand, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    pdftohtmlOutput, err = pdftohtmlProcess.communicate()
+    xmlStr = pdftohtmlOutput.decode('utf-8')
 
-    subprocess.call(["pdftohtml", "-xml", pdfPath, xmlPath], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-    xmlTree = ET.parse(xmlPath)
+    xmlTree = ET.ElementTree(ET.fromstring(xmlStr))
     xmlRoot = xmlTree.getroot()
 
     pageNum = 1
@@ -142,5 +141,3 @@ for pdfPath in pdfPaths:
                 else:
                     pixdata[x, y] = (0, 255, 255, 255)
         image.save(pngPath)
-
-tempDir.cleanup()
