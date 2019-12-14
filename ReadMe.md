@@ -9,9 +9,14 @@ A website routeplanner for elective course from start point to destination build
 * [B. Gussekloo](https://github.com/Bramgus12)
 * [G.H. Wu](https://github.com/guanhaowu)
 
+# Navigation
+1. [Installation instructions in IDE](#installation-instructions-in-ide)
+    1. [Back-end](#back-end)
+    2. [Front-end](#front-end)
+
 # Installation instructions in IDE
 
-## Back end:
+## Back-end:
 To run this api on your own computer, follow these steps:
 1. You have to download Intellij IDEA community or ultimate (Eclipse will probably also work).
 2. Clone the GitHub Repo to a place where you can find it easily.
@@ -58,9 +63,9 @@ server.compression.min-response-size=1024
 server.error.include-stacktrace=never
 ```
 9. Run the file `ProjectsApplication.java` which is located in the `~/ProjectC/Back-end/src/main/java/com/bramgussekloo/projects` folder. 
-10. You're good to go.
+10. You're good to go. The back-end will run at `localhost:8080` and if you want to go to the interactive documentation you will have to go to `localhost:8080/swagger-ui.html`
 
-## Front end:
+## Front-end:
 1. Download the newest version of Node.js.
 2. Download an IDE or text editor that feeds your needs. (We recommend either Sublime text, Visual Studio code or Jetbrains Webstorm).
 3. Run the commands:
@@ -72,3 +77,5 @@ npm install
 ``` shell
 ng serve
 ```
+5. You have to run the back end with the front end if you want to have the api to work in your front-end project.
+6. The Front-end will run at `localhost:4200`.
