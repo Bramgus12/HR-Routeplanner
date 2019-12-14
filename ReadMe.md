@@ -284,4 +284,4 @@ sudo systemctl start [service name].service
 sudo systemctl enable [service name].service
 ```
 
-13. You're good to go.
+14. You're good to go.
