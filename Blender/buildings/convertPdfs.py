@@ -62,8 +62,8 @@ for pdfPath in pdfPaths:
 
         floorplan = {
             'buildingName': '',
-            'width': int(pageElement.attrib.get('width')),
-            'height': int(pageElement.attrib.get('height')),
+            'width': float(pageElement.attrib.get('width')),
+            'height': float(pageElement.attrib.get('height')),
             'orientation': 'Landscape',
             'scale': 100.0,
             'floorNumberDetected': False,
@@ -73,29 +73,37 @@ for pdfPath in pdfPaths:
         }
 
         detectedFloorNumbers = dict()
+        roomTextHeights = dict()
 
         for textElement in [element for element in pageElement if element.tag == 'text' and element.text != None]:
             text = textElement.text
-            roomMatch = re.search(r"[0-9A-Z]+\.[\-0-9A-Za-z]+\.[0-9A-Za-z]+", text)
+            roomMatch = re.search(r"^[0-9A-Z]+\.[\-0-9A-Za-z]+\.[0-9A-Za-z]+$", text)
             if(roomMatch != None):
                 if(floorplan['buildingName'] == ''):
                     floorplan['buildingName'] = roomMatch.group(0).split('.')[0]
 
                 floorMatch = re.search("[-0-9]+", roomMatch.group(0).split('.')[1])
+                # Detect floor number from room code
                 if floorMatch != None or roomMatch.group(0).split('.')[1] == 'K':
                     floorNumber = -1 if roomMatch.group(0).split('.')[1] == 'K' else int(floorMatch.group(0))
                     if detectedFloorNumbers.get(floorNumber) == None:
                         detectedFloorNumbers[floorNumber] = 1
                     else:
                         detectedFloorNumbers[floorNumber] += 1
+                # Get text height from room code
+                roomTextHeight = float(textElement.attrib.get('height'))
+                if roomTextHeights.get(roomTextHeight) == None:
+                    roomTextHeights[roomTextHeight] = 1
+                else:
+                    roomTextHeights[roomTextHeight] += 1
                 # The text object is a room, save the corresponding data
                 room = {
                     'code': roomMatch.group(0),
                     'label': '',
-                    'x1': int(textElement.attrib.get('left')),
-                    'y1': floorplan['height'] - int(textElement.attrib.get('top')),
-                    'x2': int(textElement.attrib.get('left')) + int(textElement.attrib.get('width')),
-                    'y2': floorplan['height'] - int(textElement.attrib.get('top')) + int(textElement.attrib.get('height'))
+                    'x1': float(textElement.attrib.get('left')),
+                    'y1': floorplan['height'] - float(textElement.attrib.get('top')),
+                    'x2': float(textElement.attrib.get('left')) + float(textElement.attrib.get('width')),
+                    'y2': floorplan['height'] - float(textElement.attrib.get('top')) + float(textElement.attrib.get('height'))
                 }
                 floorplan['rooms'].append(room)
             
@@ -107,6 +115,12 @@ for pdfPath in pdfPaths:
         if len(detectedFloorNumbers) > 0:
             floorplan['floorNumber'] = max(detectedFloorNumbers)
             floorplan['floorNumberDetected'] = True
+        
+        if len(roomTextHeights) > 0:
+            roomTextHeight = max(roomTextHeights)
+            floorplanScale = ( 13.928625 / roomTextHeight ) * 100
+            if floorplanScale > 100.0:
+                floorplan['scale'] = floorplanScale
 
         # Save floorplan data to a json file
         jsonFile = open(jsonPath, 'w')
