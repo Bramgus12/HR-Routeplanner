@@ -181,7 +181,6 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
     roomNode.lock_scale[0] = True
     roomNode.lock_scale[1] = True
     roomNode.lock_scale[2] = True
-    roomNode.lock_location[2] = True
 
     roomNode.name = '[{}] {}'.format(part, room['code'])
     roomNode['roomCode'] = room['code']
