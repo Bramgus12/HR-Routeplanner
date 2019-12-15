@@ -178,6 +178,10 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
     # bpy.context.scene.collection.objects.link(roomNode)
     linkToFloorCollection(roomNode, floorNumber)
     roomNode.color = color
+    roomNode.lock_scale[0] = True
+    roomNode.lock_scale[1] = True
+    roomNode.lock_scale[2] = True
+    roomNode.lock_location[2] = True
 
     roomNode.name = '[{}] {}'.format(part, room['code'])
     roomNode['roomCode'] = room['code']

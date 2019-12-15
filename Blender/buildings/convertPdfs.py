@@ -112,12 +112,14 @@ for pdfPath in pdfPaths:
                 floorplan['scale'] = float(scaleMatch.group(0).split(':')[-1].replace(',','.'))
             
         if len(detectedFloorNumbers) > 0:
-            floorplan['floorNumber'] = max(detectedFloorNumbers)
+            floorplan['floorNumber'] = max(detectedFloorNumbers, key=detectedFloorNumbers.get)
             floorplan['floorNumberDetected'] = True
         
-        if len(roomTextHeights) > 0:
-            roomTextHeight = max(roomTextHeights)
+        if len(roomTextHeights) > 0 and floorplan['scale'] == 100.0:
+            roomTextHeight = max(roomTextHeights, key=roomTextHeights.get)
             floorplanScale = ( 13.928625 / roomTextHeight ) * 100
+            print("\t",roomTextHeight)
+            print("\t",floorplanScale)
             if floorplanScale > 100.0:
                 floorplan['scale'] = floorplanScale
 
