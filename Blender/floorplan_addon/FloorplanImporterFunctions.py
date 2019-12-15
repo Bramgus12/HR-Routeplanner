@@ -199,6 +199,9 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
 
 def loadFloorplan(context, filepath, buildingName, floorNumber, floorHeight, autoBuildingName, autoFloorNumber):
 
+    if bpy.data.collections.get('Collection') != None and len(bpy.data.collections) == 1:
+        bpy.data.collections.remove( bpy.data.collections['Collection'], do_unlink=True )
+
     # Load floorplan json data
     floorplan = {}
     with open(filepath) as json_file:
