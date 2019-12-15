@@ -2,7 +2,10 @@ package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.FileHandling.FileService;
 import com.bramgussekloo.projects.Properties.GetPropertyValues;
-import com.bramgussekloo.projects.dataclasses.*;
+import com.bramgussekloo.projects.dataclasses.Building;
+import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
+import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.Building;
 import com.bramgussekloo.projects.statements.BuildingStatements;
 import io.swagger.annotations.*;
@@ -31,7 +32,6 @@ public class BuildingController {
             ArrayList<Building> list = BuildingStatements.getAllBuildings();
             return ResponseEntity.status(HttpStatus.OK).body(list);
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -47,7 +47,6 @@ public class BuildingController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.getBuilding(id));
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -110,7 +109,7 @@ public class BuildingController {
     // Handles exceptions and puts extra information on it.
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
+        ProjectsApplication.printErrorInConsole(e.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

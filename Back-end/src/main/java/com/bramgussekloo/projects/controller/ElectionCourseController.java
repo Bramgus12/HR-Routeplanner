@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
 import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
 import com.bramgussekloo.projects.statements.ElectionCourseStatements;
@@ -35,7 +36,6 @@ public class ElectionCourseController {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getExcelContent());
         } catch (IOException e) {
             // File not found, throw new msg;
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -43,6 +43,7 @@ public class ElectionCourseController {
     /**
      * Add a specific Election Course description
      * Validate for duplicate before adding data.
+     *
      * @param electionCourseDescription
      * @return added ElectionCourseDescription object
      */
@@ -62,13 +63,13 @@ public class ElectionCourseController {
 //            }
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
         } catch (SQLException e) {
-            e.getStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     /**
      * Lookup a specific Election Course for its description
+     *
      * @param coursecode
      * @return ElectionCourseDescription object
      */
@@ -81,13 +82,14 @@ public class ElectionCourseController {
     private ResponseEntity getElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getElectionCourseDescription(coursecode));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new IllegalArgumentException("Unable to find this Election Course Code.");
         }
     }
 
     /**
      * Lookup all Election Course with its description
+     *
      * @return list of ElectionCourseDescription object
      */
     @ApiOperation(value = "Lookup all Election Course with its description")
@@ -106,6 +108,7 @@ public class ElectionCourseController {
 
     /**
      * Update a specific Election Course for its description
+     *
      * @param coursecode
      * @return updated ElectionCourseDescription object
      */
@@ -118,7 +121,7 @@ public class ElectionCourseController {
     private ResponseEntity updateElectionCourseDescription(@ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
                                                            @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
         try {
-            if (coursecode.equals(electionCourseDescription.getCourseCode())){
+            if (coursecode.equals(electionCourseDescription.getCourseCode())) {
                 ElectionCourseDescription oldData = ElectionCourseStatements.getElectionCourseDescription(coursecode);
                 ElectionCourseDescription newData = new ElectionCourseDescription();
                 newData.setCourseCode(oldData.getCourseCode());
@@ -129,7 +132,7 @@ public class ElectionCourseController {
                     newData.setDescription(oldData.getDescription());
                 }
 
-                if (!electionCourseDescription.getName().equals(oldData.getName())){
+                if (!electionCourseDescription.getName().equals(oldData.getName())) {
                     newData.setName(electionCourseDescription.getName());
                 } else {
                     newData.setName(oldData.getName());
@@ -145,6 +148,7 @@ public class ElectionCourseController {
 
     /**
      * Delete a specific Election Course with its description
+     *
      * @param coursecode
      * @return ElectionCourseDescription object of the deleted object
      */
@@ -174,12 +178,11 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping
-    private ResponseEntity updateFile(@RequestParam MultipartFile file){
+    private ResponseEntity updateFile(@RequestParam MultipartFile file) {
         try {
             ElectionCourseStatements.updateFile(file);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (IOException e){
-            e.printStackTrace();
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -195,19 +198,19 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("/upload")
-    private ResponseEntity uploadFile (@RequestParam("file") MultipartFile file) {
-        try{
+    private ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
             ElectionCourseStatements.uploadFile(file);
             return ResponseEntity.status(HttpStatus.CREATED).build();
-        }
-        catch(IOException e){
-            e.printStackTrace();
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        ProjectsApplication.printErrorInConsole(e.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

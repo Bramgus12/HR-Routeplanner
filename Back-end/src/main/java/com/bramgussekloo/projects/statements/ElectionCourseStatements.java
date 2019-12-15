@@ -5,7 +5,10 @@ import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import com.bramgussekloo.projects.database.DatabaseConnection;
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
 import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +28,7 @@ import java.util.List;
  */
 public class ElectionCourseStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
+
     public static void uploadFile(MultipartFile file) throws IOException {
         File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
         if (!f.exists()) {
@@ -40,19 +44,7 @@ public class ElectionCourseStatements {
             File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
             if (f.exists()) {
                 FileInputStream excelFile = new FileInputStream(f);
-
-                //Find the file extension by splitting file name in substring  and getting only extension name
-//            String fileExtensionName = fileName.substring(fileName.indexOf("."));
-
-                //Check condition if the file is a .xls file or .xlsx file
-//            if(fileExtensionName.equals(".xls")){
-//                //If it is .xls file then create object of HSSFWorkbook class
-//                workbook = new HSSFWorkbook(excelFile);
-//            }
-//            else if(fileExtensionName.equals(".xlsx")) {
-                //If it is .xlsx file then create object of XSSFWorkbook class
                 workbook = new XSSFWorkbook(excelFile);
-//            }
 
                 Sheet worksheet = workbook.getSheetAt(0);
 
@@ -92,7 +84,7 @@ public class ElectionCourseStatements {
             } else {
                 throw new IOException("File does not exist.");
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             throw new IOException("File not found");
         }
     }
@@ -101,7 +93,7 @@ public class ElectionCourseStatements {
         File folder = GetPropertyValues.getResourcePath("ElectionCourse", "");
         File[] files = folder.listFiles();
         assert files != null;
-        if(files.length <= 2) {
+        if (files.length <= 2) {
             for (File f : files) {
                 if (f.exists() && !f.toString().contains(".gitkeep")) {
                     if (f.delete()) {
@@ -116,18 +108,18 @@ public class ElectionCourseStatements {
         }
     }
 
-    public static ElectionCourseDescription createElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException{
+    public static ElectionCourseDescription createElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
 
         PreparedStatement pstmt = conn.prepareStatement("INSERT INTO election_course (electioncoursecode, electioncoursename, description) VALUES (?,?,?);");
-        pstmt.setString(1,electionCourseDescription.getCourseCode());
-        pstmt.setString(2,electionCourseDescription.getName());
-        pstmt.setString(3,electionCourseDescription.getDescription());
+        pstmt.setString(1, electionCourseDescription.getCourseCode());
+        pstmt.setString(2, electionCourseDescription.getName());
+        pstmt.setString(3, electionCourseDescription.getDescription());
         pstmt.executeUpdate();
         return getElectionCourseDescription(electionCourseDescription.getCourseCode());
     }
 
-    public static List<ElectionCourseDescription> getAllElectionCourseDescription()throws SQLException {
+    public static List<ElectionCourseDescription> getAllElectionCourseDescription() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         List<ElectionCourseDescription> allElectionCourseDescriptions = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course");
@@ -140,7 +132,7 @@ public class ElectionCourseStatements {
     public static ElectionCourseDescription getElectionCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursecode=?;");
-        pstmt.setString(1,courseCode);
+        pstmt.setString(1, courseCode);
         ResultSet result = pstmt.executeQuery();
         result.next();
         return getResult(result);
@@ -149,7 +141,7 @@ public class ElectionCourseStatements {
     public static ElectionCourseDescription getElectionCourseDescriptionByName(String name) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursename=?;");
-        pstmt.setString(1,name);
+        pstmt.setString(1, name);
         ResultSet result = pstmt.executeQuery();
         result.next();
         return getResult(result);
@@ -158,10 +150,10 @@ public class ElectionCourseStatements {
     public static ElectionCourseDescription updateElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement pstmt = conn.prepareStatement("UPDATE election_course SET electioncoursename =?, description=?, electioncoursecode=? WHERE electioncoursecode=?;");
-        pstmt.setString(1,electionCourseDescription.getName());
-        pstmt.setString(2,electionCourseDescription.getDescription());
-        pstmt.setString(3,electionCourseDescription.getCourseCode());
-        pstmt.setString(4,electionCourseDescription.getCourseCode());
+        pstmt.setString(1, electionCourseDescription.getName());
+        pstmt.setString(2, electionCourseDescription.getDescription());
+        pstmt.setString(3, electionCourseDescription.getCourseCode());
+        pstmt.setString(4, electionCourseDescription.getCourseCode());
         pstmt.executeUpdate();
         return getElectionCourseDescription(electionCourseDescription.getCourseCode());
     }
@@ -170,7 +162,7 @@ public class ElectionCourseStatements {
         Connection conn = new DatabaseConnection().getConnection();
         ElectionCourseDescription deletedElectionCourseDescription = getElectionCourseDescription(courseCode);
         PreparedStatement deletePstmt = conn.prepareStatement("DELETE FROM election_course WHERE electioncoursecode =?;");
-        deletePstmt.setString(1,courseCode);
+        deletePstmt.setString(1, courseCode);
         deletePstmt.executeUpdate();
         return deletedElectionCourseDescription;
     }
@@ -186,7 +178,7 @@ public class ElectionCourseStatements {
 //        return exists;
 //    }
 
-    private static ElectionCourseDescription getResult (ResultSet result) throws SQLException {
+    private static ElectionCourseDescription getResult(ResultSet result) throws SQLException {
         String ElectionCourseCode = result.getString("electioncoursecode");
         String ElectionCourseName = result.getString("electioncoursename");
         String ElectionCourseDescription = result.getString("description");

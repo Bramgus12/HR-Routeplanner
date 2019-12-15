@@ -15,7 +15,7 @@ public class NodesAndBuildingName {
     @ApiModelProperty(notes = "The name of the location these nodes are in", required = true)
     private String locationName;
 
-    public NodesAndBuildingName(ArrayList<Node> nodes, String locationName){
+    public NodesAndBuildingName(ArrayList<Node> nodes, String locationName) {
         this.nodes = nodes;
         this.locationName = locationName;
     }
@@ -24,15 +24,15 @@ public class NodesAndBuildingName {
         return nodes;
     }
 
+    public void setNodes(ArrayList<Node> nodes) {
+        this.nodes = nodes;
+    }
+
     public String getLocationName() {
         return locationName;
     }
 
     public void setLocationName(String locationName) {
         this.locationName = locationName;
-    }
-
-    public void setNodes(ArrayList<Node> nodes) {
-        this.nodes = nodes;
     }
 }

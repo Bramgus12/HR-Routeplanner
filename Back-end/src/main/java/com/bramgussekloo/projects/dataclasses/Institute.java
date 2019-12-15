@@ -12,12 +12,13 @@ public class Institute {
     @ApiModelProperty(notes = "Name of the institute")
     private String name;
 
-    public Institute(Integer id, String name){
+    public Institute(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Institute(){}
+    public Institute() {
+    }
 
     public Integer getId() {
         return this.id;
