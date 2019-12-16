@@ -44,7 +44,7 @@ public class LocationNodeNetworkController {
     @PostMapping("{AddressId}")
     private ResponseEntity createLocationNodeNetwork(
             @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
-            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @RequestParam Integer addressId
+            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
     ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
