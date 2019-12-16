@@ -41,6 +41,6 @@
 
     <p class="error-msg" *ngIf="errorMessage.length > 0"><small>{{ errorMessage }}</small></p>
     
-    <button mat-raised-button color="primary" class="next" type="submit" [disabled]="navigationForm.form.invalid" (click)="componentUrl='maps-navigation'">Plan journey</button>
+    <button mat-raised-button color="primary" class="next" type="submit" [disabled]="navigationForm.form.invalid">Plan journey</button>
   </form>
 </mat-card>

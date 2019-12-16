@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.statements.AddressStatements;
 import io.swagger.annotations.*;
@@ -43,7 +44,7 @@ public class AddressController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddress(id));
         } catch (Exception e) {
-            throw new IllegalArgumentException("The ID that you are trying to retrieve doesn't exists!");
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -61,7 +62,6 @@ public class AddressController {
             Address result = AddressStatements.createAddress(address);
             return ResponseEntity.status(HttpStatus.OK).body(result);
         } catch (SQLException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -74,11 +74,10 @@ public class AddressController {
     @GetMapping("/room")
     private ResponseEntity getAddressByRoomCode(
             @ApiParam(value = "The code of the room, you want to have the address of", required = true) @RequestParam String code
-    ){
+    ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByRoomCode(code));
-        } catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -95,7 +94,6 @@ public class AddressController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByBuildingName(name));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -111,7 +109,7 @@ public class AddressController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.deleteAddress(id));
         } catch (Exception e) {
-            throw new IllegalArgumentException("The ID that you are trying to delete doesn't exists!");
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -134,13 +132,14 @@ public class AddressController {
                 throw new IllegalArgumentException("ID's are different");
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("The ID that you are trying to update doesn't exist!");
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        ProjectsApplication.printErrorInConsole(e.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

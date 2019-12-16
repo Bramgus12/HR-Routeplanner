@@ -53,7 +53,7 @@ public class ElectionCourse {
     }
 
     // Empty object for initial run
-    public ElectionCourse(){
+    public ElectionCourse() {
     }
 
     public String getCourseCode() {

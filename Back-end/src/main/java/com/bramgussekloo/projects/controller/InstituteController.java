@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.Institute;
 import com.bramgussekloo.projects.statements.InstituteStatements;
 import io.swagger.annotations.*;
@@ -139,7 +140,7 @@ public class InstituteController {
      */
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
+        ProjectsApplication.printErrorInConsole(e.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
