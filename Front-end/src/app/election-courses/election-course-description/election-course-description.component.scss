@@ -1,4 +1,12 @@
+@import 'helpers';
+
 section {
-  width: 1200px;
-  margin: 16px auto;
+  max-width: 1200px;
+  margin: 16px 8px;
+}
+
+@include media-tablet(){
+  section {
+    margin: 16px auto;
+  }
 }

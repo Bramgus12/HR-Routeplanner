@@ -1,5 +1,7 @@
+@import 'helpers';
+
 section {
-  margin: 16px;
+  overflow-x: auto;
 
   table {
     width: 100%;
@@ -9,5 +11,11 @@ section {
     tbody tr {
       cursor: pointer;
     }
+  }
+}
+
+@include media-tablet(){
+  section {
+    margin: 16px;
   }
 }
