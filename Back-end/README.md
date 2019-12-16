@@ -62,15 +62,16 @@ Get a list of all addresses.
         "street": "string",
         "number": 0,
         "city": "string",
-        "postal": "string"
+        "postal": "string",
+        "addition": "string"
     },
     {
         "id": 0,
         "street": "string",
         "number": 0,
         "city": "string",
-        "postal": "string"
-        
+        "postal": "string",
+        "addition": "string"
     }
 ]
 ```
@@ -92,7 +93,8 @@ Get a certain address.
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
     
@@ -117,7 +119,8 @@ name=[string]
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
 **HTTP-statuses:** 400, 200
@@ -142,7 +145,8 @@ code=[string]
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
 **HTTP-statuses:** 400, 200
@@ -161,7 +165,8 @@ Create a new address.
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
     
@@ -173,7 +178,8 @@ Create a new address.
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
     
@@ -194,7 +200,8 @@ Delete an address by id.
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
 
@@ -215,7 +222,8 @@ Update a certain address.
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
 }
 ```
  
@@ -228,7 +236,9 @@ Update a certain address.
     "street": "string", 
     "number": 0,
     "city": "string",
-    "postal": "string"
+    "postal": "string",
+    "addition": "string"
+
 }
 ```
     
