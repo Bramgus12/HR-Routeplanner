@@ -123,10 +123,14 @@ public class ElectionCourseStatements {
         Connection conn = new DatabaseConnection().getConnection();
         List<ElectionCourseDescription> allElectionCourseDescriptions = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course");
-        while (result.next()) {
-            allElectionCourseDescriptions.add(getResult(result));
+        if (!result.next()) {
+            throw new SQLException("No data in database");
+        } else {
+            do {
+                allElectionCourseDescriptions.add(getResult(result));
+            } while (result.next());
+            return allElectionCourseDescriptions;
         }
-        return allElectionCourseDescriptions;
     }
 
     public static ElectionCourseDescription getElectionCourseDescription(String courseCode) throws SQLException {
@@ -134,8 +138,11 @@ public class ElectionCourseStatements {
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursecode=?;");
         pstmt.setString(1, courseCode);
         ResultSet result = pstmt.executeQuery();
-        result.next();
-        return getResult(result);
+        if (!result.next()) {
+            throw new SQLException("The ElectionCourse at courseCode " + courseCode + " doesn't exist");
+        } else {
+            return getResult(result);
+        }
     }
 
     public static ElectionCourseDescription getElectionCourseDescriptionByName(String name) throws SQLException {
@@ -143,8 +150,11 @@ public class ElectionCourseStatements {
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursename=?;");
         pstmt.setString(1, name);
         ResultSet result = pstmt.executeQuery();
-        result.next();
-        return getResult(result);
+        if (!result.next()) {
+            throw new SQLException("No Description with electionCourseName " + name + " found in the database");
+        } else {
+            return getResult(result);
+        }
     }
 
     public static ElectionCourseDescription updateElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
@@ -166,17 +176,6 @@ public class ElectionCourseStatements {
         deletePstmt.executeUpdate();
         return deletedElectionCourseDescription;
     }
-// TESTING
-//    public static ArrayList ifExist(ElectionCourseDescription electionCourseDescription) throws SQLException {
-//        ArrayList<Boolean> exists = new ArrayList();
-//        String ElectionCourseCode = electionCourseDescription.getCourseCode();
-//        String ElectionCourseName = electionCourseDescription.getName();
-//        boolean check1 = getElectionCourseDescription(ElectionCourseCode).getCourseCode().isEmpty();
-//        boolean check2 = getElectionCourseDescriptionByName(ElectionCourseName).getName().isEmpty();
-//        exists.add(check1);
-//        exists.add(check2);
-//        return exists;
-//    }
 
     private static ElectionCourseDescription getResult(ResultSet result) throws SQLException {
         String ElectionCourseCode = result.getString("electioncoursecode");

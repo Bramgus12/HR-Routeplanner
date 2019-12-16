@@ -53,14 +53,10 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping
-    private ResponseEntity createElectionCourseDescription(@ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
+    private ResponseEntity createElectionCourseDescription(
+            @ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription
+    ) {
         try {
-//            Object[] conditions = ElectionCourseStatements.ifExist(electionCourseDescription).toArray();
-//            if ( conditions[0].equals(false) && conditions[1].equals(false)) {
-//                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
-//            } else {
-//                throw new IllegalArgumentException("Elective Course already exists! Add a new one!.");
-//            }
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -79,11 +75,13 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/{coursecode}")
-    private ResponseEntity getElectionCourseDescription(@ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode) {
+    private ResponseEntity getElectionCourseDescription(
+            @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode
+    ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getElectionCourseDescription(coursecode));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to find this Election Course Code.");
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -118,8 +116,9 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping("/{coursecode}")
-    private ResponseEntity updateElectionCourseDescription(@ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
-                                                           @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
+    private ResponseEntity updateElectionCourseDescription(
+            @ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
+            @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription) {
         try {
             if (coursecode.equals(electionCourseDescription.getCourseCode())) {
                 ElectionCourseDescription oldData = ElectionCourseStatements.getElectionCourseDescription(coursecode);
@@ -158,7 +157,9 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @DeleteMapping("/{coursecode}")
-    private ResponseEntity deleteElectionCourseDescription(@ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode) {
+    private ResponseEntity deleteElectionCourseDescription(
+            @ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode
+    ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.deleteElectionCourseDescription(coursecode));
         } catch (Exception e) {
