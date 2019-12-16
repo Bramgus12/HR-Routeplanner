@@ -3,6 +3,15 @@
 section {
   max-width: 1200px;
   margin: 16px 8px;
+
+  .error {
+    color: #cc3333;
+    font-weight: bold;
+  }
+
+  .description {
+    white-space: pre-wrap;
+  }
 }
 
 @include media-tablet(){
