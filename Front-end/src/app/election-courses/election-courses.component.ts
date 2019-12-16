@@ -1,19 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSort, MatTableDataSource } from '@angular/material';
 
+import { ElectionCourseService } from './election-courses.service';
+import { ElectionCourse } from '../shared/dataclasses';
 @Component({
   selector: 'app-election-courses',
   templateUrl: './election-courses.component.html',
   styleUrls: ['./election-courses.component.scss']
 })
 export class ElectionCoursesComponent implements OnInit {
-  displayedColumns: string[] = ['code', 'name'];
-  electionCourses = [];
+  displayedColumns: string[] = ['courseCode', 'period', 'groupNumber', 'name'];
+  electionCourses = new MatTableDataSource([]);
 
+  @ViewChild(MatSort) sort: MatSort;
 
-  constructor() { }
+  constructor(private service: ElectionCourseService) { }
 
   ngOnInit() {
-    
+    this.service.getElectionCourses().subscribe(data => {
+      this.electionCourses = new MatTableDataSource(data);
+      this.electionCourses.sort = this.sort;
+    })
   }
 
 }

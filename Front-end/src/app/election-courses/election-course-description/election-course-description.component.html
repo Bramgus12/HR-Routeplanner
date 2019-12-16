@@ -1,3 +1,15 @@
-<p>
-  election-course-description works!
-</p>
+<section>
+  <h2>{{electionCourse.name}}</h2>
+  <p>Course code: {{ electionCourse.courseCode }}</p>
+  <p>Period: {{ electionCourse.period }}</p>
+  <p>Group: {{ electionCourse.groupNumber }}</p>
+  <p>Classroom: {{ electionCourse.classroom }}</p>
+  <p>Location: {{ electionCourse.location }}</p>
+  <p>Teacher: {{ electionCourse.teacher }}</p>
+  <p *ngIf="errorMessage.length > 0">{{ errorMessage }}</p>
+
+  <button mat-raised-button routerLink="/election-courses">Back</button>
+
+  <h3>Description</h3>
+  <p class="description">{{electionCourse.description}}</p>
+</section>

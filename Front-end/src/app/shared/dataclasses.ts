@@ -65,3 +65,20 @@ export interface NodeConnection {
   node2Distance: number;
   distance: number;
 }
+
+export interface ElectionCourse {
+  courseCode: string;
+  period: string;
+  groupNumber: string;
+  name: string;
+}
+
+export interface ElectionCourseExtended extends ElectionCourse {
+  classroom: string;
+  dayOfTheWeek: string;
+  endTime: string;
+  location: string;
+  startTime: string;
+  teacher: string;
+  description: string;
+}
