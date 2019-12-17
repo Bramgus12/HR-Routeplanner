@@ -76,16 +76,28 @@ public class ElectionCourseStatements {
                             startTime,
                             endTime,
                             location,
-                            classroom
+                            classroom,
+                            null
                     ));
                 }
                 excelFile.close();
+
+                List<ElectionCourseDescription> rows2 = getAllElectionCourseDescription();
+                for (ElectionCourse _rows : rows){
+                    for (ElectionCourseDescription _rows2 : rows2){
+                        if (_rows.getCourseCode().equals(_rows2.getCourseCode())){
+                            _rows.setDescription(_rows2.getDescription());
+                        }
+                    }
+                }
+
+
                 return rows;
             } else {
                 throw new IOException("File does not exist.");
             }
-        } catch (IOException e) {
-            throw new IOException("File not found");
+        } catch (IOException | SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 
@@ -138,10 +150,10 @@ public class ElectionCourseStatements {
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursecode=?;");
         pstmt.setString(1, courseCode);
         ResultSet result = pstmt.executeQuery();
-        if (!result.next()) {
-            throw new SQLException("The ElectionCourse at courseCode " + courseCode + " doesn't exist");
-        } else {
+        if (result.next()) {
             return getResult(result);
+        } else {
+            throw new SQLException("The ElectionCourse at courseCode " + courseCode + " doesn't exist");
         }
     }
 
