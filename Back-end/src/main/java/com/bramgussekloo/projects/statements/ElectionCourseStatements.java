@@ -77,7 +77,7 @@ public class ElectionCourseStatements {
                             endTime,
                             location,
                             classroom,
-                            null
+                            ""
                     ));
                 }
                 excelFile.close();
