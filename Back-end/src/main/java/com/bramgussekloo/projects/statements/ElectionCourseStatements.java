@@ -77,7 +77,7 @@ public class ElectionCourseStatements {
                             endTime,
                             location,
                             classroom,
-                            ""
+                            null
                     ));
                 }
                 excelFile.close();
@@ -87,6 +87,9 @@ public class ElectionCourseStatements {
                     for (ElectionCourseDescription _rows2 : rows2){
                         if (_rows.getCourseCode().equals(_rows2.getCourseCode())){
                             _rows.setDescription(_rows2.getDescription());
+                        }
+                        else{
+                            _rows.setDescription("");
                         }
                     }
                 }
