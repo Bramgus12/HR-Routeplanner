@@ -18,6 +18,8 @@ export class ElectionCoursesComponent implements OnInit {
 
   ngOnInit() {
     this.service.getElectionCourses().subscribe(data => {
+      data = data.filter(course => course.courseCode != '')
+
       this.electionCourses = new MatTableDataSource(data);
       this.electionCourses.sort = this.sort;
     })
