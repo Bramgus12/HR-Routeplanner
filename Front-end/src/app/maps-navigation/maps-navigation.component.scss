@@ -67,6 +67,11 @@ section {
           padding-left: 8px;
         }
 
+        .distance {
+          padding-left: 8px;
+          vertical-align: top;
+        }
+
         .transit-instructions {
           padding-left: 8px;
 
@@ -94,6 +99,12 @@ section {
   section {
     .directions {
       max-height: calc(60vh - 64px);
+
+      ul li {
+        .distance {
+          display: inline-block;
+        }
+      } 
     }
   }
 }
