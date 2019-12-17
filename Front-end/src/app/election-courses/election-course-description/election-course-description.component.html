@@ -6,6 +6,9 @@
   <p>Classroom: {{ electionCourse.classroom }}</p>
   <p>Location: {{ electionCourse.location }}</p>
   <p>Teacher: {{ electionCourse.teacher }}</p>
+  <p>
+    Day & time: {{ electionCourse.dayOfTheWeek }}<span *ngIf="electionCourse.startTime.length > 0">, {{ electionCourse.startTime }}</span><span *ngIf="electionCourse.endTime.length > 0"> - {{ electionCourse.endTime }}</span>
+  </p>
   <p *ngIf="errorMessage.length > 0" class="error">{{ errorMessage }}</p>
 
   <button mat-raised-button routerLink="/election-courses">Back</button>
