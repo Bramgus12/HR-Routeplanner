@@ -172,7 +172,7 @@ export class HomepageComponent implements OnInit {
 
       if(loadBuildingNav || this.navigationModel.to == this.navigationModel.from){
         componentUrl = 'building-navigation';
-        navigationSteps.push({ componentUrl: componentUrl, data: { locationName: toLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
+        navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
       } else {
         if(this.navigationModel.fromNode != null)
           navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: null }})

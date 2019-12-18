@@ -48,7 +48,7 @@ export class NavigationState {
     
     if(step == null ||
       step.componentUrl == currentComponentUrl &&
-      (step.componentUrl == "building-navigation" && step.data.hasOwnProperty("building") && step.data.hasOwnProperty("fromNode") && step.data.hasOwnProperty("toNode")) ||
+      (step.componentUrl == "building-navigation" && step.data.hasOwnProperty("locationName") && step.data.hasOwnProperty("fromNode") && step.data.hasOwnProperty("toNode")) ||
       (step.componentUrl == "maps-navigation" && step.data.hasOwnProperty("departNow") && step.data.hasOwnProperty("timeMode") && step.data.hasOwnProperty("time"))
     ) {
       if(step == null) console.warn("Step is null, this shouldn't exec!") // TEMP
