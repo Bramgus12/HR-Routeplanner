@@ -49,7 +49,7 @@ public class ElectionCourseStatements {
                 Sheet worksheet = workbook.getSheetAt(0);
 
                 DataFormatter formatter = new DataFormatter();
-                List<ElectionCourse> rows = new ArrayList<>();
+                List<ElectionCourse> electionCourseList = new ArrayList<>();
                 //Create a loop to get the cell values of a row for one iteration
                 for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
                     Row row = worksheet.getRow(i);
@@ -66,7 +66,7 @@ public class ElectionCourseStatements {
                     String location = formatter.formatCellValue(row.getCell(8));
                     String classroom = formatter.formatCellValue(row.getCell(9));
 
-                    rows.add(new ElectionCourse(
+                    electionCourseList.add(new ElectionCourse(
                             courseCode,
                             name,
                             period,
@@ -82,18 +82,18 @@ public class ElectionCourseStatements {
                 }
                 excelFile.close();
 
-                List<ElectionCourseDescription> rows2 = getAllElectionCourseDescription();
-                for (ElectionCourse _rows : rows){
-                    _rows.setDescription("");
-                    for (ElectionCourseDescription _rows2 : rows2){
-                        if (_rows.getCourseCode().equals(_rows2.getCourseCode())){
-                            _rows.setDescription(_rows2.getDescription());
+                List<ElectionCourseDescription> electionCourseDescriptionList = getAllElectionCourseDescription();
+                for (ElectionCourse electionCourse : electionCourseList){
+                    electionCourse.setDescription("");
+                    for (ElectionCourseDescription electionCourseDescription : electionCourseDescriptionList){
+                        if (electionCourse.getCourseCode().equals(electionCourseDescription.getCourseCode())){
+                            electionCourse.setDescription(electionCourseDescription.getDescription());
                         }
                     }
                 }
 
 
-                return rows;
+                return electionCourseList;
             } else {
                 throw new IOException("File does not exist.");
             }
