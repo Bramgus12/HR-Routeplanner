@@ -77,19 +77,17 @@ public class ElectionCourseStatements {
                             endTime,
                             location,
                             classroom,
-                            null
+                            ""
                     ));
                 }
                 excelFile.close();
 
                 List<ElectionCourseDescription> rows2 = getAllElectionCourseDescription();
                 for (ElectionCourse _rows : rows){
+                    _rows.setDescription("");
                     for (ElectionCourseDescription _rows2 : rows2){
                         if (_rows.getCourseCode().equals(_rows2.getCourseCode())){
                             _rows.setDescription(_rows2.getDescription());
-                        }
-                        else{
-                            _rows.setDescription("");
                         }
                     }
                 }
