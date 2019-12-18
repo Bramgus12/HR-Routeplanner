@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { ElectionCourseService } from '../election-courses.service';
-import { ElectionCourseExtended } from '../../shared/dataclasses';
+import { ElectionCourse } from '../../shared/dataclasses';
 @Component({
   selector: 'app-election-course-description',
   templateUrl: './election-course-description.component.html',
@@ -10,10 +10,8 @@ import { ElectionCourseExtended } from '../../shared/dataclasses';
 })
 export class ElectionCourseDescriptionComponent implements OnInit {
 
-  private code = "";
-
   errorMessage = "";
-  electionCourse: ElectionCourseExtended = { 
+  electionCourse: ElectionCourse = { 
     courseCode: '',
     period: '',
     name: '',
@@ -31,13 +29,17 @@ export class ElectionCourseDescriptionComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
-      this.code = params.get("code");
-      this.electionCourse.courseCode = this.code;
+      const code = params.get("code"),
+        group = params.get("group");
+      this.electionCourse.courseCode = code;
+      this.electionCourse.groupNumber = group;
 
-      this.service.getElectionCourse(this.code).subscribe(data => this.electionCourse = data,
-        error => this.errorMessage = error.error.message
-      );
-    })
+      this.service.getElectionCourses().subscribe(courses => {
+        const course = courses.find(course => course.courseCode == code && course.groupNumber == group);
+        if(typeof course != "undefined") this.electionCourse = course;
+        else this.errorMessage = "Couldn't find election course";
+      }, error => this.errorMessage = error.error.message);
+    });
   }
 
 }

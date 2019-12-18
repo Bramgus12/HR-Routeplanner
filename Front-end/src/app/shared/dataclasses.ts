@@ -71,9 +71,6 @@ export interface ElectionCourse {
   period: string;
   groupNumber: string;
   name: string;
-}
-
-export interface ElectionCourseExtended extends ElectionCourse {
   classroom: string;
   dayOfTheWeek: string;
   endTime: string;

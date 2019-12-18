@@ -21,7 +21,7 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;" routerLink="/election-course/{{row.courseCode}}"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [routerLink]="['/election-course', row.courseCode, row.groupNumber]"></tr>
   </table>
   <mat-paginator [pageSizeOptions]="[20, 50, 100]" showFirstLastButtons (page)="onPageUpdate($event)"></mat-paginator>
 </section>
