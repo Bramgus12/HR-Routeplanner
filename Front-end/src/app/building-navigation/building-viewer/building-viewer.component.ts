@@ -93,7 +93,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     // Add three.js canvas element to the div in this component.
     this.threejsContainer.nativeElement.appendChild(this.renderer.domElement);
-    this.devGui.appendToElement(this.threejsContainer.nativeElement);
+    // this.devGui.appendToElement(this.threejsContainer.nativeElement);
     this.resizeCanvasToContainer();
     this.animate();
   }
