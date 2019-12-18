@@ -27,9 +27,6 @@ class FloorplanToolsPanel(Panel):
         row.label(text="Floors")
 
         row = layout.row()
-        row.operator('floorplan.align_floors', text="Align Floors")
-
-        row = layout.row()
         row.operator('floorplan.hide_reference_images', text="Hide Refs")
         row.operator('floorplan.show_reference_images', text="Show Refs")
 
