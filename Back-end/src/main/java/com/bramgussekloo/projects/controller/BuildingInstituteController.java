@@ -54,7 +54,7 @@ public class BuildingInstituteController {
     // Create a new BuildingInstitute object
     @ApiOperation(value = "Create a new buildingInstitute")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created new buildingInstitute"),
+            @ApiResponse(code = 200, message = "Successfully created new buildingInstitute", response = BuildingInstitute.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping

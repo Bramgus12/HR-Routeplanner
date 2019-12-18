@@ -12,16 +12,6 @@ export interface Building {
   name: string
 }
 
-export interface NavigationState {
-  from: string,
-  to: string,
-  departNow: boolean,
-  timeMode: TimeMode,
-  time: string,
-  fromNode: number,
-  toNode: number
-}
-
 export enum TimeMode {
   ARRIVAL_BY,
   DEPART_BY
@@ -64,4 +54,13 @@ export interface NodeConnection {
   node1Distance: number;
   node2Distance: number;
   distance: number;
+}
+
+export interface LocationRooms {
+  locationName: string;
+  nodes: Node[];
+}
+
+export interface Room extends Node {
+  locationName: string;
 }

@@ -48,7 +48,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Add a specific Election Course with its description, use https://www.freeformatter.com/json-escape.html to escape text")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added an election course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully added an election course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping
@@ -74,7 +74,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Lookup a specific Election Course for its description")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/{coursecode}")
@@ -111,7 +111,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Update a specific Election Course for its description")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping("/{coursecode}")
@@ -150,7 +150,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Delete a specific Election Course with its description")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted election course description", response = ElectionCourseDescription.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully deleted election course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @DeleteMapping("/{coursecode}")
@@ -170,7 +170,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectionCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectionCourse.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping
@@ -191,7 +191,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Upload Excel file in Election Course folder if file doesn't exist.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully uploaded", response = ElectionCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully uploaded", response = ElectionCourse.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("/upload")
