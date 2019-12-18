@@ -38,51 +38,10 @@ export class BuildingNavigationComponent implements OnInit {
         this.navigationState = <NavigationState>state;
         const currentStep = this.navigationState.getNextStep('building-navigation');
         this.navigationStateData = <BuildingStep>currentStep.data;
-        
       } catch(err) {
         console.error(err);
         this.router.navigate(['/']);
       }
-      // this.navigationState = <NavigationState>state;
-
-      // const retrieveAddresses: Observable<Address[]> = this.service.getAddresses();
-      // const retrieveBuildings: Observable<Building[]> = this.service.getBuildings();
-
-      // forkJoin(retrieveAddresses, retrieveBuildings).subscribe(responses => {
-      //   const addresses: Address[] = responses[0];
-      //   const buildings: Building[] = responses[1];
-      //   for(let i = 0; i < addresses.length; i++){
-      //     const address: Address = addresses[i];
-      //     const addressStr: string = `${address.street} ${address.number}, ${address.city}`;
-      //     if(addressStr == this.navigationState.from){
-      //       for(let j = 0; j < buildings.length; j++){
-      //         const building: Building = buildings[j];
-      //         if(building.address_id == address.id){
-      //           this.buildingViewer.currentLocationName = building.name;
-      //           this.service.getNodes(building.name, "Entrance").subscribe( (entranceNodes: Node[]) => {
-      //             if(this.navigationState.from == this.navigationState.to) {
-      //               this.buildingViewer.createRoute(building.name, this.navigationState.fromNode, this.navigationState.toNode);
-      //             }
-      //             else if(entranceNodes.length > 0) {
-      //               this.buildingViewer.createRoute(building.name, this.navigationState.fromNode, entranceNodes[0].number);
-      //             }
-      //           },
-      //           error => {
-      //             console.log(`Error retrieving entrance nodes.`);
-      //             console.log(error);
-      //           } );
-      //           this.buildingViewer.loadBuilding(building.name);
-      //           break;
-      //         }
-      //       }
-      //       break;
-      //     }
-      //   }
-      // },
-      // error => {
-      //   console.log("Error retrieving addresses or buildings.");
-      //   console.log(error);
-      // })
     }
     else{
       this.router.navigate(['/']);
@@ -93,7 +52,29 @@ export class BuildingNavigationComponent implements OnInit {
   ngOnInit(): void {
     this.buildingViewer.currentLocationName = this.navigationStateData.locationName;
     this.buildingViewer.loadBuilding(this.navigationStateData.locationName);
-    this.buildingViewer.createRoute(this.navigationStateData.locationName, this.navigationStateData.fromNode, this.navigationStateData.toNode);
+    if(this.navigationStateData.fromNode != null && this.navigationStateData.toNode != null){
+      this.buildingViewer.createRoute(this.navigationStateData.locationName, this.navigationStateData.fromNode, this.navigationStateData.toNode);
+    }
+    else{
+      this.service.getNodes(this.navigationStateData.locationName, "Entrance").subscribe( (entranceNodes: Node[]) => {
+        if(entranceNodes.length < 1){
+          console.log(`There are no entrances for location '${this.navigationStateData.locationName}'`);
+          this.router.navigate(['/']);
+        }
+
+        if(this.navigationStateData.fromNode == null) {
+          this.buildingViewer.createRoute(this.navigationStateData.locationName, entranceNodes[0].number, this.navigationStateData.toNode);
+        }
+        else if(this.navigationStateData.toNode == null) {
+          this.buildingViewer.createRoute(this.navigationStateData.locationName, this.navigationStateData.fromNode, entranceNodes[0].number);
+        }
+      },
+      error => {
+        console.log("Error retrieving entrance nodes.");
+        console.log(error);
+        this.router.navigate(['/']);
+      } );
+    }
   }
 
   forwardPressed(){

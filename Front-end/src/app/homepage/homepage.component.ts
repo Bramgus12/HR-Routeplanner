@@ -170,12 +170,14 @@ export class HomepageComponent implements OnInit {
         this.navigationModel.from = `${fromAddr.street} ${fromAddr.number}, ${fromAddr.city}`;
       }
 
-      if(loadBuildingNav || this.navigationModel.to == this.navigationModel.from){
+      if(this.navigationModel.to == this.navigationModel.from){
         componentUrl = 'building-navigation';
         navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
       } else {
-        if(this.navigationModel.fromNode != null)
-          navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: null }})
+        if(this.navigationModel.fromNode != null) {
+          componentUrl = 'building-navigation';
+          navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: null }});
+        }
 
         navigationSteps.push({ componentUrl: componentUrl, data: { departNow: this.navigationModel.departNow, timeMode: this.navigationModel.timeMode, time: this.navigationModel.time }});
 

@@ -69,6 +69,8 @@ export class NodePath{
       }
     }
 
+    this.drawVisibleNodes();
+
     this.moveCameraToMyLocation();
 
   }
