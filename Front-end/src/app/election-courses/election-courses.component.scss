@@ -1,12 +1,12 @@
 @import 'helpers';
 
 section {
+  max-width: 1200px;
+  margin: 0;
   overflow-x: auto;
 
   table {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
 
     tbody tr {
       cursor: pointer;
@@ -16,6 +16,6 @@ section {
 
 @include media-tablet(){
   section {
-    margin: 16px;
+    margin: 16px auto;
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatTableDataSource } from '@angular/material';
+import { MatSort, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
 
 import { ElectionCourseService } from './election-courses.service';
 import { ElectionCourse } from '../shared/dataclasses';
@@ -13,6 +13,7 @@ export class ElectionCoursesComponent implements OnInit {
   electionCourses = new MatTableDataSource([]);
 
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(private service: ElectionCourseService) { }
 
@@ -22,7 +23,13 @@ export class ElectionCoursesComponent implements OnInit {
 
       this.electionCourses = new MatTableDataSource(data);
       this.electionCourses.sort = this.sort;
+      this.electionCourses.paginator = this.paginator;
     })
+  }
+
+  onPageUpdate(event: PageEvent){
+    // Use setTimeout to make sure it gets executed after the page change 
+    setTimeout(() => window.scroll({ top: 0, left: 0, behavior: 'smooth' }));
   }
 
 }
