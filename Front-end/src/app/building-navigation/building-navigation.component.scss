@@ -53,3 +53,17 @@
   }
 
 }
+
+.next-state-button{
+  position: fixed;
+  bottom: 22vh;
+  left: calc(50vw - 120px);
+  display: block;
+  width: 240px;
+  height: 80px;
+  transition: transform 0.3s;
+
+  &[data-visible="false"]{
+    transform: translateY( calc(22vh + 80px) );
+  }
+}

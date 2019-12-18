@@ -179,7 +179,7 @@ export class HomepageComponent implements OnInit {
           navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: null }});
         }
 
-        navigationSteps.push({ componentUrl: componentUrl, data: { departNow: this.navigationModel.departNow, timeMode: this.navigationModel.timeMode, time: this.navigationModel.time }});
+        navigationSteps.push({ componentUrl: 'maps-navigation', data: { departNow: this.navigationModel.departNow, timeMode: this.navigationModel.timeMode, time: this.navigationModel.time }});
 
         if(this.navigationModel.toNode != null)
           navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: toLocation, fromNode: null, toNode: this.navigationModel.toNode.number }});

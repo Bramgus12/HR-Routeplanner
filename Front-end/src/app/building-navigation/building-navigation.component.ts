@@ -15,19 +15,19 @@ import { Observable, forkJoin } from 'rxjs';
 export class BuildingNavigationComponent implements OnInit {
   @ViewChild(BuildingViewerComponent) buildingViewer: BuildingViewerComponent;
   @ViewChild(MatSlider) travelledDistanceSlider: MatSlider;
-
-  private locationName: string;
-  private from: number;
-  private to: number;
   
   private navigationStateData: BuildingStep;
-  private navigationState: NavigationState;
+  public navigationState: NavigationState;
 
   get sliderValue(): number {
     return this.buildingViewer.nodePath.getTravelledPercentage() * this.travelledDistanceSlider.max;
   }
   set sliderValue(value: number) {
     this.travelledDistanceSlider.value = value;
+  }
+
+  get nextStateButtonVisible(): boolean{
+    return this.buildingViewer.nodePath.nearEnd && this.navigationStateData.toNode == null;
   }
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private service: BuildingNavigationService) {

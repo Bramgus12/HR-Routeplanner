@@ -16,11 +16,12 @@ export class NodePath{
   private myLocation: THREE.Mesh;
   private pathLine: Line2;
   
-  private velocity: number = 7;
+  private velocity: number = 9;
   private direction: number = 0;
 
   private totalDistance: number = 0;
   private travelledDistance: number = 0;
+  public nearEnd: boolean = false;
 
   private visibilityRaycaster: THREE.Raycaster = new THREE.Raycaster();
 
@@ -113,6 +114,8 @@ export class NodePath{
       this.moveCameraToMyLocation();
 
     }
+
+    this.nearEnd = this.travelledDistance > this.totalDistance - 4;
 
     return difference;
   }

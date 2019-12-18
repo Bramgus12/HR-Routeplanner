@@ -1,4 +1,9 @@
 <app-building-viewer></app-building-viewer>
+
+<mat-card class="next-state-button" [attr.data-visible]="nextStateButtonVisible">
+  <app-next-state-button [state]="navigationState"></app-next-state-button>
+</mat-card>
+
 <mat-card class="navigation-controls-container"
   (window:keydown.arrowleft)="backwardPressed()"
   (window:keyup.arrowleft)="backwardReleased()"
