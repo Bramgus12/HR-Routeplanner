@@ -41,7 +41,7 @@ public class LocationNodeNetworkController {
             @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PostMapping("{AddressId}")
+    @PostMapping("{addressId}")
     private ResponseEntity createLocationNodeNetwork(
             @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
             @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
