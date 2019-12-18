@@ -1,8 +1,9 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.dataclasses.Address;
+import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,6 @@ public class LocationNodeNetworkController {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -41,15 +41,14 @@ public class LocationNodeNetworkController {
             @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PostMapping("{AddressId}")
-    private ResponseEntity createLocationNodeNetwork (
+    @PostMapping("{addressId}")
+    private ResponseEntity createLocationNodeNetwork(
             @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
-            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @RequestParam Integer addressId
+            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
     ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -67,7 +66,6 @@ public class LocationNodeNetworkController {
             LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
             return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
         } catch (Exception e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -85,7 +83,6 @@ public class LocationNodeNetworkController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllNodesByType(locationName, type));
         } catch (IOException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -95,22 +92,22 @@ public class LocationNodeNetworkController {
             @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork", response = LocationNodeNetwork.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @PutMapping("/{locationName}")
+    @PutMapping
     private ResponseEntity updateLocationNodeNetwork(
-            @ApiParam(value = "Name of the location you want to update", required = true) @PathVariable String locationName,
-            @ApiParam(value = "The updated locationNodeNetwork") @RequestParam MultipartFile file
+            @ApiParam(value = "Name of the location you want to update", required = true) @RequestParam String locationName,
+            @ApiParam(value = "The ID of the address that you want to pair this locationNodeNetwork with", required = true) @RequestParam Integer addressId,
+            @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestParam MultipartFile file
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file));
-        } catch (IOException e) {
-            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file, addressId));
+        } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes", response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName", response = NodesAndBuildingName.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/room")
@@ -126,6 +123,7 @@ public class LocationNodeNetworkController {
     // puts the Error in the right format
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
+        ProjectsApplication.printErrorInConsole(e.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

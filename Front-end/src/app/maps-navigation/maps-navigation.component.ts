@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { AppService } from '../app.service';
-import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
-import { NavigationState, TimeMode, TimeModeOption } from '../shared/dataclasses';
 import { keys } from '../3rdparty/api_keys';
+import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
+import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
+import { TimeMode, TimeModeOption } from '../shared/dataclasses';
+import { NavigationState, MapsStep } from '../shared/navigation-state';
 
 @Component({
   selector: 'app-maps-navigation',
@@ -14,7 +15,8 @@ import { keys } from '../3rdparty/api_keys';
 })
 export class MapsNavigationComponent implements OnInit {
 
-  navigationState: NavigationState = { from: null, to: null, departNow: true, timeMode: TimeMode.DEPART_BY, time: '', fromNode: null, toNode: null };
+  navigationState: NavigationState;
+  stateData: MapsStep;
   directions: google.maps.DirectionsStep[] = [];
   travelModes: TravelMode[] = [];
   transitModes: TransitMode[] = [];
@@ -47,9 +49,21 @@ export class MapsNavigationComponent implements OnInit {
   constructor(private router: Router, private googleMapsService: GoogleMapsService, private appService: AppService/*, private routeService: OpenrouteserviceService*/) {
     const state = this.router.getCurrentNavigation().extras.state;
 
-    if(state == undefined || !Object.keys(this.navigationState).every(prop => state.hasOwnProperty(prop))) this.router.navigate(['/'])
+    if(state == undefined || !(state instanceof NavigationState)) {
+      this.router.navigate(['/']);
+      return;
+    }
     
-    this.navigationState = <NavigationState>state;
+    try {
+      this.navigationState = <NavigationState>state;
+      const currentStep = this.navigationState.getNextStep('maps-navigation');
+      this.stateData = <MapsStep>currentStep.data;
+
+      console.log(this.navigationState)
+    } catch(err) {
+      console.error(err);
+      this.router.navigate(['/']);
+    }
   }
 
   ngOnInit(){
@@ -99,7 +113,7 @@ export class MapsNavigationComponent implements OnInit {
    * Gets called when the "Depart now" slide-toggle changed
    */
   onDepartNowChange(){
-    if(!this.navigationState.departNow) this.navigationState.time = new Date().toLocaleTimeString(undefined, {
+    if(!this.stateData.departNow) this.stateData.time = new Date().toLocaleTimeString(undefined, {
       hour: '2-digit',
       minute:'2-digit'
     });
@@ -113,14 +127,14 @@ export class MapsNavigationComponent implements OnInit {
   getDirections(){
     const transitOptions: google.maps.TransitOptions = { modes: this.transitMode };
 
-    if(!this.navigationState.departNow){
-      const time = this.navigationState.time.split(':'),
+    if(!this.stateData.departNow){
+      const time = this.stateData.time.split(':'),
         dateTime = new Date();
       dateTime.setHours(parseInt(time[0]));
       dateTime.setMinutes(parseInt(time[1]));
 
-      if(this.navigationState.timeMode == TimeMode.ARRIVAL_BY) transitOptions.arrivalTime = dateTime;
-      else if(this.navigationState.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
+      if(this.stateData.timeMode == TimeMode.ARRIVAL_BY) transitOptions.arrivalTime = dateTime;
+      else if(this.stateData.timeMode == TimeMode.DEPART_BY) transitOptions.departureTime = dateTime;
     }
 
     this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, this.fastestRoute, transitOptions).subscribe(data => {

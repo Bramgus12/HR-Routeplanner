@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.routeengine.RouteEngine;
@@ -40,7 +41,7 @@ public class RoutesController {
     // Puts the exceptions into a Spring certified object
     @ExceptionHandler
     void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        e.printStackTrace();
+        ProjectsApplication.printErrorInConsole(e.getMessage());
         response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

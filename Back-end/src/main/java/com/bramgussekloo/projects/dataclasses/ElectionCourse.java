@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Model for ElectionCourse")
-public class ElectionCourse {
+public class ElectionCourse extends ElectionCourseDescription{
 
     @ApiModelProperty(notes = "Course code.", required = true)
     private String CourseCode;
@@ -39,7 +39,7 @@ public class ElectionCourse {
     @ApiModelProperty(notes = "Election Course description.", required = false)
     private String Description;
 
-    public ElectionCourse(String courseCode, String name, String period, String groupNumber, String teacher, String dayOfTheWeek, String startTime, String endTime, String location, String classroom) {
+    public ElectionCourse(String courseCode, String name, String period, String groupNumber, String teacher, String dayOfTheWeek, String startTime, String endTime, String location, String classroom, String description) {
         CourseCode = courseCode;
         Name = name;
         Period = period;
@@ -50,10 +50,11 @@ public class ElectionCourse {
         EndTime = endTime;
         Location = location;
         Classroom = classroom;
+        Description = description;
     }
 
     // Empty object for initial run
-    public ElectionCourse(){
+    public ElectionCourse() {
     }
 
     public String getCourseCode() {

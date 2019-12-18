@@ -43,10 +43,10 @@ public class GetPropertyValues {
         return result;
     }
 
-    public static File getResourcePath( String FolderName, String fileName) throws IOException {
+    public static File getResourcePath(String FolderName, String fileName) throws IOException {
         Properties properties = new Properties();
         inputStream = GetPropertyValues.class.getClassLoader().getResourceAsStream("file_path.properties");
-        if (inputStream != null){
+        if (inputStream != null) {
             properties.load(inputStream);
         } else {
             throw new IOException("Property file file_path.properties not found");
