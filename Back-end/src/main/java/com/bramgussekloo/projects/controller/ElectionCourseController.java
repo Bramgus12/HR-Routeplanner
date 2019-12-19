@@ -195,7 +195,7 @@ public class ElectionCourseController {
      */
     @ApiOperation(value = "Upload Excel file in Election Course folder if file doesn't exist.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully uploaded", response = ElectionCourse.class),
+            @ApiResponse(code = 201, message = "Successfully uploaded"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("/upload")

@@ -50,6 +50,7 @@ public class ElectionCourseStatements {
 
                 DataFormatter formatter = new DataFormatter();
                 List<ElectionCourse> electionCourseList = new ArrayList<>();
+                List<ElectionCourseDescription> electionCourseDescriptionList = new ArrayList<>();
                 //Create a loop to get the cell values of a row for one iteration
                 for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
                     Row row = worksheet.getRow(i);
@@ -77,27 +78,31 @@ public class ElectionCourseStatements {
                             endTime,
                             location,
                             classroom,
-                            ""
+                            null
                     ));
                 }
                 excelFile.close();
 
-                List<ElectionCourseDescription> electionCourseDescriptionList = getAllElectionCourseDescription();
-                for (ElectionCourse electionCourse : electionCourseList){
-                    electionCourse.setDescription("");
-                    for (ElectionCourseDescription electionCourseDescription : electionCourseDescriptionList){
-                        if (electionCourse.getCourseCode().equals(electionCourseDescription.getCourseCode())){
-                            electionCourse.setDescription(electionCourseDescription.getDescription());
+                try {
+                    electionCourseDescriptionList = getAllElectionCourseDescription();
+                    for (ElectionCourse electionCourse : electionCourseList){
+                        electionCourse.setDescription("");
+                        for (ElectionCourseDescription electionCourseDescription : electionCourseDescriptionList){
+                            if (electionCourse.getCourseCode().equals(electionCourseDescription.getCourseCode())){
+                                electionCourse.setDescription(electionCourseDescription.getDescription());
+                            }
                         }
                     }
+                }catch (SQLException e){
+                    for (ElectionCourse electionCourse : electionCourseList) {
+                        electionCourse.setDescription("");
+                    }
                 }
-
-
                 return electionCourseList;
             } else {
                 throw new IOException("File does not exist.");
             }
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -137,7 +142,7 @@ public class ElectionCourseStatements {
         List<ElectionCourseDescription> allElectionCourseDescriptions = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course");
         if (!result.next()) {
-            throw new SQLException("No data in database");
+            throw new SQLException("No Election Course description data in database");
         } else {
             do {
                 allElectionCourseDescriptions.add(getResult(result));
