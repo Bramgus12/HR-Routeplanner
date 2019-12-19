@@ -21,12 +21,16 @@ public class Address {
     @ApiModelProperty(notes = "Postal code that belongs to the address", required = true)
     private String postal;
 
-    public Address(Integer id, String street, Integer number, String city, String postal) {
+    @ApiModelProperty(notes = "The addition (dutch = \"toevoeging\") of the address")
+    private String addition;
+
+    public Address(Integer id, String street, Integer number, String city, String postal, String addition) {
         this.id = id;
         this.street = street;
         this.number = number;
         this.city = city;
         this.postal = postal;
+        this.addition = addition;
     }
 
     public Address() {
@@ -44,17 +48,40 @@ public class Address {
         return number;
     }
 
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
     public String getCity() {
         return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getPostal() {
         return postal;
     }
 
+    public void setPostal(String postal) {
+        this.postal = postal;
+    }
+
     public String getStreet() {
         return street;
     }
 
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getAddition() {
+        return addition;
+    }
+
+    public void setAddition(String addition) {
+        this.addition = addition;
+    }
 }
 

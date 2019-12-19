@@ -13,13 +13,13 @@ public class ElectionCourseDescription {
     @ApiModelProperty(notes = "Election Course Description.", required = true)
     private String Description;
 
-    public ElectionCourseDescription(String courseCode, String courseName, String description){
+    public ElectionCourseDescription(String courseCode, String courseName, String description) {
         CourseCode = courseCode;
         Name = courseName;
         Description = description;
     }
 
-    public ElectionCourseDescription(){
+    public ElectionCourseDescription() {
 
     }
 
