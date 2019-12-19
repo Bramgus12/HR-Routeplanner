@@ -42,6 +42,12 @@ export class NavigationState {
     return this._steps[next].componentUrl;
   }
 
+  get hasNextStep(){
+    if(this._progress > 0 || this._progress < this._steps.length-1)
+      return true;
+    return false;
+  }
+
   getNextStep(currentComponentUrl: string){
     this._progress +=1;
     const step = this.currentStep;
@@ -51,12 +57,12 @@ export class NavigationState {
       (step.componentUrl == "building-navigation" && step.data.hasOwnProperty("locationName") && step.data.hasOwnProperty("fromNode") && step.data.hasOwnProperty("toNode")) ||
       (step.componentUrl == "maps-navigation" && step.data.hasOwnProperty("departNow") && step.data.hasOwnProperty("timeMode") && step.data.hasOwnProperty("time"))
     ) {
-      if(step == null) console.warn("Step is null, this shouldn't exec!") // TEMP
       return step;
     } else {
       return this.handleError("Step is invalid!");
     }
   }
+
 }
 
 class NavigationStateError extends Error {
