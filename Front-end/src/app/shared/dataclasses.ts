@@ -56,6 +56,15 @@ export interface NodeConnection {
   distance: number;
 }
 
+export interface LocationRooms {
+  locationName: string;
+  nodes: Node[];
+}
+
+export interface Room extends Node {
+  locationName: string;
+}
+
 export interface ElectionCourse {
   courseCode: string;
   period: string;
