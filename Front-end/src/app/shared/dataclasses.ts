@@ -64,3 +64,17 @@ export interface LocationRooms {
 export interface Room extends Node {
   locationName: string;
 }
+
+export interface ElectionCourse {
+  courseCode: string;
+  period: string;
+  groupNumber: string;
+  name: string;
+  classroom: string;
+  dayOfTheWeek: string;
+  endTime: string;
+  location: string;
+  startTime: string;
+  teacher: string;
+  description: string;
+}

@@ -24,6 +24,8 @@ import { keys } from './3rdparty/api_keys';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { ElectionCoursesComponent } from './election-courses/election-courses.component';
+import { ElectionCourseDescriptionComponent } from './election-courses/election-course-description/election-course-description.component';
 
 @NgModule({
   imports: [
@@ -50,6 +52,8 @@ import { environment } from '../environments/environment';
     BuildingViewerComponent,
     MapsNavigationComponent,
     SafeHTMLPipe,
+    ElectionCoursesComponent,
+    ElectionCourseDescriptionComponent,
     NextStateButtonComponent,
     NextStateDialog
   ],

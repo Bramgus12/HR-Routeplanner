@@ -1,0 +1,21 @@
+@import 'helpers';
+
+section {
+  max-width: 1200px;
+  margin: 0;
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+
+    tbody tr {
+      cursor: pointer;
+    }
+  }
+}
+
+@include media-tablet(){
+  section {
+    margin: 16px auto;
+  }
+}

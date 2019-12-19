@@ -113,7 +113,16 @@ public class LocationNodeNetworkStatements {
                 ArrayList<Node> nodes = new ArrayList<>();
                 for (Node node : network.getNodes()) {
                     if (node.getType().equals("Room")) {
-                        nodes.add(node);
+                        String label = node.getLabel().toLowerCase();
+                        if (!label.isEmpty()) {
+                            if (!label.contains("trap") && !label.contains("lift")
+                                    && !label.contains("toilet") && !label.contains("gang") && !label.contains("hal")
+                                    && !label.contains("berging") && !label.contains("portaal")) {
+                                nodes.add(node);
+                            }
+                        } else {
+                            nodes.add(node);
+                        }
                     }
                 }
                 NodesAndBuildingName rnib = new NodesAndBuildingName(nodes, network.getLocationName());
