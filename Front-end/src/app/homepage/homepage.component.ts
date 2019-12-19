@@ -128,8 +128,7 @@ export class HomepageComponent implements OnInit {
   goToNavigation(){
     const retrieveAddresses: Observable<Address>[] = [],
       navigationSteps: NavigationStep[] = [];
-    let loadBuildingNav = false,
-      componentUrl = 'maps-navigation',
+    let componentUrl = 'maps-navigation',
       fromBuilding = this.buildings.filter(building => building.name == this.navigationModel.from),
       toBuilding = this.buildings.filter(building => building.name == this.navigationModel.to),
       fromLocation: string = null, toLocation: string = null;
@@ -158,7 +157,6 @@ export class HomepageComponent implements OnInit {
     } else if(this.navigationModel.fromNode != null){
       retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.from));
       fromLocation = this.navigationModel.fromNode.locationName;
-      loadBuildingNav = true;
     }
     
     forkJoin(retrieveAddresses).subscribe(results => {
