@@ -35,6 +35,7 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
   private devGui: DevGui;
 
   currentFloor: string = "0";
+  currentLocationName: string = "";
 
   constructor(private service: BuildingViewerService) {
     // Renderer
@@ -75,9 +76,6 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
     const ambientLight: THREE.AmbientLight = new THREE.AmbientLight(0xffffff, 1.0);
     this.scene.add(ambientLight);
 
-    // Load building
-    this.buildingModel = new BuildingModel(this, 'assets/building-viewer/Wijnhaven.glb');
-
     // Create path
     this.nodePath = new NodePath(this);
 
@@ -87,10 +85,15 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
   }
 
+  loadBuilding(buildingName: string){
+    // Load building
+    this.buildingModel = new BuildingModel(this, `assets/building-viewer/${buildingName}.glb`);
+  }
+
   ngAfterViewInit() {
     // Add three.js canvas element to the div in this component.
     this.threejsContainer.nativeElement.appendChild(this.renderer.domElement);
-    this.devGui.appendToElement(this.threejsContainer.nativeElement);
+    // this.devGui.appendToElement(this.threejsContainer.nativeElement);
     this.resizeCanvasToContainer();
     this.animate();
   }
@@ -120,7 +123,9 @@ export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
 
     // Update position of objects in the scene
     this.nodePath.animate(delta);
-    this.buildingModel.animate(delta);
+    if(this.buildingModel !== undefined){
+      this.buildingModel.animate(delta);
+    }
 
     // Render scene
     // this.renderer.render(this.scene, this.camera);

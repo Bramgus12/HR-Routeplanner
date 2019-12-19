@@ -14,7 +14,7 @@ import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
-import { NextStateButtonComponent, NextStateDialog } from './shared/next-state-button/next-state-button.component';
+import { NextStateButtonComponent, NextStateDialog, ArrivalStateDialog } from './shared/next-state-button/next-state-button.component';
 
 import { BuildingNavigationComponent } from './building-navigation/building-navigation.component';
 import { BuildingViewerComponent } from './building-navigation/building-viewer/building-viewer.component';
@@ -55,12 +55,14 @@ import { ElectionCourseDescriptionComponent } from './election-courses/election-
     ElectionCoursesComponent,
     ElectionCourseDescriptionComponent,
     NextStateButtonComponent,
-    NextStateDialog
+    NextStateDialog,
+    ArrivalStateDialog
   ],
   entryComponents: [
     TestCreateDialog,
     TestDeleteDialog,
-    NextStateDialog
+    NextStateDialog,
+    ArrivalStateDialog
   ],
   providers: [],
   bootstrap: [AppComponent]

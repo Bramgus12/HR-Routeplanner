@@ -17,12 +17,20 @@ export class NextStateButtonComponent {
 
   navigateToNextComponent(){
     if(this.state instanceof NavigationState){
-      const dialogRef = this.dialog.open(NextStateDialog);
-      dialogRef.afterClosed().subscribe(data => {
-        if(data) this.router.navigateByUrl(this.state.nextComponentUrl, { state: this.state });
-      });
+      if(this.state.hasNextStep){
+        console.log(this.state)
+        const dialogRef = this.dialog.open(NextStateDialog);
+        dialogRef.afterClosed().subscribe(data => {
+          if(data) this.router.navigateByUrl(this.state.nextComponentUrl, { state: this.state });
+        });
+      } else {
+        const dialogRef = this.dialog.open(ArrivalStateDialog);
+        dialogRef.afterClosed().subscribe(data => {
+          if(data) this.router.navigateByUrl('/');
+        });
+      }
+      
     } else console.error(Error("State is missing or invalid!"));
-    
   }
 
 }
@@ -32,3 +40,9 @@ export class NextStateButtonComponent {
   templateUrl: 'next-state-dialog.html'
 })
 export class NextStateDialog {}
+
+@Component({
+  selector: 'arrival-state-dialog',
+  templateUrl: 'arrival-state-dialog.html'
+})
+export class  ArrivalStateDialog {}
