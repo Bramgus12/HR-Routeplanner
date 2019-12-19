@@ -12,7 +12,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
-import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NextStateButtonComponent, NextStateDialog, ArrivalStateDialog } from './shared/next-state-button/next-state-button.component';
 
@@ -44,9 +43,6 @@ import { ElectionCourseDescriptionComponent } from './election-courses/election-
     HeaderComponent,
     FooterComponent,
     HomepageComponent,
-    TestComponent,
-    TestCreateDialog,
-    TestDeleteDialog,
     SidenavComponent,
     BuildingNavigationComponent,
     BuildingViewerComponent,
@@ -59,8 +55,6 @@ import { ElectionCourseDescriptionComponent } from './election-courses/election-
     ArrivalStateDialog
   ],
   entryComponents: [
-    TestCreateDialog,
-    TestDeleteDialog,
     NextStateDialog,
     ArrivalStateDialog
   ],
