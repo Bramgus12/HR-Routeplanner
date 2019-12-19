@@ -55,3 +55,12 @@ export interface NodeConnection {
   node2Distance: number;
   distance: number;
 }
+
+export interface LocationRooms {
+  locationName: string;
+  nodes: Node[];
+}
+
+export interface Room extends Node {
+  locationName: string;
+}
