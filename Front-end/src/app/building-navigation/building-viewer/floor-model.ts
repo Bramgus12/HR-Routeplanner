@@ -33,7 +33,6 @@ export class FloorModel{
   }
 
   constructor(private collection: FloorCollection, readonly floorRoot: THREE.Object3D){
-
     this.floorMesh = ThreeUtils.getMeshByBuildingPart(floorRoot, "Floor");
     this.wallMesh = ThreeUtils.getMeshByBuildingPart(floorRoot, "Wall");
 
