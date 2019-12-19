@@ -43,7 +43,7 @@ export class NavigationState {
   }
 
   get hasNextStep(){
-    if(this._progress > 0 || this._progress < this._steps.length-1)
+    if( this._progress < this._steps.length-1)
       return true;
     return false;
   }
