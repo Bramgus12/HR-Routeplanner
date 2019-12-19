@@ -27,7 +27,7 @@ export class BuildingNavigationComponent implements OnInit {
   }
 
   get nextStateButtonVisible(): boolean{
-    return this.buildingViewer.nodePath.nearEnd && this.navigationStateData.toNode == null;
+    return this.buildingViewer.nodePath.nearEnd;
   }
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private service: BuildingNavigationService) {
