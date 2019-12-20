@@ -1,5 +1,10 @@
 <app-building-viewer></app-building-viewer>
-<div [class.mat-elevation-z12]="!isActive" class="navigation-controls-container"
+
+<mat-card class="next-state-button" [attr.data-visible]="nextStateButtonVisible">
+  <app-next-state-button [state]="navigationState"></app-next-state-button>
+</mat-card>
+
+<mat-card class="navigation-controls-container"
   (window:keydown.arrowleft)="backwardPressed()"
   (window:keyup.arrowleft)="backwardReleased()"
   (window:keydown.arrowright)="forwardPressed()"
@@ -23,4 +28,4 @@
       (touchend)="forwardReleased()">Forward</button>
   </div>
 
-</div>
+</mat-card>

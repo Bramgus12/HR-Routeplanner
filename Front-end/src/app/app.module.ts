@@ -13,7 +13,7 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
-import { NextStateButtonComponent, NextStateDialog } from './shared/next-state-button/next-state-button.component';
+import { NextStateButtonComponent, NextStateDialog, ArrivalStateDialog } from './shared/next-state-button/next-state-button.component';
 
 import { BuildingNavigationComponent } from './building-navigation/building-navigation.component';
 import { BuildingViewerComponent } from './building-navigation/building-viewer/building-viewer.component';
@@ -51,10 +51,12 @@ import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-
     ElectiveCoursesComponent,
     ElectiveCourseDescriptionComponent,
     NextStateButtonComponent,
-    NextStateDialog
+    NextStateDialog,
+    ArrivalStateDialog
   ],
   entryComponents: [
-    NextStateDialog
+    NextStateDialog,
+    ArrivalStateDialog
   ],
   providers: [],
   bootstrap: [AppComponent]

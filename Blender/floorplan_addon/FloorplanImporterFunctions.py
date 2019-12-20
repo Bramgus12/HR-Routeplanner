@@ -178,6 +178,9 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
     # bpy.context.scene.collection.objects.link(roomNode)
     linkToFloorCollection(roomNode, floorNumber)
     roomNode.color = color
+    roomNode.lock_scale[0] = True
+    roomNode.lock_scale[1] = True
+    roomNode.lock_scale[2] = True
 
     roomNode.name = '[{}] {}'.format(part, room['code'])
     roomNode['roomCode'] = room['code']
@@ -195,6 +198,9 @@ def createRoomNode(floorplan, room, buildingName, floorNumber, referenceImage):
     return roomNode
 
 def loadFloorplan(context, filepath, buildingName, floorNumber, floorHeight, autoBuildingName, autoFloorNumber):
+
+    if bpy.data.collections.get('Collection') != None and len(bpy.data.collections) == 1:
+        bpy.data.collections.remove( bpy.data.collections['Collection'], do_unlink=True )
 
     # Load floorplan json data
     floorplan = {}

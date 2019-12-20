@@ -11,6 +11,7 @@ from . WireframeVisibilityFunctions import showWireframes
 from . NodeNetworkFunctions import createNode, connectRoomNodes
 from . AmbientOcclusionFunctions import setupAmbientOcclusion
 from . UpdateWallColorsFunctions import updateWallColors
+from . EntryNodesFunctions import markEntrances, unmarkEntrances
 
 class FloorplanToolsPanel(Panel):
     bl_idname = "FLOORPLAN_PT_PANEL"
@@ -24,9 +25,6 @@ class FloorplanToolsPanel(Panel):
 
         row = layout.row()
         row.label(text="Floors")
-
-        row = layout.row()
-        row.operator('floorplan.align_floors', text="Align Floors")
 
         row = layout.row()
         row.operator('floorplan.hide_reference_images', text="Hide Refs")
@@ -66,6 +64,10 @@ class FloorplanToolsPanel(Panel):
 
         row = layout.row()
         row.operator('floorplan.connect_rooms_to_nodes', text="Connect Rooms To Nodes")
+
+        row = layout.row()
+        row.operator('floorplan.mark_entrances', text="Mark Entrance")
+        row.operator('floorplan.unmark_entrances', text="Unmark Entrance")
 
         row = layout.row()
         row.label(text="Ambient Occlusion")
@@ -147,11 +149,27 @@ class ConnectNodesToRooms(Operator):
 
 class ConnectRoomsToNodes(Operator):
     bl_idname = "floorplan.connect_rooms_to_nodes"
-    bl_label = "Connect rooms to nodes.."
+    bl_label = "Connect rooms to nodes."
     bl_description = "Connect each unconnected room node to the closest node in the existing node network."
 
     def execute(self, context):
         return connectRoomNodes(True)
+
+class MarkEntrances(Operator):
+    bl_idname = "floorplan.mark_entrances"
+    bl_label = "Mark selected nodes as entrance."
+    bl_description = "Mark selected nodes as entry points for the node network."
+
+    def execute(self, context):
+        return markEntrances()
+
+class UnmarkEntrances(Operator):
+    bl_idname = "floorplan.unmark_entrances"
+    bl_label = "Unmark selected nodes as entrance."
+    bl_description = "Unmark selected nodes that were previously marked as entry points for this building."
+
+    def execute(self, context):
+        return unmarkEntrances()
 
 class SolidifyFloors(Operator):
     bl_idname = "floorplan.solidify_floors"

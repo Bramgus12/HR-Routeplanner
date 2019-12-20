@@ -128,8 +128,7 @@ export class HomepageComponent implements OnInit {
   goToNavigation(){
     const retrieveAddresses: Observable<Address>[] = [],
       navigationSteps: NavigationStep[] = [];
-    let loadBuildingNav = false,
-      componentUrl = 'maps-navigation',
+    let componentUrl = 'maps-navigation',
       fromBuilding = this.buildings.filter(building => building.name == this.navigationModel.from),
       toBuilding = this.buildings.filter(building => building.name == this.navigationModel.to),
       fromLocation: string = null, toLocation: string = null;
@@ -158,7 +157,6 @@ export class HomepageComponent implements OnInit {
     } else if(this.navigationModel.fromNode != null){
       retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.from));
       fromLocation = this.navigationModel.fromNode.locationName;
-      loadBuildingNav = true;
     }
     
     forkJoin(retrieveAddresses).subscribe(results => {
@@ -170,14 +168,16 @@ export class HomepageComponent implements OnInit {
         this.navigationModel.from = `${fromAddr.street} ${fromAddr.number}, ${fromAddr.city}`;
       }
 
-      if(loadBuildingNav || this.navigationModel.to == this.navigationModel.from){
+      if(this.navigationModel.to == this.navigationModel.from){
         componentUrl = 'building-navigation';
-        navigationSteps.push({ componentUrl: componentUrl, data: { locationName: toLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
+        navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
       } else {
-        if(this.navigationModel.fromNode != null)
-          navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: null }})
+        if(this.navigationModel.fromNode != null) {
+          componentUrl = 'building-navigation';
+          navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: null }});
+        }
 
-        navigationSteps.push({ componentUrl: componentUrl, data: { departNow: this.navigationModel.departNow, timeMode: this.navigationModel.timeMode, time: this.navigationModel.time }});
+        navigationSteps.push({ componentUrl: 'maps-navigation', data: { departNow: this.navigationModel.departNow, timeMode: this.navigationModel.timeMode, time: this.navigationModel.time }});
 
         if(this.navigationModel.toNode != null)
           navigationSteps.push({ componentUrl: 'building-navigation', data: { locationName: toLocation, fromNode: null, toNode: this.navigationModel.toNode.number }});
