@@ -34,8 +34,7 @@ public class ElectiveCourseController {
     private ResponseEntity getElectiveCourseList() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.getExcelContent());
-        } catch (IOException e) {
-            // File not found, throw new msg;
+        } catch (IOException | SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

@@ -6,12 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "Model for ElectiveCourse")
 public class ElectiveCourse extends ElectiveCourseDescription{
 
-    @ApiModelProperty(notes = "Course code.", required = true)
-    private String CourseCode;
-
-    @ApiModelProperty(notes = "Name of the course.", required = true)
-    private String Name;
-
     @ApiModelProperty(notes = "The period that the course take place in.", required = true)
     private String Period;
 
@@ -36,12 +30,8 @@ public class ElectiveCourse extends ElectiveCourseDescription{
     @ApiModelProperty(notes = "Classroom. By default:look on Hint.", required = false)
     private String Classroom;
 
-    @ApiModelProperty(notes = "Elective Course description.", required = false)
-    private String Description;
-
     public ElectiveCourse(String courseCode, String name, String period, String groupNumber, String teacher, String dayOfTheWeek, String startTime, String endTime, String location, String classroom, String description) {
-        CourseCode = courseCode;
-        Name = name;
+        super(courseCode, name, description);
         Period = period;
         GroupNumber = groupNumber;
         Teacher = teacher;
@@ -50,27 +40,10 @@ public class ElectiveCourse extends ElectiveCourseDescription{
         EndTime = endTime;
         Location = location;
         Classroom = classroom;
-        Description = description;
     }
 
     // Empty object for initial run
     public ElectiveCourse() {
-    }
-
-    public String getCourseCode() {
-        return CourseCode;
-    }
-
-    public void setCourseCode(String courseCode) {
-        CourseCode = courseCode;
-    }
-
-    public String getName() {
-        return Name;
-    }
-
-    public void setName(String name) {
-        Name = name;
     }
 
     public String getPeriod() {

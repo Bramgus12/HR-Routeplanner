@@ -38,7 +38,7 @@ public class ElectiveCourseStatements {
         }
     }
 
-    public static List<ElectiveCourse> getExcelContent() throws IOException {
+    public static List<ElectiveCourse> getExcelContent() throws IOException, SQLException {
         try {
             Workbook workbook = null;
             File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
@@ -66,6 +66,7 @@ public class ElectiveCourseStatements {
                     String endTime = formatter.formatCellValue(row.getCell(7));
                     String location = formatter.formatCellValue(row.getCell(8));
                     String classroom = formatter.formatCellValue(row.getCell(9));
+                    String description = "";
 
                     electiveCourseList.add(new ElectiveCourse(
                             courseCode,
@@ -78,26 +79,21 @@ public class ElectiveCourseStatements {
                             endTime,
                             location,
                             classroom,
-                            null
+                            description
                     ));
                 }
                 excelFile.close();
 
-                try {
-                    electiveCourseDescriptionList = getAllElectiveCourseDescription();
-                    for (ElectiveCourse electiveCourse : electiveCourseList){
-                        electiveCourse.setDescription("");
-                        for (ElectiveCourseDescription electiveCourseDescription : electiveCourseDescriptionList){
-                            if (electiveCourse.getCourseCode().equals(electiveCourseDescription.getCourseCode())){
-                                electiveCourse.setDescription(electiveCourseDescription.getDescription());
-                            }
+
+                electiveCourseDescriptionList = getAllElectiveCourseDescription();
+                for (ElectiveCourse electiveCourse : electiveCourseList){
+                    for (ElectiveCourseDescription electiveCourseDescription : electiveCourseDescriptionList){
+                        if (electiveCourse.getCourseCode().equals(electiveCourseDescription.getCourseCode())){
+                            electiveCourse.setDescription(electiveCourseDescription.getDescription());
                         }
                     }
-                }catch (SQLException e){
-                    for (ElectiveCourse electiveCourse : electiveCourseList) {
-                        electiveCourse.setDescription("");
-                    }
                 }
+
                 return electiveCourseList;
             } else {
                 throw new IOException("File does not exist.");
