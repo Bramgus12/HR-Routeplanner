@@ -37,15 +37,15 @@
     6. [Get all nodes that are a room](#get-apilocationnodenetworkroom)
 6. [Route-engine](#route-engine)
     1. [Get the route between two nodes.](#get-apiroutes)
-7. [ElectionCourse](#election-course)
-    1. [Get a list of all election courses](#get-apielection-course)
-    2. [Get a description of a specific election course](#get-apielection-coursecoursecode)
-    3. [Get all descriptions of election courses](#get-apielection-coursedescription)
-    4. [Upload election course file](#post-apielection-courseupload)
-    5. [Create a description for an election course](#post-apielection-course)
-    6. [Update the election course excel file](#put-apielection-course)
-    7. [update the description of an election course](#put-apielection-coursecoursecode)
-    8. [Delete the description of an election course](#delete-apielection-coursecoursecode)
+7. [ElectiveCourse](#elective-course)
+    1. [Get a list of all elective courses](#get-apielective-course)
+    2. [Get a description of a specific elective course](#get-apielective-coursecoursecode)
+    3. [Get all descriptions of elective courses](#get-apielective-coursedescription)
+    4. [Upload elective course file](#post-apielective-courseupload)
+    5. [Create a description for an elective course](#post-apielective-course)
+    6. [Update the elective course excel file](#put-apielective-course)
+    7. [update the description of an elective course](#put-apielective-coursecoursecode)
+    8. [Delete the description of an elective course](#delete-apielective-coursecoursecode)
 
 
 ****
@@ -924,13 +924,13 @@ locationName": [string]
 ****
 
 
-## Election Course
+## Elective Course
 
 
 ****
 
-### GET `/api/election-course`
-Get a list of all election courses.
+### GET `/api/elective-course`
+Get a list of all elective courses.
 
 **Response:**
 ``` json
@@ -967,8 +967,8 @@ Get a list of all election courses.
 
 ****
 
-### GET `/api/election-course/{coursecode}`
-Get a description of the election course by coursecode
+### GET `/api/elective-course/{coursecode}`
+Get a description of the elective course by coursecode
 
 **Response:**
 ```json
@@ -984,8 +984,8 @@ Get a description of the election course by coursecode
 
 ****
 
-### GET `/api/election-course/description`
-Get all descriptions of the election courses in a list
+### GET `/api/elective-course/description`
+Get all descriptions of the elective courses in a list
 
 **Response:**
 ```json
@@ -1009,8 +1009,8 @@ Get all descriptions of the election courses in a list
 
 
 ****
-### POST `/api/election-course/upload`
-Upload an EXCEL file with the election courses of the Rotterdam University of Applied Sciences. This file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+### POST `/api/elective-course/upload`
+Upload an EXCEL file with the elective courses of the Rotterdam University of Applied Sciences. This file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
 
 **Response:**
 ``` json
@@ -1048,8 +1048,8 @@ Upload an EXCEL file with the election courses of the Rotterdam University of Ap
 
 ****
 
-### POST `/api/election-course`
-Add a specific Election Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
+### POST `/api/elective-course`
+Add a specific Elective Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
 
 **Requested body:**
 ``` json
@@ -1076,8 +1076,8 @@ Add a specific Election Course with its description, use https://www.freeformatt
 
 ****
 
-### PUT `/api/election-course`
-Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+### PUT `/api/elective-course`
+Update Elective Course excel file in Elective Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
 
 **Response:**
 ``` json
@@ -1115,8 +1115,8 @@ Update Election Course excel file in Election Course folder by deleting the file
 
 ****
 
-### PUT `/api/election-course/{coursecode}`
-Update a specific description of an election-course
+### PUT `/api/elective-course/{coursecode}`
+Update a specific description of an elective-course
 
 **Requested body:**
 ```json
@@ -1141,8 +1141,8 @@ Update a specific description of an election-course
 
 
 ****
-### DELETE `/api/election-course/{coursecode}`
-Delete a specific Election Course with its description
+### DELETE `/api/elective-course/{coursecode}`
+Delete a specific Elective Course with its description
 
 **Response:**
 ```json
