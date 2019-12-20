@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ElectionCourseService } from '../election-courses.service';
-import { ElectionCourse } from '../../shared/dataclasses';
+import { ElectiveCourseService } from '../elective-courses.service';
+import { ElectiveCourse } from '../../shared/dataclasses';
 @Component({
-  selector: 'app-election-course-description',
-  templateUrl: './election-course-description.component.html',
-  styleUrls: ['./election-course-description.component.scss']
+  selector: 'app-elective-course-description',
+  templateUrl: './elective-course-description.component.html',
+  styleUrls: ['./elective-course-description.component.scss']
 })
-export class ElectionCourseDescriptionComponent implements OnInit {
+export class ElectiveCourseDescriptionComponent implements OnInit {
 
   errorMessage = "";
-  electionCourse: ElectionCourse = { 
+  electiveCourse: ElectiveCourse = { 
     courseCode: '',
     period: '',
     name: '',
@@ -25,18 +25,18 @@ export class ElectionCourseDescriptionComponent implements OnInit {
     description: ''
   }
 
-  constructor(private service: ElectionCourseService, private route: ActivatedRoute) { }
+  constructor(private service: ElectiveCourseService, private route: ActivatedRoute) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       const code = params.get("code"),
         group = params.get("group");
-      this.electionCourse.courseCode = code;
-      this.electionCourse.groupNumber = group;
+      this.electiveCourse.courseCode = code;
+      this.electiveCourse.groupNumber = group;
 
-      this.service.getElectionCourses().subscribe(courses => {
+      this.service.getElectiveCourses().subscribe(courses => {
         const course = courses.find(course => course.courseCode == code && course.groupNumber == group);
-        if(typeof course != "undefined") this.electionCourse = course;
+        if(typeof course != "undefined") this.electiveCourse = course;
         else this.errorMessage = "Couldn't find election course";
       }, error => this.errorMessage = error.error.message);
     });

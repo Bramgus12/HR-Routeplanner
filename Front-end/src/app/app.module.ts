@@ -12,7 +12,6 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HomepageComponent } from './homepage/homepage.component';
-import { TestComponent, TestCreateDialog, TestDeleteDialog } from './test/test.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { NextStateButtonComponent, NextStateDialog } from './shared/next-state-button/next-state-button.component';
 
@@ -24,8 +23,8 @@ import { keys } from './3rdparty/api_keys';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ElectionCoursesComponent } from './election-courses/election-courses.component';
-import { ElectionCourseDescriptionComponent } from './election-courses/election-course-description/election-course-description.component';
+import { ElectiveCoursesComponent } from './elective-courses/elective-courses.component';
+import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-course-description/elective-course-description.component';
 
 @NgModule({
   imports: [
@@ -44,22 +43,17 @@ import { ElectionCourseDescriptionComponent } from './election-courses/election-
     HeaderComponent,
     FooterComponent,
     HomepageComponent,
-    TestComponent,
-    TestCreateDialog,
-    TestDeleteDialog,
     SidenavComponent,
     BuildingNavigationComponent,
     BuildingViewerComponent,
     MapsNavigationComponent,
     SafeHTMLPipe,
-    ElectionCoursesComponent,
-    ElectionCourseDescriptionComponent,
+    ElectiveCoursesComponent,
+    ElectiveCourseDescriptionComponent,
     NextStateButtonComponent,
     NextStateDialog
   ],
   entryComponents: [
-    TestCreateDialog,
-    TestDeleteDialog,
     NextStateDialog
   ],
   providers: [],

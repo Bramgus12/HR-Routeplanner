@@ -1,0 +1,18 @@
+<section>
+  <h2>{{electiveCourse.name}}</h2>
+  <p>Course code: {{ electiveCourse.courseCode }}</p>
+  <p>Period: {{ electiveCourse.period }}</p>
+  <p>Group: {{ electiveCourse.groupNumber }}</p>
+  <p>Classroom: {{ electiveCourse.classroom }}</p>
+  <p>Location: {{ electiveCourse.location }}</p>
+  <p>Teacher: {{ electiveCourse.teacher }}</p>
+  <p>
+    Day & time: {{ electiveCourse.dayOfTheWeek }}<span *ngIf="electiveCourse.startTime.length > 0">, {{ electiveCourse.startTime }}</span><span *ngIf="electiveCourse.endTime.length > 0"> - {{ electiveCourse.endTime }}</span>
+  </p>
+  <p *ngIf="errorMessage.length > 0" class="error">{{ errorMessage }}</p>
+
+  <button mat-raised-button routerLink="/elective-courses">Back</button>
+
+  <h3>Description</h3>
+  <p class="description">{{electiveCourse.description}}</p>
+</section>
