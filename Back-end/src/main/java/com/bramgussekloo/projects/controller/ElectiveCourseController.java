@@ -111,7 +111,7 @@ public class ElectiveCourseController {
      */
     @ApiOperation(value = "Update a specific Elective Course for its description")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectiveCourseDescription.class),
+            @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectiveCourseDescription.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PutMapping("/{coursecode}")
@@ -137,7 +137,7 @@ public class ElectiveCourseController {
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.updateElectiveCourseDescription(newData));
             } else {
-                throw new IllegalArgumentException("Elective Course Code doesn't exist!");
+                throw new IllegalArgumentException("The Elective Coursecode that you've provided doesn't match.");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -181,7 +181,7 @@ public class ElectiveCourseController {
     private ResponseEntity updateFile(@RequestParam MultipartFile file) {
         try {
             ElectiveCourseStatements.updateFile(file);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -194,14 +194,14 @@ public class ElectiveCourseController {
      */
     @ApiOperation(value = "Upload Excel file in Elective Course folder if file doesn't exist.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully uploaded"),
+            @ApiResponse(code = 200, message = "Successfully uploaded", response = ElectiveCourse.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("/upload")
     private ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             ElectiveCourseStatements.uploadFile(file);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
