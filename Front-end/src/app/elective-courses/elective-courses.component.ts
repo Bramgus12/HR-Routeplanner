@@ -11,6 +11,7 @@ import { ElectiveCourse } from '../shared/dataclasses';
 export class ElectiveCoursesComponent implements OnInit {
   displayedColumns: string[] = ['courseCode', 'period', 'groupNumber', 'name'];
   electiveCourses = new MatTableDataSource([]);
+  errorMessage = "";
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -24,7 +25,7 @@ export class ElectiveCoursesComponent implements OnInit {
       this.electiveCourses = new MatTableDataSource(data);
       this.electiveCourses.sort = this.sort;
       this.electiveCourses.paginator = this.paginator;
-    })
+    }, err => this.errorMessage = "Failed to get elective courses from the API")
   }
 
   onPageUpdate(event: PageEvent){

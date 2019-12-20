@@ -63,7 +63,7 @@ export class HomepageComponent implements OnInit {
 
     this.service.getBuildings().subscribe(data => {
       this.buildings = data;
-    }, error => this.errorMessage = "Failed to get buildings from API");
+    }, error => this.errorMessage = "Failed to get buildings from the API");
 
     this.service.getRoomNodes().subscribe(data => {
       data.forEach(location => {
@@ -72,7 +72,7 @@ export class HomepageComponent implements OnInit {
           return room as Room;
         }));
       });
-    }, error => this.errorMessage = "Failed to get classrooms from API");
+    }, error => this.errorMessage = "Failed to get classrooms from the API");
 
     this.fromFormControl.valueChanges.pipe(debounceTime(400)).subscribe((value: string) => {
       if(value.length != 0){
