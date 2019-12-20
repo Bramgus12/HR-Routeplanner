@@ -3,8 +3,8 @@ package com.bramgussekloo.projects.statements;
 import com.bramgussekloo.projects.FileHandling.FileService;
 import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import com.bramgussekloo.projects.database.DatabaseConnection;
-import com.bramgussekloo.projects.dataclasses.ElectionCourse;
-import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
+import com.bramgussekloo.projects.dataclasses.ElectiveCourse;
+import com.bramgussekloo.projects.dataclasses.ElectiveCourseDescription;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -26,22 +26,22 @@ import java.util.List;
  * PDO implementation
  * source: https://javaconceptoftheday.com/statement-vs-preparedstatement-vs-callablestatement-in-java/
  */
-public class ElectionCourseStatements {
+public class ElectiveCourseStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
 
     public static void uploadFile(MultipartFile file) throws IOException {
-        File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
+        File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
         if (!f.exists()) {
-            FileService.uploadFile(file, "ElectionCourse", fileNameVar);
+            FileService.uploadFile(file, "ElectiveCourse", fileNameVar);
         } else {
             throw new IOException("File already exists. Try using PUT if you want to update it.");
         }
     }
 
-    public static List<ElectionCourse> getExcelContent() throws IOException {
+    public static List<ElectiveCourse> getExcelContent() throws IOException {
         try {
             Workbook workbook = null;
-            File f = GetPropertyValues.getResourcePath("ElectionCourse", fileNameVar);
+            File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
             if (f.exists()) {
                 FileInputStream excelFile = new FileInputStream(f);
                 workbook = new XSSFWorkbook(excelFile);
@@ -49,8 +49,8 @@ public class ElectionCourseStatements {
                 Sheet worksheet = workbook.getSheetAt(0);
 
                 DataFormatter formatter = new DataFormatter();
-                List<ElectionCourse> electionCourseList = new ArrayList<>();
-                List<ElectionCourseDescription> electionCourseDescriptionList = new ArrayList<>();
+                List<ElectiveCourse> electiveCourseList = new ArrayList<>();
+                List<ElectiveCourseDescription> electiveCourseDescriptionList = new ArrayList<>();
                 //Create a loop to get the cell values of a row for one iteration
                 for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
                     Row row = worksheet.getRow(i);
@@ -67,7 +67,7 @@ public class ElectionCourseStatements {
                     String location = formatter.formatCellValue(row.getCell(8));
                     String classroom = formatter.formatCellValue(row.getCell(9));
 
-                    electionCourseList.add(new ElectionCourse(
+                    electiveCourseList.add(new ElectiveCourse(
                             courseCode,
                             name,
                             period,
@@ -84,21 +84,21 @@ public class ElectionCourseStatements {
                 excelFile.close();
 
                 try {
-                    electionCourseDescriptionList = getAllElectionCourseDescription();
-                    for (ElectionCourse electionCourse : electionCourseList){
-                        electionCourse.setDescription("");
-                        for (ElectionCourseDescription electionCourseDescription : electionCourseDescriptionList){
-                            if (electionCourse.getCourseCode().equals(electionCourseDescription.getCourseCode())){
-                                electionCourse.setDescription(electionCourseDescription.getDescription());
+                    electiveCourseDescriptionList = getAllElectiveCourseDescription();
+                    for (ElectiveCourse electiveCourse : electiveCourseList){
+                        electiveCourse.setDescription("");
+                        for (ElectiveCourseDescription electiveCourseDescription : electiveCourseDescriptionList){
+                            if (electiveCourse.getCourseCode().equals(electiveCourseDescription.getCourseCode())){
+                                electiveCourse.setDescription(electiveCourseDescription.getDescription());
                             }
                         }
                     }
                 }catch (SQLException e){
-                    for (ElectionCourse electionCourse : electionCourseList) {
-                        electionCourse.setDescription("");
+                    for (ElectiveCourse electiveCourse : electiveCourseList) {
+                        electiveCourse.setDescription("");
                     }
                 }
-                return electionCourseList;
+                return electiveCourseList;
             } else {
                 throw new IOException("File does not exist.");
             }
@@ -108,14 +108,14 @@ public class ElectionCourseStatements {
     }
 
     public static void updateFile(MultipartFile file) throws IOException {
-        File folder = GetPropertyValues.getResourcePath("ElectionCourse", "");
+        File folder = GetPropertyValues.getResourcePath("ElectiveCourse", "");
         File[] files = folder.listFiles();
         assert files != null;
         if (files.length <= 2) {
             for (File f : files) {
                 if (f.exists() && !f.toString().contains(".gitkeep")) {
                     if (f.delete()) {
-                        FileService.uploadFile(file, "ElectionCourse", fileNameVar);
+                        FileService.uploadFile(file, "ElectiveCourse", fileNameVar);
                     } else {
                         throw new IOException("File deletion failed");
                     }
@@ -126,79 +126,79 @@ public class ElectionCourseStatements {
         }
     }
 
-    public static ElectionCourseDescription createElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
+    public static ElectiveCourseDescription createElectiveCourseDescription(ElectiveCourseDescription electiveCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
 
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO election_course (electioncoursecode, electioncoursename, description) VALUES (?,?,?);");
-        pstmt.setString(1, electionCourseDescription.getCourseCode());
-        pstmt.setString(2, electionCourseDescription.getName());
-        pstmt.setString(3, electionCourseDescription.getDescription());
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO elective_course (electivecoursecode, electivecoursename, description) VALUES (?,?,?);");
+        pstmt.setString(1, electiveCourseDescription.getCourseCode());
+        pstmt.setString(2, electiveCourseDescription.getName());
+        pstmt.setString(3, electiveCourseDescription.getDescription());
         pstmt.executeUpdate();
-        return getElectionCourseDescription(electionCourseDescription.getCourseCode());
+        return getElectiveCourseDescription(electiveCourseDescription.getCourseCode());
     }
 
-    public static List<ElectionCourseDescription> getAllElectionCourseDescription() throws SQLException {
+    public static List<ElectiveCourseDescription> getAllElectiveCourseDescription() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        List<ElectionCourseDescription> allElectionCourseDescriptions = new ArrayList<>();
-        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM election_course");
+        List<ElectiveCourseDescription> allElectiveCourseDescriptions = new ArrayList<>();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM elective_course");
         if (!result.next()) {
-            throw new SQLException("No Election Course description data in database");
+            throw new SQLException("No Elective Course description data in database");
         } else {
             do {
-                allElectionCourseDescriptions.add(getResult(result));
+                allElectiveCourseDescriptions.add(getResult(result));
             } while (result.next());
-            return allElectionCourseDescriptions;
+            return allElectiveCourseDescriptions;
         }
     }
 
-    public static ElectionCourseDescription getElectionCourseDescription(String courseCode) throws SQLException {
+    public static ElectiveCourseDescription getElectiveCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursecode=?;");
+        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM elective_course WHERE electivecoursecode=?;");
         pstmt.setString(1, courseCode);
         ResultSet result = pstmt.executeQuery();
         if (result.next()) {
             return getResult(result);
         } else {
-            throw new SQLException("The ElectionCourse at courseCode " + courseCode + " doesn't exist");
+            throw new SQLException("The Elective Course Description at courseCode " + courseCode + " doesn't exist");
         }
     }
 
-    public static ElectionCourseDescription getElectionCourseDescriptionByName(String name) throws SQLException {
+    public static ElectiveCourseDescription getElectiveCourseDescriptionByName(String name) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM election_course WHERE electioncoursename=?;");
+        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM elective_course WHERE electivecoursename=?;");
         pstmt.setString(1, name);
         ResultSet result = pstmt.executeQuery();
         if (!result.next()) {
-            throw new SQLException("No Description with electionCourseName " + name + " found in the database");
+            throw new SQLException("No Description with electiveCourseName " + name + " found in the database");
         } else {
             return getResult(result);
         }
     }
 
-    public static ElectionCourseDescription updateElectionCourseDescription(ElectionCourseDescription electionCourseDescription) throws SQLException {
+    public static ElectiveCourseDescription updateElectiveCourseDescription(ElectiveCourseDescription electiveCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        PreparedStatement pstmt = conn.prepareStatement("UPDATE election_course SET electioncoursename =?, description=?, electioncoursecode=? WHERE electioncoursecode=?;");
-        pstmt.setString(1, electionCourseDescription.getName());
-        pstmt.setString(2, electionCourseDescription.getDescription());
-        pstmt.setString(3, electionCourseDescription.getCourseCode());
-        pstmt.setString(4, electionCourseDescription.getCourseCode());
+        PreparedStatement pstmt = conn.prepareStatement("UPDATE elective_course SET electivecoursename =?, description=?, electivecoursecode=? WHERE electivecoursecode=?;");
+        pstmt.setString(1, electiveCourseDescription.getName());
+        pstmt.setString(2, electiveCourseDescription.getDescription());
+        pstmt.setString(3, electiveCourseDescription.getCourseCode());
+        pstmt.setString(4, electiveCourseDescription.getCourseCode());
         pstmt.executeUpdate();
-        return getElectionCourseDescription(electionCourseDescription.getCourseCode());
+        return getElectiveCourseDescription(electiveCourseDescription.getCourseCode());
     }
 
-    public static ElectionCourseDescription deleteElectionCourseDescription(String courseCode) throws SQLException {
+    public static ElectiveCourseDescription deleteElectiveCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        ElectionCourseDescription deletedElectionCourseDescription = getElectionCourseDescription(courseCode);
-        PreparedStatement deletePstmt = conn.prepareStatement("DELETE FROM election_course WHERE electioncoursecode =?;");
+        ElectiveCourseDescription deletedElectiveCourseDescription = getElectiveCourseDescription(courseCode);
+        PreparedStatement deletePstmt = conn.prepareStatement("DELETE FROM elective_course WHERE electivecoursecode =?;");
         deletePstmt.setString(1, courseCode);
         deletePstmt.executeUpdate();
-        return deletedElectionCourseDescription;
+        return deletedElectiveCourseDescription;
     }
 
-    private static ElectionCourseDescription getResult(ResultSet result) throws SQLException {
-        String ElectionCourseCode = result.getString("electioncoursecode");
-        String ElectionCourseName = result.getString("electioncoursename");
-        String ElectionCourseDescription = result.getString("description");
-        return new ElectionCourseDescription(ElectionCourseCode, ElectionCourseName, ElectionCourseDescription);
+    private static ElectiveCourseDescription getResult(ResultSet result) throws SQLException {
+        String ElectiveCourseCode = result.getString("electivecoursecode");
+        String ElectiveCourseName = result.getString("electivecoursename");
+        String ElectiveCourseDescription = result.getString("description");
+        return new ElectiveCourseDescription(ElectiveCourseCode, ElectiveCourseName, ElectiveCourseDescription);
     }
 }

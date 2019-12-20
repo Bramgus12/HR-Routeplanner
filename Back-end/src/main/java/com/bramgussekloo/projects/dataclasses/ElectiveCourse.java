@@ -3,8 +3,8 @@ package com.bramgussekloo.projects.dataclasses;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(description = "Model for ElectionCourse")
-public class ElectionCourse extends ElectionCourseDescription{
+@ApiModel(description = "Model for ElectiveCourse")
+public class ElectiveCourse extends ElectiveCourseDescription{
 
     @ApiModelProperty(notes = "Course code.", required = true)
     private String CourseCode;
@@ -36,10 +36,10 @@ public class ElectionCourse extends ElectionCourseDescription{
     @ApiModelProperty(notes = "Classroom. By default:look on Hint.", required = false)
     private String Classroom;
 
-    @ApiModelProperty(notes = "Election Course description.", required = false)
+    @ApiModelProperty(notes = "Elective Course description.", required = false)
     private String Description;
 
-    public ElectionCourse(String courseCode, String name, String period, String groupNumber, String teacher, String dayOfTheWeek, String startTime, String endTime, String location, String classroom, String description) {
+    public ElectiveCourse(String courseCode, String name, String period, String groupNumber, String teacher, String dayOfTheWeek, String startTime, String endTime, String location, String classroom, String description) {
         CourseCode = courseCode;
         Name = name;
         Period = period;
@@ -54,7 +54,7 @@ public class ElectionCourse extends ElectionCourseDescription{
     }
 
     // Empty object for initial run
-    public ElectionCourse() {
+    public ElectiveCourse() {
     }
 
     public String getCourseCode() {
