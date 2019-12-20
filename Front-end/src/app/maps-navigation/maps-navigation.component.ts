@@ -139,7 +139,6 @@ export class MapsNavigationComponent implements OnInit {
       const firstLeg =  this.fastestRoute ? this.getFastestRoute(data.routes).legs[0] : data.routes[0].legs[0];
       this.directionsRenderer.setDirections(data);
       this.directions = firstLeg.steps;
-      console.log(this.directions);
 
       if(this.travelMode == google.maps.TravelMode.TRANSIT && firstLeg.hasOwnProperty("departure_time") && firstLeg.hasOwnProperty("arrival_time")) {
         this.timeInfo = "Departure: " + firstLeg.departure_time.text + " - Arrival: " + firstLeg.arrival_time.text;

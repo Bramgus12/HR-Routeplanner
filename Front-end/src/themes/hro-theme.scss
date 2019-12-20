@@ -22,3 +22,9 @@ $dark-theme: mat-dark-theme($primary, $accent, $warn);
   @include angular-material-theme($dark-theme);
   @include app-theme($dark-theme);
 }
+
+.no-footer {
+  footer {
+    display: none;
+  }
+}

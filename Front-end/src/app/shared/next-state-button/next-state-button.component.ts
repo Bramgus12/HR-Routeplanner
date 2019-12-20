@@ -18,7 +18,6 @@ export class NextStateButtonComponent {
   navigateToNextComponent(){
     if(this.state instanceof NavigationState){
       if(this.state.hasNextStep){
-        console.log(this.state)
         const dialogRef = this.dialog.open(NextStateDialog);
         dialogRef.afterClosed().subscribe(data => {
           if(data) this.router.navigateByUrl(this.state.nextComponentUrl, { state: this.state });

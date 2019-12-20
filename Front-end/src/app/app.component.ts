@@ -19,11 +19,17 @@ export class AppComponent implements OnInit{
   constructor(private router: Router, private titleService: Title, private appService: AppService){}
 
   ngOnInit(){
-    /*This sets the title of each loaded page/component*/
+    /* This checks the loading route as snapshot */
     this.router.events.pipe(
       filter(event => event instanceof ActivationEnd),
       map((event: ActivationEnd) => event.snapshot)
     ).subscribe(snapshot => {
+      const path = snapshot.routeConfig.path;
+
+      if(path == "building-navigation" || path == "maps-navigation") this.appService.showFooter(false) 
+      else this.appService.showFooter(true);
+
+      /*This sets the title of each loaded page/component*/
       if(snapshot.hasOwnProperty("data")){
         this.title = snapshot.data['title'];
         this.titleService.setTitle(snapshot.data['title']);

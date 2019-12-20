@@ -7,6 +7,7 @@ export class AppService {
 
   trigger: EventEmitter<null> = new EventEmitter();
   darkMode: boolean = false;
+  footerVisible: boolean = true;
   renderer: Renderer2;
 
   constructor(rendererFactory: RendererFactory2) { 
@@ -29,5 +30,15 @@ export class AppService {
 
     this.darkMode = mode;
     localStorage.setItem("dark-theme", mode.toString());
+  }
+
+  showFooter(mode: boolean){
+    if(!mode && this.footerVisible){
+      this.renderer.addClass(document.body, 'no-footer');
+      this.footerVisible = mode;
+    } else if(mode && !this.footerVisible){
+      this.renderer.removeClass(document.body, 'no-footer');
+      this.footerVisible = mode;
+    }
   }
 }

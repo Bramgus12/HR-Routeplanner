@@ -113,14 +113,14 @@ section {
   section {
     flex-direction: row;
     width: 100%;
-    max-height: calc(100vh - 114px);
+    max-height: calc(100vh - 64px);
 
     .map-container {
       width: 40%;
       height: initial;
 
       agm-map {
-        height: calc(100vh - 114px);
+        height: calc(100vh - 64px);
       }
     }
 

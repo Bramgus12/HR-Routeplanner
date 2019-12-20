@@ -1,15 +1,15 @@
 @import 'helpers';
 
-:host {
+section {
   position: absolute;
-  top: 56px;
-  left: 0px;
+  /* top: 56px; */
+  /* left: 0px; */
   display: block;
-  height: calc(80vh - 56px);
+  height: calc(100vh - 56px);
   
   @include media-phone(){
-    top: 64px;
-    height: calc(80vh - 64px);
+    /* top: 64px; */
+    height: calc(100vh - 64px);
   }
 
   width: 100%;
