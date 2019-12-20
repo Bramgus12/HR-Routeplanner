@@ -83,10 +83,10 @@ public class ElectionCourseStatements {
                 excelFile.close();
 
                 List<ElectionCourseDescription> electionCourseDescriptionList = getAllElectionCourseDescription();
-                for (ElectionCourse electionCourse : electionCourseList){
+                for (ElectionCourse electionCourse : electionCourseList) {
                     electionCourse.setDescription("");
-                    for (ElectionCourseDescription electionCourseDescription : electionCourseDescriptionList){
-                        if (electionCourse.getCourseCode().equals(electionCourseDescription.getCourseCode())){
+                    for (ElectionCourseDescription electionCourseDescription : electionCourseDescriptionList) {
+                        if (electionCourse.getCourseCode().equals(electionCourseDescription.getCourseCode())) {
                             electionCourse.setDescription(electionCourseDescription.getDescription());
                         }
                     }

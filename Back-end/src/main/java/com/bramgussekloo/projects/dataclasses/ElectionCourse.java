@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(description = "Model for ElectionCourse")
-public class ElectionCourse extends ElectionCourseDescription{
+public class ElectionCourse extends ElectionCourseDescription {
 
     @ApiModelProperty(notes = "Course code.", required = true)
     private String CourseCode;

@@ -3,6 +3,7 @@ package com.bramgussekloo.projects.controller;
 import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.statements.AddressStatements;
+import com.bramgussekloo.projects.statements.CheckAuthKey;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,16 +53,22 @@ public class AddressController {
     @ApiOperation(value = "Create a new address")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created a new address in the database", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 403, message = "Forbidden")
     })
     @PostMapping
     private ResponseEntity createAddress(
-            @ApiParam(value = "The Address that you want to add", required = true) @RequestBody Address address
+            @ApiParam(value = "The Address that you want to add", required = true) @RequestBody Address address,
+            @ApiParam(value = "Your api key", required = true) @RequestParam String key
     ) {
         try {
-            Address result = AddressStatements.createAddress(address);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        } catch (SQLException e) {
+            if (CheckAuthKey.checkKey(key)) {
+                Address result = AddressStatements.createAddress(address);
+                return ResponseEntity.status(HttpStatus.OK).body(result);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+        } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -102,12 +109,20 @@ public class AddressController {
     @ApiOperation(value = "Delete an address", response = Address.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted the address", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 403, message = "Forbidden")
     })
     @DeleteMapping("/{id}")
-    private ResponseEntity deleteAddress(@ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Integer id) {
+    private ResponseEntity deleteAddress(
+            @ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Integer id,
+            @ApiParam(value = "Your api key", required = true) @RequestParam String key
+    ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.deleteAddress(id));
+            if (CheckAuthKey.checkKey(key)) {
+                return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.deleteAddress(id));
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -117,19 +132,25 @@ public class AddressController {
     @ApiOperation(value = "Update an Address object")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated the Address object", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 403, message = "Forbidden")
     })
     @PutMapping("/{id}")
     private ResponseEntity updateAddress(
             @ApiParam(value = "Id of the address that you want to update", required = true) @PathVariable Integer id,
-            @ApiParam(value = "The object with the address that you want to update", required = true) @RequestBody Address address
+            @ApiParam(value = "The object with the address that you want to update", required = true) @RequestBody Address address,
+            @ApiParam(value = "Your api key", required = true) @RequestParam String key
     ) {
         try {
-            if (id.equals(address.getId())) {
-                Address result = AddressStatements.updateAddress(address);
-                return ResponseEntity.status(HttpStatus.OK).body(result);
+            if (CheckAuthKey.checkKey(key)) {
+                if (id.equals(address.getId())) {
+                    Address result = AddressStatements.updateAddress(address);
+                    return ResponseEntity.status(HttpStatus.OK).body(result);
+                } else {
+                    throw new IllegalArgumentException("ID's are different");
+                }
             } else {
-                throw new IllegalArgumentException("ID's are different");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());

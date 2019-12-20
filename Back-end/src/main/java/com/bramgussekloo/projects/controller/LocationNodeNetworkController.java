@@ -4,6 +4,7 @@ import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
+import com.bramgussekloo.projects.statements.CheckAuthKey;
 import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Get a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
     })
     @GetMapping("/{locationName}")
     private ResponseEntity getLocationNodeNetwork(
@@ -39,15 +40,21 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Create a new locationNodeNetwork")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 403, message = "Forbidden")
     })
     @PostMapping("{addressId}")
     private ResponseEntity createLocationNodeNetwork(
             @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
-            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
+            @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId,
+            @ApiParam(value = "Your API key", required = true) @RequestParam String key
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
+            if (CheckAuthKey.checkKey(key)) {
+                return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -56,15 +63,21 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Delete a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 403, message = "Forbidden")
     })
     @DeleteMapping("/{locationName}")
     private ResponseEntity deleteLocationNodeNetwork(
-            @ApiParam(value = "The name of the location you want to delete", required = true) @PathVariable String locationName
+            @ApiParam(value = "The name of the location you want to delete", required = true) @PathVariable String locationName,
+            @ApiParam(value = "Your API key", required = true) @RequestParam String key
     ) {
         try {
-            LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
-            return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
+            if (CheckAuthKey.checkKey(key)) {
+                LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
+                return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -90,16 +103,22 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Update a certain locationNodeNetwork")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 403, message = "Forbidden")
     })
     @PutMapping
     private ResponseEntity updateLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to update", required = true) @RequestParam String locationName,
             @ApiParam(value = "The ID of the address that you want to pair this locationNodeNetwork with", required = true) @RequestParam Integer addressId,
-            @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestParam MultipartFile file
+            @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestParam MultipartFile file,
+            @ApiParam(value = "Your API key", required = true) @RequestParam String key
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file, addressId));
+            if (CheckAuthKey.checkKey(key)) {
+                return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file, addressId));
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -108,7 +127,7 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName", response = NodesAndBuildingName.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
     })
     @GetMapping("/room")
     private ResponseEntity getAllRooms() {
