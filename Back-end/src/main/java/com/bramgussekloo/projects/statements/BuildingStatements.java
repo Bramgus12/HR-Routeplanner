@@ -84,7 +84,7 @@ public class BuildingStatements {
         if (!resultSet.next()) {
             throw new SQLException("Building with id " + id + " doesn't exist");
         } else {
-            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM building WHERE id=" + id);
+            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM building WHERE id=?;");
             preparedStatement1.setInt(1, id);
             preparedStatement1.execute();
             return getResult(id, resultSet);
