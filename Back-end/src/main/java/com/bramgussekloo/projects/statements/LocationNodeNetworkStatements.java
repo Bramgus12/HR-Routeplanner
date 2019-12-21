@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -29,20 +31,34 @@ public class LocationNodeNetworkStatements {
 
     public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, Integer addressId) throws IOException, SQLException {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
-        if (!f.exists()) {
-            ObjectMapper mapper = new ObjectMapper();
-            FileService.uploadFile(file, "Locations", file.getOriginalFilename());
-            File fileRef = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
-            if (f.exists() && Objects.requireNonNull(file.getOriginalFilename()).contains(".json")) {
-                LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
-                Building building = new Building(null, addressId, locationNodeNetwork.getLocationName());
-                BuildingStatements.createBuilding(building);
-                return locationNodeNetwork;
+        String mimeType = Files.probeContentType(f.toPath());
+        System.out.println(mimeType);
+        if (mimeType != null && mimeType.equals("application/json")) {
+            if (!f.exists()) {
+                ObjectMapper mapper = new ObjectMapper();
+                FileService.uploadFile(file, "Locations", file.getOriginalFilename());
+                File fileRef = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
+                if (f.exists()) {
+                    try {
+                        LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
+                        Building building = new Building(null, addressId, locationNodeNetwork.getLocationName());
+                        BuildingStatements.createBuilding(building);
+                        return locationNodeNetwork;
+                    } catch (IOException e) {
+                        if (fileRef.delete()) {
+                            throw new IOException(e.getMessage());
+                        } else {
+                            throw new IOException(e.getMessage() + " and File deletion failed");
+                        }
+                    }
+                } else {
+                    throw new IOException(file.getOriginalFilename() + ".json already exists. Try put if you wanna change it.");
+                }
             } else {
-                throw new IOException(file.getOriginalFilename() + ".json already exists. Try put if you wanna change it.");
+                throw new IOException("File already exists");
             }
         } else {
-            throw new IOException("File already exists");
+            throw new IOException("That is not a json file");
         }
     }
 
@@ -82,22 +98,37 @@ public class LocationNodeNetworkStatements {
     }
 
     public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file, Integer addressId) throws IOException, SQLException {
-        File resource = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
-        if (resource.exists()) {
-            ObjectMapper mapper = new ObjectMapper();
-            LocationNodeNetwork network = mapper.readValue(resource, LocationNodeNetwork.class);
-            String name = network.getLocationName();
-            Building building = BuildingStatements.getBuildingByName(name);
-            if (resource.delete()) {
-                FileService.uploadFile(file, "Locations", file.getOriginalFilename());
-                Building newBuilding = new Building(building.getId(), addressId, network.getLocationName());
-                BuildingStatements.updateBuilding(newBuilding);
-                return mapper.readValue(resource, LocationNodeNetwork.class);
+        File resource = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
+        String mimeType = Files.probeContentType(resource.toPath());
+        if (mimeType != null && mimeType.equals("application/json") && Objects.requireNonNull(file.getOriginalFilename()).startsWith(locationName)) {
+            if (resource.exists()) {
+                ObjectMapper mapper = new ObjectMapper();
+                FileService.uploadFile(file, "Locations", Objects.requireNonNull(file.getOriginalFilename()).replace(".json", "_1.json"));
+                File tmpFile = GetPropertyValues.getResourcePath("Locations", Objects.requireNonNull(file.getOriginalFilename()).replace(".json", "_1.json"));
+                try {
+                    LocationNodeNetwork network = mapper.readValue(tmpFile, LocationNodeNetwork.class);
+                    String name = network.getLocationName();
+                    Building building = BuildingStatements.getBuildingByName(name);
+                    if (resource.delete() && tmpFile.delete()) {
+                        FileService.uploadFile(file, "Locations", file.getOriginalFilename());
+                        Building newBuilding = new Building(building.getId(), addressId, network.getLocationName());
+                        BuildingStatements.updateBuilding(newBuilding);
+                        return mapper.readValue(resource, LocationNodeNetwork.class);
+                    } else {
+                        throw new IOException("File deletion did not go well");
+                    }
+                } catch (IOException e){
+                    if (tmpFile.delete()) {
+                        throw new IOException(e.getMessage());
+                    } else {
+                        throw new IOException(e.getMessage() + " and Temporary file deletion failed");
+                    }
+                }
             } else {
-                throw new IOException("File deletion did not go well");
+                throw new IOException("File does not exist yet. Use post for creating a new file.");
             }
         } else {
-            throw new IOException("File does not exist yet. Use post for creating a new file.");
+            throw new IOException("That is not a json file or name of location and file name are not the same");
         }
     }
 

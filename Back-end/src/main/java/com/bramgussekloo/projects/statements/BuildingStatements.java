@@ -99,6 +99,7 @@ public class BuildingStatements {
         PreparedStatement preparedStatement = conn.prepareStatement("UPDATE building SET address_id=?, name=? WHERE id=?;");
         preparedStatement.setInt(1, address_id);
         preparedStatement.setString(2, name);
+        preparedStatement.setInt(3, id);
         preparedStatement.execute();
         PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM building WHERE id=?;");
         preparedStatement1.setInt(1, id);
