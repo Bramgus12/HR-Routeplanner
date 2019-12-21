@@ -1,8 +1,14 @@
 # API Documentation
 
+## Swagger-UI
+
 **Swagger-ui on link `[host]:[port]/swagger-ui.html` when server is running. This contains a more detailed and interactive API-Documentation**
 
 **When running on your own pc in the IDE, that would be `localhost:8080/swagger-ui.html`**
+
+## Authentication
+
+**This API uses an authentication key that needs to be in the users table.**
 
 ## Navigation:
 1. [Address](#address)
@@ -157,6 +163,12 @@ code=[string]
 
 ### POST `/api/address`
 Create a new address.
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
  
 **Requested body:**
 
@@ -192,6 +204,12 @@ Create a new address.
 ### DELETE `/api/address/{id}`
 Delete an address by id.
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Response:**
 
 ```json
@@ -213,6 +231,12 @@ Delete an address by id.
 
 ### PUT `/api/address/{id}`
 Update a certain address.
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
 
 **Requested body:**
 
@@ -339,6 +363,12 @@ Get a specific institute by ID.
 ### POST `/api/institute`
 Add/Create a new Institute.
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Requested body:**
 ``` json
 {
@@ -363,6 +393,12 @@ Add/Create a new Institute.
 ### DELETE `/api/institute/{id}`
 Delete an Institute by id.
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Response:**
 
 ``` json
@@ -380,6 +416,12 @@ Delete an Institute by id.
 
 ### PUT `/api/institute/{id}`
 Update an institute.
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
 
 **Requested body:**
 
@@ -452,6 +494,12 @@ Get a certain buildinginstitute by id
 ### POST `/api/buildinginstitute`
 Create a new buildingInstitute
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Requested body:**
 ```json
 {
@@ -478,6 +526,12 @@ Create a new buildingInstitute
 ### PUT `/api/buildinginstitute/{id}`
 Update a certain buldinginstitute by id
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Requested body:**
 ```json
 {
@@ -503,6 +557,12 @@ Update a certain buldinginstitute by id
 
 ### DELETE `/api/buildinginstitute/{id}`
 Delete a certain buildingInstitute by id
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
 
 **Response:**
 ```json
@@ -578,6 +638,12 @@ Get a certain locationNodeNetwork object by locationName.
 Post a node into the server. You can only do this when it does not exist already on the server otherwhise you will get an error. You also have to specify an address that corresponds with the locationNodeNetwork that you are about to add. It will then automatically add a new building to the database with in it the locatonName of the locationNodeNetwork and the address_id of the address that you specified.
 
 Put the address_id of the address that corresponds with the locationNodeNetwork in the URL.
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
 
 **Upload file with the following layout:**
 
@@ -669,6 +735,12 @@ Put the address_id of the address that corresponds with the locationNodeNetwork 
 ### DELETE `/api/locationnodenetwork/{locationname}`
 Deletes the locationNodeNetwork indicated by the locationName in the URL. This also deletes the buildingobject in the database.
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Response:**
 
 ``` json
@@ -723,6 +795,7 @@ Update a certain locationNodeNetwork. It deletes the old one and replaces it wit
 ```properties
 addressId=[integer]
 locationName=[string]
+key=[string]
 ```
 
 **Upload a file with the following layout:**
@@ -1012,6 +1085,12 @@ Get all descriptions of the election courses in a list
 ### POST `/api/election-course/upload`
 Upload an EXCEL file with the election courses of the Rotterdam University of Applied Sciences. This file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Response:**
 ``` json
 [
@@ -1051,6 +1130,12 @@ Upload an EXCEL file with the election courses of the Rotterdam University of Ap
 ### POST `/api/election-course`
 Add a specific Election Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Requested body:**
 ``` json
 {
@@ -1078,6 +1163,12 @@ Add a specific Election Course with its description, use https://www.freeformatt
 
 ### PUT `/api/election-course`
 Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
 
 **Response:**
 ``` json
@@ -1118,6 +1209,12 @@ Update Election Course excel file in Election Course folder by deleting the file
 ### PUT `/api/election-course/{coursecode}`
 Update a specific description of an election-course
 
+**Requested parameter:**
+
+```properties
+key=[string]
+```
+
 **Requested body:**
 ```json
 {
@@ -1143,6 +1240,12 @@ Update a specific description of an election-course
 ****
 ### DELETE `/api/election-course/{coursecode}`
 Delete a specific Election Course with its description
+
+**Requested parameter:**
+
+```properties
+key=[string]
+```
 
 **Response:**
 ```json
