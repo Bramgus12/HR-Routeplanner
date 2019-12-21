@@ -77,7 +77,7 @@ export class HomepageComponent implements OnInit {
     this.fromFormControl.valueChanges.pipe(debounceTime(400)).subscribe((value: string) => {
       if(value.length != 0){
         this.fromSuggestions = this.buildings.map(val => val.name).filter(val => val.toLowerCase().includes(value.toLowerCase()));
-        this.fromSuggestions = this.fromSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().includes(value.toLowerCase())));
+        this.fromSuggestions = this.fromSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().replace(/\./g, '').includes(value.toLowerCase().replace(/\./g, ''))));
 
         // Only check if suggetions is empty
         if(this.fromSuggestions.length == 0) this.mapsService.getPlacePredictions(value).subscribe(result => this.fromSuggestions = result.map(val => val.description));
@@ -97,7 +97,7 @@ export class HomepageComponent implements OnInit {
     this.toFormControl.valueChanges.subscribe((value: string) => {
       if(value.length != 0){
         this.toSuggestions = this.buildings.map(val => val.name).filter(val => val.toLowerCase().includes(value.toLowerCase()))
-        this.toSuggestions = this.toSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().includes(value.toLowerCase())));
+        this.toSuggestions = this.toSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().replace(/\./g, '').includes(value.toLowerCase().replace(/\./g, ''))));
         this.toSuggestions.sort();
 
         if(this.rooms.filter(room => room.code == value).length > 0){
