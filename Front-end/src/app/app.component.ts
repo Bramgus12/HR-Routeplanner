@@ -31,8 +31,11 @@ export class AppComponent implements OnInit{
 
       /*This sets the title of each loaded page/component*/
       if(snapshot.hasOwnProperty("data")){
-        this.title = snapshot.data['title'];
-        this.titleService.setTitle(snapshot.data['title']);
+        const routeTitle: string = snapshot.data['title'],
+          browserTitle = routeTitle == "HR Routeplanner" ? routeTitle : routeTitle.concat(" - HR Routeplanner");
+
+        this.title = routeTitle;
+        this.titleService.setTitle(browserTitle);
       }
     });
 
