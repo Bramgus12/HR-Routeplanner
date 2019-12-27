@@ -3,7 +3,6 @@ package com.bramgussekloo.projects.controller;
 import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.ElectionCourse;
 import com.bramgussekloo.projects.dataclasses.ElectionCourseDescription;
-import com.bramgussekloo.projects.statements.CheckAuthKey;
 import com.bramgussekloo.projects.statements.ElectionCourseStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -15,10 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-// Controller for xlsx reader
 @Api(value = "Election Course list")
 @RestController
-@RequestMapping("/api/election-course")
+@RequestMapping("/api/")
 public class ElectionCourseController {
 
     /**
@@ -31,7 +29,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved list", response = ElectionCourse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping
+    @GetMapping("electivecourse")
     private ResponseEntity getElectionCourseList() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getExcelContent());
@@ -52,19 +50,14 @@ public class ElectionCourseController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added an election course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 403, message = "Forbidden")
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping
+    @PostMapping("admin/electivecourse")
     private ResponseEntity createElectionCourseDescription(
-            @ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription,
-            @ApiParam(value = "Your API key", required = true) @RequestParam String key
+            @ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription
     ) {
         try {
-            if (CheckAuthKey.checkKey(key)) {
-                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.createElectionCourseDescription(electionCourseDescription));
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -81,7 +74,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request"),
     })
-    @GetMapping("/{coursecode}")
+    @GetMapping("electivecourse/{coursecode}")
     private ResponseEntity getElectionCourseDescription(
             @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode,
             @ApiParam(value = "Your API key", required = true) @RequestParam String key
@@ -103,7 +96,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved all existing courses with its description", response = ElectionCourseDescription.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/description")
+    @GetMapping("electivecourse/description")
     private ResponseEntity getAllElectionCourseDescription() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getAllElectionCourseDescription());
@@ -122,38 +115,33 @@ public class ElectionCourseController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 403, message = "Forbidden")
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping("/{coursecode}")
+    @PutMapping("admin/electivecourse/{coursecode}")
     private ResponseEntity updateElectionCourseDescription(
             @ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
-            @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription,
-            @ApiParam(value = "Your API key", required = true) @RequestParam String key
+            @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription
     ) {
         try {
-            if (CheckAuthKey.checkKey(key)) {
-                if (coursecode.equals(electionCourseDescription.getCourseCode())) {
-                    ElectionCourseDescription oldData = ElectionCourseStatements.getElectionCourseDescription(coursecode);
-                    ElectionCourseDescription newData = new ElectionCourseDescription();
-                    newData.setCourseCode(oldData.getCourseCode());
-                    if (!electionCourseDescription.getDescription().equals(oldData.getDescription())) {
-                        newData.setDescription(electionCourseDescription.getDescription());
+            if (coursecode.equals(electionCourseDescription.getCourseCode())) {
+                ElectionCourseDescription oldData = ElectionCourseStatements.getElectionCourseDescription(coursecode);
+                ElectionCourseDescription newData = new ElectionCourseDescription();
+                newData.setCourseCode(oldData.getCourseCode());
+                if (!electionCourseDescription.getDescription().equals(oldData.getDescription())) {
+                    newData.setDescription(electionCourseDescription.getDescription());
 
-                    } else {
-                        newData.setDescription(oldData.getDescription());
-                    }
-
-                    if (!electionCourseDescription.getName().equals(oldData.getName())) {
-                        newData.setName(electionCourseDescription.getName());
-                    } else {
-                        newData.setName(oldData.getName());
-                    }
-                    return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourseDescription(newData));
                 } else {
-                    throw new IllegalArgumentException("Election Course Code doesn't exist!");
+                    newData.setDescription(oldData.getDescription());
                 }
+
+                if (!electionCourseDescription.getName().equals(oldData.getName())) {
+                    newData.setName(electionCourseDescription.getName());
+                } else {
+                    newData.setName(oldData.getName());
+                }
+                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.updateElectionCourseDescription(newData));
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                throw new IllegalArgumentException("Election Course Code doesn't exist!");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -170,19 +158,14 @@ public class ElectionCourseController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted election course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 403, message = "Forbidden")
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @DeleteMapping("/{coursecode}")
+    @DeleteMapping("admin/electivecourse/{coursecode}")
     private ResponseEntity deleteElectionCourseDescription(
-            @ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode,
-            @ApiParam(value = "Your API key", required = true) @RequestParam String key
+            @ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode
     ) {
         try {
-            if (CheckAuthKey.checkKey(key)) {
-                return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.deleteElectionCourseDescription(coursecode));
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
+            return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.deleteElectionCourseDescription(coursecode));
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -198,21 +181,16 @@ public class ElectionCourseController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectionCourse.class),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 403, message = "Forbidden")
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PutMapping
     private ResponseEntity updateFile(
-            @RequestParam MultipartFile file,
-            @ApiParam(value = "Your API key", required = true) @RequestParam String key
+            @RequestParam MultipartFile file
     ) {
         try {
-            if (CheckAuthKey.checkKey(key)) {
-                ElectionCourseStatements.updateFile(file);
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-        } catch (IOException | SQLException e) {
+            ElectionCourseStatements.updateFile(file);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -226,21 +204,16 @@ public class ElectionCourseController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully uploaded", response = ElectionCourse.class),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 403, message = "Forbidden")
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping("/upload")
+    @PostMapping("admin/electivecourse/upload")
     private ResponseEntity uploadFile(
-            @RequestParam("file") MultipartFile file,
-            @ApiParam(value = "Your API key", required = true) @RequestParam String key
+            @RequestParam("file") MultipartFile file
     ) {
         try {
-            if (CheckAuthKey.checkKey(key)) {
-                ElectionCourseStatements.uploadFile(file);
-                return ResponseEntity.status(HttpStatus.CREATED).build();
-            } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-            }
-        } catch (IOException | SQLException e) {
+            ElectionCourseStatements.uploadFile(file);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

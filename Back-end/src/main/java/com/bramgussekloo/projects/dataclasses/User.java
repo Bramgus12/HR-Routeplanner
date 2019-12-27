@@ -3,15 +3,36 @@ package com.bramgussekloo.projects.dataclasses;
 public class User {
     private int id;
     private String user_name;
-    private String auth_key;
+    private String password;
+    private String authority;
+    private Boolean enabled;
 
-    public User(int id, String user_name, String auth_key) {
+    public User(int id, String user_name, String password, String authority, Boolean enabled) {
         this.id = id;
-        this.auth_key = auth_key;
+        this.password = password;
         this.user_name = user_name;
+        this.authority = authority;
+        this.enabled = enabled;
+
     }
 
     public User() {
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
+    }
+
+    public String getAuthority() {
+        return authority;
     }
 
     public int getId() {
@@ -22,12 +43,12 @@ public class User {
         this.id = id;
     }
 
-    public String getAuth_key() {
-        return auth_key;
+    public String getPassword() {
+        return password;
     }
 
-    public void setAuth_key(String auth_key) {
-        this.auth_key = auth_key;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUser_name() {
