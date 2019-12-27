@@ -72,12 +72,11 @@ public class ElectionCourseController {
     @ApiOperation(value = "Lookup a specific Election Course for its description")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectionCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("electivecourse/{coursecode}")
     private ResponseEntity getElectionCourseDescription(
-            @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode,
-            @ApiParam(value = "Your API key", required = true) @RequestParam String key
+            @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode
     ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getElectionCourseDescription(coursecode));
@@ -183,7 +182,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping
+    @PutMapping("admin/electivecourse")
     private ResponseEntity updateFile(
             @RequestParam MultipartFile file
     ) {

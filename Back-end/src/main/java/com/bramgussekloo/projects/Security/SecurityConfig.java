@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.Security;
 
+import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import com.bramgussekloo.projects.database.DatabaseConnection;
 import com.bramgussekloo.projects.dataclasses.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public static javax.sql.DataSource createDataSource() {
+        String propFileName = "Database_config.properties";
+        String[] values = GetPropertyValues.getDatabasePropValues(propFileName);
         org.postgresql.ds.PGPoolingDataSource ds = new org.postgresql.ds.PGPoolingDataSource();
         ds.setDataSourceName("A Data Source");
-        ds.setServerName("projects.bramgussekloo.com");
-        ds.setDatabaseName("Test");
-        ds.setUser("postgres");
-        ds.setPassword("onjuist11");
+        ds.setServerName(values[3]);
+        ds.setDatabaseName(values[4]);
+        ds.setUser(values[1]);
+        ds.setPassword(values[2]);
         ds.setPortNumber(5432);
         return ds;
     }
