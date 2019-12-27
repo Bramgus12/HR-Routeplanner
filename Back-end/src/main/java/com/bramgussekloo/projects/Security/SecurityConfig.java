@@ -63,12 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         + "FROM users WHERE user_name=?")
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
-
-
-//        auth.inMemoryAuthentication()
-//                .withUser("admin").password(encoder().encode("adminPass")).roles("ADMIN")
-//                .and()
-//                .withUser("user").password(encoder().encode("userPass")).roles("USER");
+    
     @Configuration
     @Order(1)
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
