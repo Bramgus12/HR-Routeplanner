@@ -115,7 +115,8 @@ public class InstituteController {
     @ApiOperation(value = "Update an institute")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated the institute", response = Institute.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PutMapping("admin/institute/{id}")
     private ResponseEntity updateInstitute(

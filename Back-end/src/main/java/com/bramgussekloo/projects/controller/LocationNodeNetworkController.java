@@ -39,7 +39,8 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Create a new locationNodeNetwork")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PostMapping("admin/locationnodenetwork/{addressId}")
     private ResponseEntity createLocationNodeNetwork(
@@ -56,7 +57,8 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Delete a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
     @DeleteMapping("admin/locationnodenetwork/{locationName}")
     private ResponseEntity deleteLocationNodeNetwork(
@@ -90,7 +92,8 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Update a certain locationNodeNetwork")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PutMapping("admin/locationnodenetwork")
     private ResponseEntity updateLocationNodeNetwork(
