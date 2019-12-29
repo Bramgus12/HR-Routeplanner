@@ -16,42 +16,42 @@
     2. [Get a certain address](#get-apiaddressid)
     3. [Get an address by buildingname](#get-apiaddressbuilding)
     4. [Get an address by roomcode](#get-apiaddressroom)
-    5. [Post](#post-apiaddress)
-    6. [Delete](#delete-apiaddressid)
-    7. [Update](#put-apiaddressid)
+    5. [Post](#post-apiadminaddress)
+    6. [Delete](#delete-apiadminaddressid)
+    7. [Update](#put-apiadminaddressid)
 2. [Building](#building)
     1. [Get all buildings](#get-apibuilding)
     2. [Get a certain building](#get-apibuildingid)
 3. [Institute](#institute)
     1. [Get all institutes](#get-apiinstitute)
     2. [Get a certain institute](#get-apiinstituteid)
-    3. [Post](#post-apiinstitute)
-    4. [Delete](#delete-apiinstituteid)
-    5. [Update](#put-apiinstituteid)
+    3. [Post](#post-apiadmininstitute)
+    4. [Delete](#delete-apiadmininstituteid)
+    5. [Update](#put-apiadmininstituteid)
 4. [BuildingInstitute](#buildinginstitute)
     1. [Get all buildingInstitutes](#get-apibuildinginstitute)
     2. [Get a certain buildingInstitute](#get-apibuildinginstituteid)
-    3. [Post](#post-apibuildinginstitute)
-    4. [Put](#put-apibuildinginstituteid)
-    5. [Delete](#delete-apibuildinginstituteid)
+    3. [Post](#post-apiadminbuildinginstitute)
+    4. [Put](#put-apiadminbuildinginstituteid)
+    5. [Delete](#delete-apiadminbuildinginstituteid)
 5. [LocationNodeNetwork](#locationnodenetwork)
     1. [Get a certain locationnodenetwork](#get-apilocationnodenetworklocationname)
-    2. [Post](#post-apilocationnodenetworkaddressid)
-    3. [Delete](#delete-apilocationnodenetworklocationname)
-    4. [Put](#put-apilocationnodenetworklocationname)
+    2. [Post](#post-apiadminlocationnodenetworkaddressid)
+    3. [Delete](#delete-apiadminlocationnodenetworklocationname)
+    4. [Put](#put-apiadminlocationnodenetwork)
     5. [Get all nodes by type](#get-apilocationnodenetwork)
     6. [Get all nodes that are a room](#get-apilocationnodenetworkroom)
 6. [Route-engine](#route-engine)
     1. [Get the route between two nodes.](#get-apiroutes)
-7. [ElectionCourse](#election-course)
-    1. [Get a list of all election courses](#get-apielection-course)
-    2. [Get a description of a specific election course](#get-apielection-coursecoursecode)
-    3. [Get all descriptions of election courses](#get-apielection-coursedescription)
-    4. [Upload election course file](#post-apielection-courseupload)
-    5. [Create a description for an election course](#post-apielection-course)
-    6. [Update the election course excel file](#put-apielection-course)
-    7. [update the description of an election course](#put-apielection-coursecoursecode)
-    8. [Delete the description of an election course](#delete-apielection-coursecoursecode)
+7. [electiveCourse](#elective-course)
+    1. [Get a list of all elective courses](#get-apielective-course)
+    2. [Get a description of a specific elective course](#get-apielectivecoursecoursecode)
+    3. [Get all descriptions of elective courses](#get-apielectivecoursedescription)
+    4. [Upload elective course file](#post-apiadminelectivecourseupload)
+    5. [Create a description for an elective course](#post-apiadminelectivecourse)
+    6. [Update the elective course excel file](#put-apiadminelectivecourse)
+    7. [update the description of an elective course](#put-apiadminelectivecoursecoursecode)
+    8. [Delete the description of an elective course](#delete-apiadminelectivecoursecoursecode)
 
 
 ****
@@ -161,14 +161,8 @@ code=[string]
 
 ****
 
-### POST `/api/address`
+### POST `/api/admin/address`
 Create a new address.
-
-**Requested parameter:**
-
-```properties
-key=[string]
-```
  
 **Requested body:**
 
@@ -195,20 +189,15 @@ key=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### DELETE `/api/address/{id}`
+### DELETE `/api/admin/address/{id}`
 Delete an address by id.
 
-**Requested parameter:**
-
-```properties
-key=[string]
-```
 
 **Response:**
 
@@ -223,20 +212,14 @@ key=[string]
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### PUT `/api/address/{id}`
+### PUT `/api/admin/address/{id}`
 Update a certain address.
-
-**Requested parameter:**
-
-```properties
-key=[string]
-```
 
 **Requested body:**
 
@@ -266,7 +249,7 @@ key=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -360,14 +343,10 @@ Get a specific institute by ID.
 
 ****
 
-### POST `/api/institute`
+### POST `/api/admin/institute`
 Add/Create a new Institute.
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Requested body:**
 ``` json
@@ -384,20 +363,16 @@ key=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### DELETE `/api/institute/{id}`
+### DELETE `/api/admin/institute/{id}`
 Delete an Institute by id.
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Response:**
 
@@ -408,20 +383,16 @@ key=[string]
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### PUT `/api/institute/{id}`
+### PUT `/api/admin/institute/{id}`
 Update an institute.
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Requested body:**
 
@@ -441,7 +412,7 @@ key=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -491,14 +462,10 @@ Get a certain buildinginstitute by id
 
 ****
 
-### POST `/api/buildinginstitute`
+### POST `/api/admin/buildinginstitute`
 Create a new buildingInstitute
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Requested body:**
 ```json
@@ -517,20 +484,16 @@ key=[string]
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### PUT `/api/buildinginstitute/{id}`
+### PUT `/api/admin/buildinginstitute/{id}`
 Update a certain buldinginstitute by id
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Requested body:**
 ```json
@@ -549,20 +512,16 @@ key=[string]
     "instituteId": 0
 }
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### DELETE `/api/buildinginstitute/{id}`
+### DELETE `/api/admin/buildinginstitute/{id}`
 Delete a certain buildingInstitute by id
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Response:**
 ```json
@@ -573,7 +532,7 @@ key=[string]
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -634,16 +593,12 @@ Get a certain locationNodeNetwork object by locationName.
 
 ****
     
-### POST `/api/locationnodenetwork/{Addressid}`
+### POST `/api/admin/locationnodenetwork/{Addressid}`
 Post a node into the server. You can only do this when it does not exist already on the server otherwhise you will get an error. You also have to specify an address that corresponds with the locationNodeNetwork that you are about to add. It will then automatically add a new building to the database with in it the locatonName of the locationNodeNetwork and the address_id of the address that you specified.
 
 Put the address_id of the address that corresponds with the locationNodeNetwork in the URL.
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Upload file with the following layout:**
 
@@ -725,21 +680,17 @@ key=[string]
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### DELETE `/api/locationnodenetwork/{locationname}`
+### DELETE `/api/admin/locationnodenetwork/{locationname}`
 Deletes the locationNodeNetwork indicated by the locationName in the URL. This also deletes the buildingobject in the database.
 
-**Requested parameter:**
 
-```properties
-key=[string]
-```
 
 **Response:**
 
@@ -781,21 +732,20 @@ key=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
     
-### PUT `/api/locationnodenetwork`
+### PUT `/api/admin/locationnodenetwork`
 Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one. This also updates the buildingobject in the database.
 
 **Requested parameters:**
 ```properties
 addressId=[integer]
 locationName=[string]
-key=[string]
 ```
 
 **Upload a file with the following layout:**
@@ -878,7 +828,7 @@ key=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -929,6 +879,20 @@ Get all nodes that are a room
 **Response:**
 ``` json
 [
+    {
+        "locationName": "string",
+        "nodes": [
+            {
+                "code": "string",
+                "label": "string",
+                "number": 0,
+                "type": "string",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        ]
+    },
     {
         "locationName": "string",
         "nodes": [
@@ -997,13 +961,13 @@ locationName": [string]
 ****
 
 
-## Election Course
+## Elective Course
 
 
 ****
 
-### GET `/api/election-course`
-Get a list of all election courses.
+### GET `/api/electivecourse`
+Get a list of all elective courses.
 
 **Response:**
 ``` json
@@ -1040,8 +1004,8 @@ Get a list of all election courses.
 
 ****
 
-### GET `/api/election-course/{coursecode}`
-Get a description of the election course by coursecode
+### GET `/api/electivecourse/{coursecode}`
+Get a description of the elective course by coursecode
 
 **Response:**
 ```json
@@ -1057,8 +1021,8 @@ Get a description of the election course by coursecode
 
 ****
 
-### GET `/api/election-course/description`
-Get all descriptions of the election courses in a list
+### GET `/api/electivecourse/description`
+Get all descriptions of the elective courses in a list
 
 **Response:**
 ```json
@@ -1082,14 +1046,9 @@ Get all descriptions of the election courses in a list
 
 
 ****
-### POST `/api/election-course/upload`
-Upload an EXCEL file with the election courses of the Rotterdam University of Applied Sciences. This file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+### POST `/api/admin/electivecourse/upload`
+Upload an EXCEL file with the elective courses of the Rotterdam University of Applied Sciences. This file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
 
-**Requested parameter:**
-
-```properties
-key=[string]
-```
 
 **Response:**
 ``` json
@@ -1120,21 +1079,16 @@ key=[string]
     }
 ]
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### POST `/api/election-course`
-Add a specific Election Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
+### POST `/api/admin/electivecourse`
+Add a specific elective Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
 
-**Requested parameter:**
-
-```properties
-key=[string]
-```
 
 **Requested body:**
 ``` json
@@ -1154,21 +1108,16 @@ key=[string]
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### PUT `/api/election-course`
-Update Election Course excel file in Election Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+### PUT `/api/admin/electivecourse`
+Update elective Course excel file in elective Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
 
-**Requested parameter:**
-
-```properties
-key=[string]
-```
 
 **Response:**
 ``` json
@@ -1199,21 +1148,15 @@ key=[string]
     }
 ]
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### PUT `/api/election-course/{coursecode}`
-Update a specific description of an election-course
-
-**Requested parameter:**
-
-```properties
-key=[string]
-```
+### PUT `/api/admin/electivecourse/{coursecode}`
+Update a specific description of an elective-course
 
 **Requested body:**
 ```json
@@ -1232,20 +1175,14 @@ key=[string]
     "name": "string"
 }
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
-### DELETE `/api/election-course/{coursecode}`
-Delete a specific Election Course with its description
-
-**Requested parameter:**
-
-```properties
-key=[string]
-```
+### DELETE `/api/admin/electivecourse/{coursecode}`
+Delete a specific elective Course with its description
 
 **Response:**
 ```json
@@ -1255,7 +1192,68 @@ key=[string]
     "name": "string"
 }
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
+***
+
+## Users 
+
+***
+
+### GET `/api/admin/users`
+
+Get a list of all users
+
+**Response:**
+
+``` json
+[
+    {
+        "id": 0,
+        "user_name": "string",
+        "password": "string",
+        "authority": "string",
+        "enabled": true
+    },
+    {
+        "id": 0,
+        "user_name": "string",
+        "password": "string",
+        "authority": "string",
+        "enabled": true
+    }
+]
+```
+
+**HTTP-statuses:** 400, 401, 200
+
+***
+
+POST `/api/admin/users`
+
+Create a new user
+
+**Requested body:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+
+**Response:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+**HTTP-statuses:** 400, 401, 200
