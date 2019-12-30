@@ -11,3 +11,6 @@ server.compression.min-response-size=1024
 
 # Disable Stack Trace error
 server.error.include-stacktrace=never
+
+# Enable logging in the terminal
+logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=DEBUG

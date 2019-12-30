@@ -66,21 +66,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Configuration
     @Order(1)
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
-
-
         @Autowired
         private AuthenticationEntryPoint authEntryPoint;
 
         protected void configure(HttpSecurity http) throws Exception {
-            http
+            http.csrf().disable()
                     .antMatcher("/api/admin/**")
-                    .authorizeRequests()
-                    .anyRequest().hasAnyRole("USER", "ADMIN")
+                    .authorizeRequests().anyRequest()
+                    .hasAnyRole("USER", "ADMIN")
                     .and()
                     .httpBasic().authenticationEntryPoint(authEntryPoint);
         }
     }
-
 
     @Configuration
     @Order(2)
@@ -89,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         private AuthenticationEntryPoint authEntryPoint;
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/api/users")
+            http.csrf().disable().antMatcher("/api/users")
                     .authorizeRequests().anyRequest()
                     .hasRole("ADMIN")
                     .and().httpBasic()
