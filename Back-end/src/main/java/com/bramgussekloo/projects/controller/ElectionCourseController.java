@@ -29,7 +29,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved list", response = ElectionCourse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("electivecourse")
+    @GetMapping("election-course")
     private ResponseEntity getElectionCourseList() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getExcelContent());
@@ -52,7 +52,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping("admin/electivecourse")
+    @PostMapping("admin/election-course")
     private ResponseEntity createElectionCourseDescription(
             @ApiParam(value = "Add an Election Course description.", required = true) @RequestBody ElectionCourseDescription electionCourseDescription
     ) {
@@ -74,7 +74,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectionCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("electivecourse/{coursecode}")
+    @GetMapping("election-course/{coursecode}")
     private ResponseEntity getElectionCourseDescription(
             @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode
     ) {
@@ -95,7 +95,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved all existing courses with its description", response = ElectionCourseDescription.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("electivecourse/description")
+    @GetMapping("election-course/description")
     private ResponseEntity getAllElectionCourseDescription() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectionCourseStatements.getAllElectionCourseDescription());
@@ -116,7 +116,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping("admin/electivecourse/{coursecode}")
+    @PutMapping("admin/election-course/{coursecode}")
     private ResponseEntity updateElectionCourseDescription(
             @ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
             @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectionCourseDescription electionCourseDescription
@@ -159,7 +159,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @DeleteMapping("admin/electivecourse/{coursecode}")
+    @DeleteMapping("admin/election-course/{coursecode}")
     private ResponseEntity deleteElectionCourseDescription(
             @ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode
     ) {
@@ -182,7 +182,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping("admin/electivecourse")
+    @PutMapping("admin/election-course")
     private ResponseEntity updateFile(
             @RequestParam MultipartFile file
     ) {
@@ -205,7 +205,7 @@ public class ElectionCourseController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping("admin/electivecourse/upload")
+    @PostMapping("admin/election-course/upload")
     private ResponseEntity uploadFile(
             @RequestParam("file") MultipartFile file
     ) {
