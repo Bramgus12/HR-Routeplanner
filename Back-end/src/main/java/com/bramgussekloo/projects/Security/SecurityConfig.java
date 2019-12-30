@@ -1,7 +1,6 @@
 package com.bramgussekloo.projects.Security;
 
 import com.bramgussekloo.projects.Properties.GetPropertyValues;
-import com.bramgussekloo.projects.database.DatabaseConnection;
 import com.bramgussekloo.projects.dataclasses.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +18,9 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private DataSource dataSource;
 
     public static User HashUserPassword(User user) {
         User newUser = new User();
@@ -52,9 +54,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private DataSource dataSource;
-
-    @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource)
                 .usersByUsernameQuery("SELECT user_name, password, enabled"
@@ -63,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         + "FROM users WHERE user_name=?")
                 .passwordEncoder(new BCryptPasswordEncoder());
     }
-    
+
     @Configuration
     @Order(1)
     public static class ApiWebSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -76,13 +75,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .antMatcher("/api/admin/**")
                     .authorizeRequests()
-                    .anyRequest().hasRole("ADMIN")
+                    .anyRequest().hasAnyRole("USER", "ADMIN")
                     .and()
                     .httpBasic().authenticationEntryPoint(authEntryPoint);
         }
     }
 
+
+    @Configuration
     @Order(2)
+    public static class UserStatementsSecurity extends WebSecurityConfigurerAdapter {
+        @Autowired
+        private AuthenticationEntryPoint authEntryPoint;
+
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher("/api/users")
+                    .authorizeRequests().anyRequest()
+                    .hasRole("ADMIN")
+                    .and().httpBasic()
+                    .authenticationEntryPoint(authEntryPoint);
+        }
+    }
+
+    @Order(3)
     @Configuration
     public static class FormLoginWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 

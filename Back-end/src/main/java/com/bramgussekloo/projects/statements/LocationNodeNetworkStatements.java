@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -117,7 +116,7 @@ public class LocationNodeNetworkStatements {
                     } else {
                         throw new IOException("File deletion did not go well");
                     }
-                } catch (IOException e){
+                } catch (IOException e) {
                     if (tmpFile.delete()) {
                         throw new IOException(e.getMessage());
                     } else {

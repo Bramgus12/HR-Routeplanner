@@ -27,12 +27,12 @@ public class User {
         this.enabled = enabled;
     }
 
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
     public String getAuthority() {
         return authority;
+    }
+
+    public void setAuthority(String authority) {
+        this.authority = authority;
     }
 
     public int getId() {

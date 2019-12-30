@@ -17,7 +17,7 @@ import java.sql.SQLException;
 
 @Api(value = "Address controller")
 @RestController
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/users")
 public class UserController {
     @ApiOperation(value = "Get a list of users")
     @ApiResponses(value = {
@@ -33,6 +33,7 @@ public class UserController {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
     @ApiOperation(value = "Create a new User")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list", response = User.class),
@@ -40,7 +41,7 @@ public class UserController {
             @ApiResponse(code = 401, message = "Invalid credentials")
     })
     @PostMapping
-    private ResponseEntity createUser(@RequestBody User user){
+    private ResponseEntity createUser(@RequestBody User user) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(UserStatements.createUser(user));
         } catch (SQLException e) {

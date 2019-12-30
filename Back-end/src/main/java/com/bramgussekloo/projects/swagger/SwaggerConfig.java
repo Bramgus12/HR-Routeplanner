@@ -31,6 +31,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .securityContexts(Collections.singletonList(securityContext()))
                 .securitySchemes(Collections.singletonList(basicAuthScheme()));
     }
+
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(Arrays.asList(basicAuthReference()))
