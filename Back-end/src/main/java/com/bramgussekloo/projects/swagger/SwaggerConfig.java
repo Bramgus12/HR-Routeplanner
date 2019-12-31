@@ -35,7 +35,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(Arrays.asList(basicAuthReference()))
-                .forPaths(PathSelectors.ant("/api/v1/**"))
+                .forPaths(PathSelectors.ant("/api/**"))
                 .build();
     }
 

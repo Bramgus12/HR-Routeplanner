@@ -2,6 +2,7 @@ package com.bramgussekloo.projects.statements;
 
 import com.bramgussekloo.projects.Security.SecurityConfig;
 import com.bramgussekloo.projects.database.DatabaseConnection;
+import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.dataclasses.User;
 
 import java.sql.Connection;
@@ -58,11 +59,49 @@ public class UserStatements {
         }
     }
 
-    private static User deleteUser(String username){
-        return new User();
+    public static User updateUser(User user) throws SQLException {
+        Connection conn = new DatabaseConnection().getConnection();
+        User newUser = SecurityConfig.HashUserPassword(user);
+        int id = newUser.getId();
+        String userName = newUser.getUser_name();
+        boolean enabled = newUser.getEnabled();
+        String authority = newUser.getAuthority();
+        String password = newUser.getPassword();
+        PreparedStatement preparedStatement = conn.prepareStatement("UPDATE users SET user_name=?, password=?, enabled=?, authority=? WHERE id=?; ");
+        preparedStatement.setString(1, userName);
+        preparedStatement.setString(2, password);
+        preparedStatement.setBoolean(3, enabled);
+        preparedStatement.setString(4, authority);
+        preparedStatement.setInt(5, id);
+        preparedStatement.executeUpdate();
+        PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM users WHERE id=?;");
+        preparedStatement1.setInt(1, id);
+        ResultSet resultSet = preparedStatement1.executeQuery();
+        if (!resultSet.next()) {
+            throw new SQLException("Address doesn't exist on this id after updating");
+        } else {
+            return getResult(id, resultSet);
+        }
     }
 
-    private static User getResult(Integer id, ResultSet resultSet) throws SQLException {
+    public static User deleteUser(int id) throws SQLException{
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE id=?;");
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (!resultSet.next()) {
+            throw new SQLException("User doesn't exist.");
+        } else {
+            User user = getResult(id, resultSet);
+            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM users where id=?;");
+            preparedStatement1.setInt(1, id);
+            preparedStatement1.execute();
+            return user;
+        }
+
+    }
+
+    private static User getResult(int id, ResultSet resultSet) throws SQLException {
         String user_nameResult = resultSet.getString("user_name");
         String passwordResult = resultSet.getString("password");
         String authorityResult = resultSet.getString("authority");
