@@ -8,7 +8,7 @@
 
 ## Authentication
 
-**This API uses an authentication key that needs to be in the users table.**
+**This api uses BASIC API AUTHENTICATION for all the POST, PUT and DELETE endpoints. There are two roles a user can have: `"ADMIN"` and `"USER"`. Only admins can create and change users. Passwords will be encrypted and cannot be read by anyone after encryption.**
 
 ## Navigation:
 1. [Address](#address)
@@ -52,6 +52,11 @@
     6. [Update the elective course excel file](#put-apiadminelectivecourse)
     7. [update the description of an elective course](#put-apiadminelectivecoursecoursecode)
     8. [Delete the description of an elective course](#delete-apiadminelectivecoursecoursecode)
+8. [Users](#users)
+    1. [Get all users](#get-apiusers)
+    2. [Create a user](#post-apiusers)
+    3. [Update a user](#put-apiusersid)
+    4. [Delete a user](#delete-apiusersid)
 
 
 ****
@@ -91,6 +96,11 @@ Get a list of all addresses.
 
 ### GET `/api/address/{id}`
 Get a certain address.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 ```json
@@ -198,6 +208,11 @@ Create a new address.
 ### DELETE `/api/admin/address/{id}`
 Delete an address by id.
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 
 **Response:**
 
@@ -220,6 +235,11 @@ Delete an address by id.
 
 ### PUT `/api/admin/address/{id}`
 Update a certain address.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Requested body:**
 
@@ -285,6 +305,11 @@ Gives you a list of all buildings.
 ### GET `/api/building/{id}`
 Get a specific building.
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 **Response:**
 ``` json
 {
@@ -329,6 +354,11 @@ Gives you a list of all Institutes.
 ### GET `/api/institute/{id}`
 Get a specific institute by ID.
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 **Response:**
 ``` json
 {
@@ -372,7 +402,10 @@ Add/Create a new Institute.
 ### DELETE `/api/admin/institute/{id}`
 Delete an Institute by id.
 
-
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 
@@ -392,7 +425,10 @@ Delete an Institute by id.
 ### PUT `/api/admin/institute/{id}`
 Update an institute.
 
-
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Requested body:**
 
@@ -448,6 +484,11 @@ Get a list of all buildingInstitutes
 ### GET `/api/buildinginstitute/{id}`
 Get a certain buildinginstitute by id
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 **Response:**
 ```json
 {
@@ -464,7 +505,6 @@ Get a certain buildinginstitute by id
 
 ### POST `/api/admin/buildinginstitute`
 Create a new buildingInstitute
-
 
 
 **Requested body:**
@@ -493,7 +533,10 @@ Create a new buildingInstitute
 ### PUT `/api/admin/buildinginstitute/{id}`
 Update a certain buldinginstitute by id
 
-
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Requested body:**
 ```json
@@ -521,7 +564,10 @@ Update a certain buldinginstitute by id
 ### DELETE `/api/admin/buildinginstitute/{id}`
 Delete a certain buildingInstitute by id
 
-
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 ```json
@@ -547,6 +593,11 @@ Delete a certain buildingInstitute by id
 
 ### GET `/api/locationnodenetwork/{locationName}`
 Get a certain locationNodeNetwork object by locationName.
+
+**Requested pathvariable:**
+```properties
+locationname=[string]
+```
 
 **Response:**
 ``` json
@@ -598,7 +649,10 @@ Post a node into the server. You can only do this when it does not exist already
 
 Put the address_id of the address that corresponds with the locationNodeNetwork in the URL.
 
-
+**Requested pathvariable:**
+```properties
+addressid=[string]
+```
 
 **Upload file with the following layout:**
 
@@ -690,7 +744,10 @@ Put the address_id of the address that corresponds with the locationNodeNetwork 
 ### DELETE `/api/admin/locationnodenetwork/{locationname}`
 Deletes the locationNodeNetwork indicated by the locationName in the URL. This also deletes the buildingobject in the database.
 
-
+**Requested pathvariable:**
+```properties
+locationname=[string]
+```
 
 **Response:**
 
@@ -924,10 +981,10 @@ Get all nodes that are a room
 Get the route between two nodes.
 
 **Requested parameters:**
-```
-from": [integer]
-to": [integer]
-locationName": [string]
+```properties
+from=[integer]
+to=[integer]
+locationName=[string]
 ```
 
 **Response:**
@@ -1006,6 +1063,11 @@ Get a list of all elective courses.
 
 ### GET `/api/electivecourse/{coursecode}`
 Get a description of the elective course by coursecode
+
+**Requested pathvariable:**
+```properties
+coursecode=[string]
+```
 
 **Response:**
 ```json
@@ -1158,6 +1220,11 @@ Update elective Course excel file in elective Course folder by deleting the file
 ### PUT `/api/admin/electivecourse/{coursecode}`
 Update a specific description of an elective-course
 
+**Requested pathvariable:**
+```properties
+coursecode=[string]
+```
+
 **Requested body:**
 ```json
 {
@@ -1184,6 +1251,11 @@ Update a specific description of an elective-course
 ### DELETE `/api/admin/electivecourse/{coursecode}`
 Delete a specific elective Course with its description
 
+**Requested pathvariable:**
+```properties
+coursecode=[string]
+```
+
 **Response:**
 ```json
 {
@@ -1202,7 +1274,15 @@ Delete a specific elective Course with its description
 
 ***
 
-### GET `/api/admin/users`
+* ID will be auto-assigned by the database.
+* The password will be encrypted after posting it. No way to get the password back after encrypring.
+* Authority should be either `"ROLE_USER"` or `"ROLE_ADMIN"`.
+* Enabled has to be true. Otherwise he may have the role but still can't do anything other in the API than GET requests.
+* Only people with role `"ADMIN"` are able to use these functions.
+
+***
+
+### GET `/api/users`
 
 Get a list of all users
 
@@ -1229,11 +1309,48 @@ Get a list of all users
 
 **HTTP-statuses:** 400, 401, 200
 
+[Back to navigation](#navigation)
+
 ***
 
-POST `/api/admin/users`
+### POST `/api/users`
 
 Create a new user
+
+**Requested body:**
+```json
+{
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+
+**Response:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+**HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)
+
+***
+
+### PUT `/api/users/{id}`
+
+Update a certain user with new credentials.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Requested body:**
 ```json
@@ -1257,3 +1374,30 @@ Create a new user
 }
 ```
 **HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)
+
+***
+
+### DELETE `/api/users/{id}`
+
+Delete a certain user.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
+**Response:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+**HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)
