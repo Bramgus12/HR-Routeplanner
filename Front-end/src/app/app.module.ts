@@ -23,8 +23,8 @@ import { keys } from './3rdparty/api_keys';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ElectionCoursesComponent } from './election-courses/election-courses.component';
-import { ElectionCourseDescriptionComponent } from './election-courses/election-course-description/election-course-description.component';
+import { ElectiveCoursesComponent } from './elective-courses/elective-courses.component';
+import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-course-description/elective-course-description.component';
 
 @NgModule({
   imports: [
@@ -48,8 +48,8 @@ import { ElectionCourseDescriptionComponent } from './election-courses/election-
     BuildingViewerComponent,
     MapsNavigationComponent,
     SafeHTMLPipe,
-    ElectionCoursesComponent,
-    ElectionCourseDescriptionComponent,
+    ElectiveCoursesComponent,
+    ElectiveCourseDescriptionComponent,
     NextStateButtonComponent,
     NextStateDialog,
     ArrivalStateDialog
