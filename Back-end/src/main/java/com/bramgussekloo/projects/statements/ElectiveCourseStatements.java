@@ -31,10 +31,9 @@ import java.util.List;
  */
 public class ElectiveCourseStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
-    private static ElectiveCourse defaultList = new ElectiveCourse("","","","","","","","","","","");
-    private static List<ElectiveCourse> electiveCourseList = new ArrayList<>();
+    private static ArrayList<ElectiveCourse> electiveCourseList = new ArrayList<>();
 
-    public static List<ElectiveCourse> uploadFile(MultipartFile file) throws IOException {
+    public static ArrayList<ElectiveCourse> uploadFile(MultipartFile file) throws IOException, SQLException {
         File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         System.out.println(fileNameMap);
@@ -44,22 +43,19 @@ public class ElectiveCourseStatements {
         assert (mimeType).equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         if (!f.exists()) {
             FileService.uploadFile(file, "ElectiveCourse", fileNameVar);
+            try {
+                electiveCourseList = getExcelContent();
+                return electiveCourseList;
+            } catch (SQLException | IOException e) {
+                deleteFile();
+                throw new IOException("Can't read document and: " + e.getMessage());
+            }
         } else {
             throw new IOException("File already exists. Try using PUT if you want to update it.");
         }
-
-        try{
-            electiveCourseList = getExcelContent();
-        }catch (SQLException e){
-            electiveCourseList.clear();
-            electiveCourseList.add(defaultList);
-            throw new IllegalArgumentException(e.getMessage());
-        }finally {
-            return electiveCourseList;
-        }
     }
 
-    public static List<ElectiveCourse> getExcelContent() throws IOException, SQLException {
+    public static ArrayList<ElectiveCourse> getExcelContent() throws IOException, SQLException {
             Workbook workbook = null;
             File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
             if (f.exists()) {
@@ -113,41 +109,56 @@ public class ElectiveCourseStatements {
                         }
                     }
                 }
-            } else if (!f.exists()){
-                throw new IOException("File does not exist.");
             } else {
-                electiveCourseList.clear();
-                electiveCourseList.add(defaultList);
-                throw new IllegalArgumentException("Could not retrieve data from Database.");
+                throw new IOException("File does not exist.");
             }
         return electiveCourseList;
     }
 
-    public static List<ElectiveCourse> updateFile(MultipartFile file) throws IOException {
-        File files = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
+    public static ArrayList<ElectiveCourse> deleteFile() throws IOException, SQLException {
+        File[] files = GetPropertyValues.getResourcePath("ElectiveCourse", "").listFiles();
+        ArrayList<ElectiveCourse> electiveCourses;
+        electiveCourses = getExcelContent();
+        boolean deleteDone = false;
 
-        assert(files).equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        if (files.length() <= 2) {
-            for (File f : files) {
-                if (f.exists() && !f.toString().contains(".gitkeep")) {
-                    if (f.delete()) {
-                        FileService.uploadFile(file, "ElectiveCourse", fileNameVar);
-                    } else {
-                        throw new IOException("File deletion failed");
-                    }
+        assert files != null;
+        for (File f : files) {
+            if (f.exists() && !f.toString().contains(".gitkeep")) {
+                if (f.delete()) {
+                    deleteDone = true;
+                } else {
+                    throw new IOException("Can't delete file.");
                 }
             }
+        }
+        if (deleteDone) {
+            return electiveCourses;
         } else {
-            throw new IOException("There are more than one files on the server. Try to fix that.");
+            throw new IOException("Can't delete file.");
         }
-        try{
-            electiveCourseList = getExcelContent();
-        }catch (SQLException e){
-            electiveCourseList.clear();
-            electiveCourseList.add(defaultList);
-            throw new IllegalArgumentException(e.getMessage());
+    }
+
+    public static ArrayList<ElectiveCourse> updateFile(MultipartFile file) throws IOException, SQLException {
+        File[] files = GetPropertyValues.getResourcePath("ElectiveCourse", "").listFiles();
+        ArrayList<ElectiveCourse> electiveCourses = new ArrayList<>();
+
+        assert files != null;
+        for (File f : files) {
+            if (f.exists() && !f.toString().contains(".gitkeep")) {
+                if (f.delete()) {
+                    electiveCourses = uploadFile(file);
+                } else {
+                    throw new IOException("File deletion failed");
+                }
+            } else {
+                throw new IOException("There is no file to delete");
+            }
         }
-        return electiveCourseList;
+        if (electiveCourses.isEmpty()){
+            throw new IOException("File is empty");
+        } else {
+            return electiveCourses;
+        }
     }
 
     public static ElectiveCourseDescription createElectiveCourseDescription(ElectiveCourseDescription electiveCourseDescription) throws SQLException {
@@ -161,9 +172,9 @@ public class ElectiveCourseStatements {
         return getElectiveCourseDescription(electiveCourseDescription.getCourseCode());
     }
 
-    public static List<ElectiveCourseDescription> getAllElectiveCourseDescription() throws SQLException {
+    public static ArrayList<ElectiveCourseDescription> getAllElectiveCourseDescription() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
-        List<ElectiveCourseDescription> allElectiveCourseDescriptions = new ArrayList<>();
+        ArrayList<ElectiveCourseDescription> allElectiveCourseDescriptions = new ArrayList<>();
         ResultSet result = conn.createStatement().executeQuery("SELECT * FROM elective_course");
         if (!result.next()) {
             throw new SQLException("No Elective Course description data in database");
