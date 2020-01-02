@@ -18,7 +18,7 @@ import java.util.ArrayList;
 // Controller for xlsx reader
 @Api(value = "Elective Course list")
 @RestController
-@RequestMapping("/api/elective-course")
+@RequestMapping("/api/")
 public class ElectiveCourseController {
 
     /**
@@ -31,7 +31,7 @@ public class ElectiveCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved list", response = ElectiveCourse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping
+    @GetMapping("electivecourse")
     private ResponseEntity getElectiveCourseList() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.getExcelContent());
@@ -50,9 +50,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Add a specific Elective Course with its description, use https://www.freeformatter.com/json-escape.html to escape text")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added an elective course description", response = ElectiveCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping
+    @PostMapping("admin/electivecourse")
     private ResponseEntity createElectiveCourseDescription(
             @ApiParam(value = "Add an Elective Course description.", required = true) @RequestBody ElectiveCourseDescription electiveCourseDescription
     ) {
@@ -74,7 +75,7 @@ public class ElectiveCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectiveCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/{coursecode}")
+    @GetMapping("electivecourse/{coursecode}")
     private ResponseEntity getElectiveCourseDescription(
             @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode
     ) {
@@ -95,7 +96,7 @@ public class ElectiveCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved all existing courses with its description", response = ElectiveCourseDescription.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/description")
+    @GetMapping("electivecourse/description")
     private ResponseEntity getAllElectiveCourseDescription() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.getAllElectiveCourseDescription());
@@ -113,9 +114,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Update a specific Elective Course for its description")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectiveCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping("/{coursecode}")
+    @PutMapping("admin/electivecourse/{coursecode}")
     private ResponseEntity updateElectiveCourseDescription(
             @ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
             @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectiveCourseDescription electiveCourseDescription) {
@@ -154,9 +156,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Delete a specific Elective Course with its description")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted elective course description", response = ElectiveCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @DeleteMapping("/{coursecode}")
+    @DeleteMapping("admin/electivecourse/{coursecode}")
     private ResponseEntity deleteElectiveCourseDescription(
             @ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode
     ) {
@@ -176,9 +179,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Update Elective Course excel file in Elective Course folder by deleting the file first if exist then upload again.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectiveCourse.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping
+    @PutMapping("admin/electivecourse")
     private ResponseEntity updateFile(@RequestParam MultipartFile file) {
         try {
             ArrayList<ElectiveCourse> electiveCourses = ElectiveCourseStatements.updateFile(file);
@@ -196,9 +200,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Upload Excel file in Elective Course folder if file doesn't exist.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully uploaded", response = ElectiveCourse.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping("/upload")
+    @PostMapping("admin/electivecourse/upload")
     private ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             ArrayList<ElectiveCourse> electiveCourses = ElectiveCourseStatements.uploadFile(file);
