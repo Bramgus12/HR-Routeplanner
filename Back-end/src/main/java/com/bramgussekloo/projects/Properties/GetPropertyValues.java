@@ -14,7 +14,7 @@ public class GetPropertyValues {
      * Resource: https://crunchify.com/java-properties-file-how-to-read-config-properties-values-in-java/
      */
     public static String[] getDatabasePropValues(String propFileName) {
-        String[] result = {"", "", ""};
+        String[] result = {"", "", "", "", ""};
         try {
             Properties prop = new Properties();
             inputStream = GetPropertyValues.class.getClassLoader().getResourceAsStream(propFileName);
@@ -26,9 +26,13 @@ public class GetPropertyValues {
             String db_url = prop.getProperty("db_url");
             String db_username = prop.getProperty("db_username");
             String db_password = prop.getProperty("db_password");
+            String db_url_short = prop.getProperty("db_url_short");
+            String db_name = prop.getProperty("db_name");
             result[0] = db_url;
             result[1] = db_username;
             result[2] = db_password;
+            result[3] = db_url_short;
+            result[4] = db_name;
         } catch (Exception e) {
             System.out.println("Exception: " + e);
         } finally {

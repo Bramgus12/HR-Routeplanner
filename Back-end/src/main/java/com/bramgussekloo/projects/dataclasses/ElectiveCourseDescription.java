@@ -2,7 +2,7 @@ package com.bramgussekloo.projects.dataclasses;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class ElectionCourseDescription {
+public class ElectiveCourseDescription {
 
     @ApiModelProperty(notes = "Course code.", required = true)
     private String CourseCode;
@@ -10,16 +10,16 @@ public class ElectionCourseDescription {
     @ApiModelProperty(notes = "Name of the course.", required = true)
     private String Name;
 
-    @ApiModelProperty(notes = "Election Course Description.", required = true)
+    @ApiModelProperty(notes = "Elective Course Description.", required = true)
     private String Description;
 
-    public ElectionCourseDescription(String courseCode, String courseName, String description) {
+    public ElectiveCourseDescription(String courseCode, String courseName, String description) {
         CourseCode = courseCode;
         Name = courseName;
         Description = description;
     }
 
-    public ElectionCourseDescription() {
+    public ElectiveCourseDescription() {
 
     }
 

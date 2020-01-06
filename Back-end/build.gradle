@@ -42,7 +42,6 @@ dependencies {
 	compile("io.swagger:swagger-models:1.5.21")
 
 	compile("org.springframework.boot:spring-boot-starter-web")
-	compile("org.springframework.boot:spring-boot-starter-thymeleaf")
 	testCompile("org.springframework.boot:spring-boot-starter-test")
 
 	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
@@ -57,6 +56,17 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.1.RELEASE'
 
+	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-core
+	compile group: 'org.springframework.security', name: 'spring-security-core', version: '5.2.1.RELEASE'
+
+	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-web
+	compile group: 'org.springframework.security', name: 'spring-security-web', version: '5.2.1.RELEASE'
+
+	// https://mvnrepository.com/artifact/org.springframework.security/spring-security-config
+	compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.2.1.RELEASE'
+
+	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
+	compile group: 'org.springframework', name: 'spring-jdbc', version: '5.2.2.RELEASE'
 
 }
 

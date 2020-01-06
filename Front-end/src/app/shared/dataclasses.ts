@@ -65,7 +65,7 @@ export interface Room extends Node {
   locationName: string;
 }
 
-export interface ElectionCourse {
+export interface ElectiveCourse {
   courseCode: string;
   period: string;
   groupNumber: string;
