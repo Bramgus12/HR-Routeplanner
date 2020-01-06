@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -70,7 +71,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         private AuthenticationEntryPoint authEntryPoint;
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
+            http
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                    .csrf().disable()
                     .antMatcher("/api/admin/**")
                     .authorizeRequests().anyRequest()
                     .hasAnyRole("USER", "ADMIN")
@@ -86,7 +89,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         private AuthenticationEntryPoint authEntryPoint;
 
         protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable().antMatcher("/api/users")
+            http
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                    .csrf().disable().antMatcher("/api/users")
                     .authorizeRequests().anyRequest()
                     .hasRole("ADMIN")
                     .and().httpBasic()
