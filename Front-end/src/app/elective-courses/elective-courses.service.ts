@@ -21,7 +21,7 @@ export class ElectiveCourseService {
           this.electiveCourses = data;
           subscriber.next(this.electiveCourses);
           subscriber.complete();
-        });
+        }, err => subscriber.error(err));
       } else {
         subscriber.next(this.electiveCourses);
         subscriber.complete();

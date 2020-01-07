@@ -1,4 +1,6 @@
 <section>
+  <p class="error-msg" *ngIf="errorMessage.length > 0"><small>{{ errorMessage }}</small></p>
+  
   <table mat-table [dataSource]="electiveCourses" matSort matSortActive="name" matSortDirection="asc">
     <ng-container matColumnDef="courseCode">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>

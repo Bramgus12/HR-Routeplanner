@@ -136,10 +136,19 @@ export class MapsNavigationComponent implements OnInit {
     }
 
     this.googleMapsService.getDirections(this.navigationState.from, this.navigationState.to, this.travelMode, this.fastestRoute, transitOptions).subscribe(data => {
-      const firstLeg =  this.fastestRoute ? this.getFastestRoute(data.routes).legs[0] : data.routes[0].legs[0];
       this.directionsRenderer.setDirections(data);
+
+      let route : google.maps.DirectionsRoute;
+      if(this.fastestRoute){
+        const fastestRoute = this.getFastestRoute(data.routes);
+        this.directionsRenderer.setRouteIndex(fastestRoute.index);
+        route = fastestRoute.route;
+      } else {
+        route = data.routes[0];
+      }
+
+      const firstLeg = route.legs[0];
       this.directions = firstLeg.steps;
-      console.log(this.directions);
 
       if(this.travelMode == google.maps.TravelMode.TRANSIT && firstLeg.hasOwnProperty("departure_time") && firstLeg.hasOwnProperty("arrival_time")) {
         this.timeInfo = "Departure: " + firstLeg.departure_time.text + " - Arrival: " + firstLeg.arrival_time.text;
@@ -152,10 +161,11 @@ export class MapsNavigationComponent implements OnInit {
   }
 
   getFastestRoute(routes: google.maps.DirectionsRoute[]){
-    const fastestTime = routes.reduce((fastestTime, route) => route.legs[0].duration.value < fastestTime ? route.legs[0].duration.value : fastestTime, Number.MAX_SAFE_INTEGER),
-      index = routes.findIndex(val => val.legs[0].duration.value == fastestTime);
+    const fastestTime = routes.reduce((fastestTime, route) => route.legs[0].duration.value < fastestTime ? route.legs[0].duration.value : fastestTime, Number.MAX_SAFE_INTEGER);
+    let index = routes.findIndex(val => val.legs[0].duration.value == fastestTime);
+    index = index > -1 ? index : 0;
 
-    return routes[index > -1 ? index : 0];
+    return { route: routes[index], index };
   }
 
   /**

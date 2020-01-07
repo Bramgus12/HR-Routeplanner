@@ -69,7 +69,7 @@
         <ul class="steps">
           <li *ngFor="let step of direction.steps">
             <div *ngIf="step.maneuver.length > 0" class="icon"><img src="/assets/maneuvers-2x.png" [style.top]="getIconPosition(step)" /></div>
-            <div class="instructions" [innerHTML]="step.instructions | safeHTML"></div>
+            <div *ngIf="step.instructions" class="instructions" [innerHTML]="step.instructions | safeHTML"></div>
           </li>
         </ul>
       </li>
