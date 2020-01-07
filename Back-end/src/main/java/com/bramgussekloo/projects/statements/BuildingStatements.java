@@ -84,7 +84,7 @@ public class BuildingStatements {
         if (!resultSet.next()) {
             throw new SQLException("Building with id " + id + " doesn't exist");
         } else {
-            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM building WHERE id=" + id);
+            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM building WHERE id=?;");
             preparedStatement1.setInt(1, id);
             preparedStatement1.execute();
             return getResult(id, resultSet);
@@ -99,6 +99,7 @@ public class BuildingStatements {
         PreparedStatement preparedStatement = conn.prepareStatement("UPDATE building SET address_id=?, name=? WHERE id=?;");
         preparedStatement.setInt(1, address_id);
         preparedStatement.setString(2, name);
+        preparedStatement.setInt(3, id);
         preparedStatement.execute();
         PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM building WHERE id=?;");
         preparedStatement1.setInt(1, id);

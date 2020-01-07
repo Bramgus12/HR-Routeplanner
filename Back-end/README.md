@@ -1,8 +1,14 @@
 # API Documentation
 
+## Swagger-UI
+
 **Swagger-ui on link `[host]:[port]/swagger-ui.html` when server is running. This contains a more detailed and interactive API-Documentation**
 
 **When running on your own pc in the IDE, that would be `localhost:8080/swagger-ui.html`**
+
+## Authentication
+
+**This api uses BASIC API AUTHENTICATION for all the POST, PUT and DELETE endpoints. There are two roles a user can have: `"ADMIN"` and `"USER"`. Only admins can create and change users. Passwords will be encrypted and cannot be read by anyone after encryption.**
 
 ## Navigation:
 1. [Address](#address)
@@ -10,42 +16,47 @@
     2. [Get a certain address](#get-apiaddressid)
     3. [Get an address by buildingname](#get-apiaddressbuilding)
     4. [Get an address by roomcode](#get-apiaddressroom)
-    5. [Post](#post-apiaddress)
-    6. [Delete](#delete-apiaddressid)
-    7. [Update](#put-apiaddressid)
+    5. [Post](#post-apiadminaddress)
+    6. [Delete](#delete-apiadminaddressid)
+    7. [Update](#put-apiadminaddressid)
 2. [Building](#building)
     1. [Get all buildings](#get-apibuilding)
     2. [Get a certain building](#get-apibuildingid)
 3. [Institute](#institute)
     1. [Get all institutes](#get-apiinstitute)
     2. [Get a certain institute](#get-apiinstituteid)
-    3. [Post](#post-apiinstitute)
-    4. [Delete](#delete-apiinstituteid)
-    5. [Update](#put-apiinstituteid)
+    3. [Post](#post-apiadmininstitute)
+    4. [Delete](#delete-apiadmininstituteid)
+    5. [Update](#put-apiadmininstituteid)
 4. [BuildingInstitute](#buildinginstitute)
     1. [Get all buildingInstitutes](#get-apibuildinginstitute)
     2. [Get a certain buildingInstitute](#get-apibuildinginstituteid)
-    3. [Post](#post-apibuildinginstitute)
-    4. [Put](#put-apibuildinginstituteid)
-    5. [Delete](#delete-apibuildinginstituteid)
+    3. [Post](#post-apiadminbuildinginstitute)
+    4. [Put](#put-apiadminbuildinginstituteid)
+    5. [Delete](#delete-apiadminbuildinginstituteid)
 5. [LocationNodeNetwork](#locationnodenetwork)
     1. [Get a certain locationnodenetwork](#get-apilocationnodenetworklocationname)
-    2. [Post](#post-apilocationnodenetworkaddressid)
-    3. [Delete](#delete-apilocationnodenetworklocationname)
-    4. [Put](#put-apilocationnodenetworklocationname)
+    2. [Post](#post-apiadminlocationnodenetworkaddressid)
+    3. [Delete](#delete-apiadminlocationnodenetworklocationname)
+    4. [Put](#put-apiadminlocationnodenetwork)
     5. [Get all nodes by type](#get-apilocationnodenetwork)
     6. [Get all nodes that are a room](#get-apilocationnodenetworkroom)
 6. [Route-engine](#route-engine)
     1. [Get the route between two nodes.](#get-apiroutes)
-7. [ElectiveCourse](#elective-course)
+7. [electiveCourse](#elective-course)
     1. [Get a list of all elective courses](#get-apielective-course)
-    2. [Get a description of a specific elective course](#get-apielective-coursecoursecode)
-    3. [Get all descriptions of elective courses](#get-apielective-coursedescription)
-    4. [Upload elective course file](#post-apielective-courseupload)
-    5. [Create a description for an elective course](#post-apielective-course)
-    6. [Update the elective course excel file](#put-apielective-course)
-    7. [update the description of an elective course](#put-apielective-coursecoursecode)
-    8. [Delete the description of an elective course](#delete-apielective-coursecoursecode)
+    2. [Get a description of a specific elective course](#get-apielectivecoursecoursecode)
+    3. [Get all descriptions of elective courses](#get-apielectivecoursedescription)
+    4. [Upload elective course file](#post-apiadminelectivecourseupload)
+    5. [Create a description for an elective course](#post-apiadminelectivecourse)
+    6. [Update the elective course excel file](#put-apiadminelectivecourse)
+    7. [update the description of an elective course](#put-apiadminelectivecoursecoursecode)
+    8. [Delete the description of an elective course](#delete-apiadminelectivecoursecoursecode)
+8. [Users](#users)
+    1. [Get all users](#get-apiusers)
+    2. [Create a user](#post-apiusers)
+    3. [Update a user](#put-apiusersid)
+    4. [Delete a user](#delete-apiusersid)
 
 
 ****
@@ -85,6 +96,11 @@ Get a list of all addresses.
 
 ### GET `/api/address/{id}`
 Get a certain address.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 ```json
@@ -155,7 +171,7 @@ code=[string]
 
 ****
 
-### POST `/api/address`
+### POST `/api/admin/address`
 Create a new address.
  
 **Requested body:**
@@ -183,14 +199,20 @@ Create a new address.
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### DELETE `/api/address/{id}`
+### DELETE `/api/admin/address/{id}`
 Delete an address by id.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 
 **Response:**
 
@@ -205,14 +227,19 @@ Delete an address by id.
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### PUT `/api/address/{id}`
+### PUT `/api/admin/address/{id}`
 Update a certain address.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Requested body:**
 
@@ -242,7 +269,7 @@ Update a certain address.
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -277,6 +304,11 @@ Gives you a list of all buildings.
     
 ### GET `/api/building/{id}`
 Get a specific building.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 ``` json
@@ -322,6 +354,11 @@ Gives you a list of all Institutes.
 ### GET `/api/institute/{id}`
 Get a specific institute by ID.
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 **Response:**
 ``` json
 {
@@ -336,8 +373,10 @@ Get a specific institute by ID.
 
 ****
 
-### POST `/api/institute`
+### POST `/api/admin/institute`
 Add/Create a new Institute.
+
+
 
 **Requested body:**
 ``` json
@@ -354,14 +393,19 @@ Add/Create a new Institute.
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### DELETE `/api/institute/{id}`
+### DELETE `/api/admin/institute/{id}`
 Delete an Institute by id.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 
@@ -372,14 +416,19 @@ Delete an Institute by id.
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### PUT `/api/institute/{id}`
+### PUT `/api/admin/institute/{id}`
 Update an institute.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Requested body:**
 
@@ -399,7 +448,7 @@ Update an institute.
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -435,6 +484,11 @@ Get a list of all buildingInstitutes
 ### GET `/api/buildinginstitute/{id}`
 Get a certain buildinginstitute by id
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 **Response:**
 ```json
 {
@@ -449,9 +503,10 @@ Get a certain buildinginstitute by id
 
 ****
 
-### POST `/api/buildinginstitute`
+### POST `/api/admin/buildinginstitute`
 Create a new buildingInstitute
 
+
 **Requested body:**
 ```json
 {
@@ -469,15 +524,20 @@ Create a new buildingInstitute
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### PUT `/api/buildinginstitute/{id}`
+### PUT `/api/admin/buildinginstitute/{id}`
 Update a certain buldinginstitute by id
 
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
 **Requested body:**
 ```json
 {
@@ -495,14 +555,19 @@ Update a certain buldinginstitute by id
     "instituteId": 0
 }
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 ****
 
-### DELETE `/api/buildinginstitute/{id}`
+### DELETE `/api/admin/buildinginstitute/{id}`
 Delete a certain buildingInstitute by id
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
 
 **Response:**
 ```json
@@ -513,7 +578,7 @@ Delete a certain buildingInstitute by id
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -528,6 +593,11 @@ Delete a certain buildingInstitute by id
 
 ### GET `/api/locationnodenetwork/{locationName}`
 Get a certain locationNodeNetwork object by locationName.
+
+**Requested pathvariable:**
+```properties
+locationname=[string]
+```
 
 **Response:**
 ``` json
@@ -574,10 +644,15 @@ Get a certain locationNodeNetwork object by locationName.
 
 ****
     
-### POST `/api/locationnodenetwork/{Addressid}`
+### POST `/api/admin/locationnodenetwork/{Addressid}`
 Post a node into the server. You can only do this when it does not exist already on the server otherwhise you will get an error. You also have to specify an address that corresponds with the locationNodeNetwork that you are about to add. It will then automatically add a new building to the database with in it the locatonName of the locationNodeNetwork and the address_id of the address that you specified.
 
 Put the address_id of the address that corresponds with the locationNodeNetwork in the URL.
+
+**Requested pathvariable:**
+```properties
+addressid=[string]
+```
 
 **Upload file with the following layout:**
 
@@ -659,15 +734,20 @@ Put the address_id of the address that corresponds with the locationNodeNetwork 
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### DELETE `/api/locationnodenetwork/{locationname}`
+### DELETE `/api/admin/locationnodenetwork/{locationname}`
 Deletes the locationNodeNetwork indicated by the locationName in the URL. This also deletes the buildingobject in the database.
+
+**Requested pathvariable:**
+```properties
+locationname=[string]
+```
 
 **Response:**
 
@@ -709,14 +789,14 @@ Deletes the locationNodeNetwork indicated by the locationName in the URL. This a
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
     
-### PUT `/api/locationnodenetwork`
+### PUT `/api/admin/locationnodenetwork`
 Update a certain locationNodeNetwork. It deletes the old one and replaces it with this one. This also updates the buildingobject in the database.
 
 **Requested parameters:**
@@ -805,7 +885,7 @@ locationName=[string]
 }
 ```
     
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
@@ -869,6 +949,20 @@ Get all nodes that are a room
                 "z": 0.0
             }
         ]
+    },
+    {
+        "locationName": "string",
+        "nodes": [
+            {
+                "code": "string",
+                "label": "string",
+                "number": 0,
+                "type": "string",
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        ]
     }
 ]
 ```
@@ -887,10 +981,10 @@ Get all nodes that are a room
 Get the route between two nodes.
 
 **Requested parameters:**
-```
-from": [integer]
-to": [integer]
-locationName": [string]
+```properties
+from=[integer]
+to=[integer]
+locationName=[string]
 ```
 
 **Response:**
@@ -929,7 +1023,7 @@ locationName": [string]
 
 ****
 
-### GET `/api/elective-course`
+### GET `/api/electivecourse`
 Get a list of all elective courses.
 
 **Response:**
@@ -967,8 +1061,13 @@ Get a list of all elective courses.
 
 ****
 
-### GET `/api/elective-course/{coursecode}`
+### GET `/api/electivecourse/{coursecode}`
 Get a description of the elective course by coursecode
+
+**Requested pathvariable:**
+```properties
+coursecode=[string]
+```
 
 **Response:**
 ```json
@@ -984,7 +1083,7 @@ Get a description of the elective course by coursecode
 
 ****
 
-### GET `/api/elective-course/description`
+### GET `/api/electivecourse/description`
 Get all descriptions of the elective courses in a list
 
 **Response:**
@@ -1009,9 +1108,10 @@ Get all descriptions of the elective courses in a list
 
 
 ****
-### POST `/api/elective-course/upload`
+### POST `/api/admin/electivecourse/upload`
 Upload an EXCEL file with the elective courses of the Rotterdam University of Applied Sciences. This file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
 
+
 **Response:**
 ``` json
 [
@@ -1041,15 +1141,16 @@ Upload an EXCEL file with the elective courses of the Rotterdam University of Ap
     }
 ]
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### POST `/api/elective-course`
-Add a specific Elective Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
+### POST `/api/admin/electivecourse`
+Add a specific elective Course with its description, use https://www.freeformatter.com/json-escape.html to escape text
+
 
 **Requested body:**
 ``` json
@@ -1069,15 +1170,16 @@ Add a specific Elective Course with its description, use https://www.freeformatt
 }
 ```
 
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### PUT `/api/elective-course`
-Update Elective Course excel file in Elective Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+### PUT `/api/admin/electivecourse`
+Update elective Course excel file in elective Course folder by deleting the file first if exist then upload again. The file can be found on https://hint.hr.nl/nl/HR/Studie/keuzes-in-je-studie/Keuzecursussen/
+
 
 **Response:**
 ``` json
@@ -1108,16 +1210,21 @@ Update Elective Course excel file in Elective Course folder by deleting the file
     }
 ]
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
 
-### PUT `/api/elective-course/{coursecode}`
+### PUT `/api/admin/electivecourse/{coursecode}`
 Update a specific description of an elective-course
 
+**Requested pathvariable:**
+```properties
+coursecode=[string]
+```
+
 **Requested body:**
 ```json
 {
@@ -1135,14 +1242,19 @@ Update a specific description of an elective-course
     "name": "string"
 }
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
 
 ****
-### DELETE `/api/elective-course/{coursecode}`
-Delete a specific Elective Course with its description
+### DELETE `/api/admin/electivecourse/{coursecode}`
+Delete a specific elective Course with its description
+
+**Requested pathvariable:**
+```properties
+coursecode=[string]
+```
 
 **Response:**
 ```json
@@ -1152,7 +1264,140 @@ Delete a specific Elective Course with its description
     "name": "string"
 }
 ```
-**HTTP-statuses:** 400, 200
+**HTTP-statuses:** 400, 401, 200
 
 [Back to navigation](#navigation)
 
+***
+
+## Users 
+
+***
+
+* ID will be auto-assigned by the database.
+* The password will be encrypted after posting it. No way to get the password back after encrypring.
+* Authority should be either `"ROLE_USER"` or `"ROLE_ADMIN"`.
+* Enabled has to be true. Otherwise he may have the role but still can't do anything other in the API than GET requests.
+* Only people with role `"ADMIN"` are able to use these functions.
+
+***
+
+### GET `/api/users`
+
+Get a list of all users
+
+**Response:**
+
+``` json
+[
+    {
+        "id": 0,
+        "user_name": "string",
+        "password": "string",
+        "authority": "string",
+        "enabled": true
+    },
+    {
+        "id": 0,
+        "user_name": "string",
+        "password": "string",
+        "authority": "string",
+        "enabled": true
+    }
+]
+```
+
+**HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)
+
+***
+
+### POST `/api/users`
+
+Create a new user
+
+**Requested body:**
+```json
+{
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+
+**Response:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+**HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)
+
+***
+
+### PUT `/api/users/{id}`
+
+Update a certain user with new credentials.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
+**Requested body:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+
+**Response:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+**HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)
+
+***
+
+### DELETE `/api/users/{id}`
+
+Delete a certain user.
+
+**Requested pathvariable:**
+```properties
+id=[integer]
+```
+
+**Response:**
+```json
+{
+    "id": 0,
+    "user_name": "string",
+    "password": "string",
+    "authority": "string",
+    "enabled": true
+}
+```
+**HTTP-statuses:** 400, 401, 200
+
+[Back to navigation](#navigation)

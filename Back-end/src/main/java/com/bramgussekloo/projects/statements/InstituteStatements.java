@@ -53,7 +53,7 @@ public class InstituteStatements {
         PreparedStatement preparedStatement2 = conn.prepareStatement("SELECT * FROM institute WHERE name=?;");
         preparedStatement2.setString(1, institute.getName());
         ResultSet result = preparedStatement2.executeQuery();
-        if (result.next()){
+        if (result.next()) {
             throw new SQLException("The institute you want to create, already exists");
         } else {
             PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO institute VALUES (DEFAULT , ?);");

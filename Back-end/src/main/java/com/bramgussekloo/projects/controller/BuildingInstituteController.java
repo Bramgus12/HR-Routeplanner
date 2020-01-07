@@ -15,7 +15,7 @@ import java.sql.SQLException;
 // Makes it a REST-controller
 @Api(value = "Building institute controller")
 @RestController
-@RequestMapping("/api/buildinginstitute")
+@RequestMapping("/api/")
 public class BuildingInstituteController {
 
     // Get all the buildingInstitute objects in a list
@@ -24,7 +24,7 @@ public class BuildingInstituteController {
             @ApiResponse(code = 200, message = "Successfully retrieved list", response = BuildingInstitute.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping
+    @GetMapping("buildinginstitute")
     private ResponseEntity getAllBuildingInstitutes() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getAllBuildingInstitutes());
@@ -39,7 +39,7 @@ public class BuildingInstituteController {
             @ApiResponse(code = 200, message = "Successfully retrieved buildingInstitute", response = BuildingInstitute.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/{id}")
+    @GetMapping("buildinginstitute/{id}")
     private ResponseEntity getBuildingInstitute(
             @ApiParam(value = "Id of the buildingInstitute you want to get", required = true) @PathVariable Integer id
     ) {
@@ -54,9 +54,10 @@ public class BuildingInstituteController {
     @ApiOperation(value = "Create a new buildingInstitute")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created new buildingInstitute", response = BuildingInstitute.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping
+    @PostMapping("admin/buildinginstitute")
     private ResponseEntity createBuildingInstitute(
             @ApiParam(value = "buildingInstitute that you want to add", required = true) @RequestBody BuildingInstitute buildingInstitute
     ) {
@@ -71,9 +72,10 @@ public class BuildingInstituteController {
     @ApiOperation(value = "Delete a certain buildingInstitute by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted the buildingInstitute", response = BuildingInstitute.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("admin/buildinginstitute/{id}")
     private ResponseEntity DeleteBuildingInstitute(
             @ApiParam(value = "Id of the buildingInstitute that you want to delete", required = true) @PathVariable Integer id
     ) {
@@ -88,21 +90,22 @@ public class BuildingInstituteController {
     @ApiOperation(value = "Update a certain buildingInstitute by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated the buildingInstitute", response = BuildingInstitute.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping("/{id}")
+    @PutMapping("admin/buildinginstitute/{id}")
     private ResponseEntity updateBuildingInstitute(
             @ApiParam(value = "Id if the buildingInstitute that you want to update", required = true) @PathVariable Integer id,
             @ApiParam(value = "BuildingInstitute that you want to update", required = true) @RequestBody BuildingInstitute buildingInstitute
     ) {
-        if (id.equals(buildingInstitute.getId())) {
-            try {
+        try {
+            if (id.equals(buildingInstitute.getId())) {
                 return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.updateBuildingInstitute(buildingInstitute));
-            } catch (SQLException e) {
-                throw new IllegalArgumentException(e.getMessage());
+            } else {
+                throw new IllegalArgumentException("Id's are different");
             }
-        } else {
-            throw new IllegalArgumentException("Id's are different");
+        } catch (SQLException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 

@@ -13,11 +13,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 // Controller for xlsx reader
 @Api(value = "Elective Course list")
 @RestController
-@RequestMapping("/api/elective-course")
+@RequestMapping("/api/")
 public class ElectiveCourseController {
 
     /**
@@ -30,7 +31,7 @@ public class ElectiveCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved list", response = ElectiveCourse.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping
+    @GetMapping("elective-course")
     private ResponseEntity getElectiveCourseList() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.getExcelContent());
@@ -49,9 +50,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Add a specific Elective Course with its description, use https://www.freeformatter.com/json-escape.html to escape text")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully added an elective course description", response = ElectiveCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping
+    @PostMapping("admin/elective-course")
     private ResponseEntity createElectiveCourseDescription(
             @ApiParam(value = "Add an Elective Course description.", required = true) @RequestBody ElectiveCourseDescription electiveCourseDescription
     ) {
@@ -73,7 +75,7 @@ public class ElectiveCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved course description", response = ElectiveCourseDescription.class),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/{coursecode}")
+    @GetMapping("elective-course/{coursecode}")
     private ResponseEntity getElectiveCourseDescription(
             @ApiParam(value = "Course Code that you want to lookup.", required = true) @PathVariable String coursecode
     ) {
@@ -94,7 +96,7 @@ public class ElectiveCourseController {
             @ApiResponse(code = 200, message = "Successfully retrieved all existing courses with its description", response = ElectiveCourseDescription.class, responseContainer = "List"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    @GetMapping("/description")
+    @GetMapping("elective-course/description")
     private ResponseEntity getAllElectiveCourseDescription() {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.getAllElectiveCourseDescription());
@@ -112,9 +114,10 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Update a specific Elective Course for its description")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully updated course description", response = ElectiveCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping("/{coursecode}")
+    @PutMapping("admin/elective-course/{coursecode}")
     private ResponseEntity updateElectiveCourseDescription(
             @ApiParam(value = "Course Code that you want to update.", required = true) @PathVariable String coursecode,
             @ApiParam(value = "The Object that you want to update", required = true) @RequestBody ElectiveCourseDescription electiveCourseDescription) {
@@ -137,7 +140,7 @@ public class ElectiveCourseController {
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.updateElectiveCourseDescription(newData));
             } else {
-                throw new IllegalArgumentException("Elective Course Code doesn't exist!");
+                throw new IllegalArgumentException("The Elective Coursecode that you've provided doesn't match.");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
@@ -153,15 +156,31 @@ public class ElectiveCourseController {
     @ApiOperation(value = "Delete a specific Elective Course with its description")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted elective course description", response = ElectiveCourseDescription.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @DeleteMapping("/{coursecode}")
+    @DeleteMapping("admin/elective-course/{coursecode}")
     private ResponseEntity deleteElectiveCourseDescription(
             @ApiParam(value = "Course Code that you want to delete.", required = true) @PathVariable String coursecode
     ) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.deleteElectiveCourseDescription(coursecode));
         } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "Delete the elective-course file.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully deleted elective course description", response = ElectiveCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
+    })
+    @DeleteMapping("admin/elective-course")
+    private ResponseEntity deleteFile(){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(ElectiveCourseStatements.deleteFile());
+        } catch (IOException | SQLException e){
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -174,15 +193,16 @@ public class ElectiveCourseController {
      */
     @ApiOperation(value = "Update Elective Course excel file in Elective Course folder by deleting the file first if exist then upload again.")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectiveCourse.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully file replaced", response = ElectiveCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PutMapping
+    @PutMapping("admin/elective-course")
     private ResponseEntity updateFile(@RequestParam MultipartFile file) {
         try {
-            ElectiveCourseStatements.updateFile(file);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (IOException e) {
+            ArrayList<ElectiveCourse> electiveCourses = ElectiveCourseStatements.updateFile(file);
+            return ResponseEntity.status(HttpStatus.OK).body(electiveCourses);
+        } catch (IOException | SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
@@ -194,15 +214,16 @@ public class ElectiveCourseController {
      */
     @ApiOperation(value = "Upload Excel file in Elective Course folder if file doesn't exist.")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully uploaded"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully uploaded", response = ElectiveCourse.class, responseContainer = "List"),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Bad credentials")
     })
-    @PostMapping("/upload")
+    @PostMapping("admin/elective-course/upload")
     private ResponseEntity uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            ElectiveCourseStatements.uploadFile(file);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IOException e) {
+            ArrayList<ElectiveCourse> electiveCourses = ElectiveCourseStatements.uploadFile(file);
+            return ResponseEntity.status(HttpStatus.OK).body(electiveCourses);
+        } catch (IOException | SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

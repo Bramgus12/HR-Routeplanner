@@ -253,8 +253,47 @@ public class HttpsRedirectConf {
     npm run ng build
     ```
     5. Copy the files of the just built front-end from `~/ProjectC/Front-end/dist/[folder name of the built front end]` to `~/ProjectC/Back-end/src/main/resources/static`
-10. Build the back-end to a jar by running `./gradlew build jar`.
-11. If you want to run the jar on 443 then you have to do some adjustments to the ubuntu server. You have to run some commands in the terminal. This makes sure that you can run on port 443 and 80 when you are non-root:
+10. Make sure you have a database running with the following tables:
+``` postgresql
+CREATE TABLE address (
+	id SERIAL PRIMARY KEY,
+	street VARCHAR,
+	number INTEGER,
+	city VARCHAR,
+	postal VARCHAR
+);
+
+CREATE TABLE building (
+	id SERIAL PRIMARY KEY,
+	address_id INTEGER REFERENCES address(id),
+	name varchar
+);
+
+CREATE TABLE institute (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR
+);
+
+CREATE TABLE building_institute (
+	id SERIAL PRIMARY KEY,
+	building_id INTEGER REFERENCES building(id),
+	institute_id INTEGER REFERENCES institute(id)
+);
+
+CREATE TABLE elective_course (
+    electivecoursecode VARCHAR(15) PRIMARY KEY UNIQUE NOT NULL,
+    electivecoursename varchar(255),
+    description TEXT
+);
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    user_name VARCHAR,
+    auth_key VARCHAR(40)
+);
+```
+11. Build the back-end to a jar by running `./gradlew build jar`.
+12. If you want to run the jar on 443 then you have to do some adjustments to the ubuntu server. You have to run some commands in the terminal. This makes sure that you can run on port 443 and 80 when you are non-root:
 ``` bash
 sudo apt install authbind
 sudo touch /etc/authbind/byport/80
@@ -262,7 +301,7 @@ sudo touch /etc/authbind/byport443
 sudo chmod 777 /etc/authbind/byport/80
 sudo chmod 777 /etc/authbind/byport/443
 ```
-12. Now we want to have the jar running as a service. So make a file in `/etc/systemd/system` that is called `[service name].service` and put the following in it:
+13. Now we want to have the jar running as a service. So make a file in `/etc/systemd/system` that is called `[service name].service` and put the following in it:
 ``` properties
 [Unit]
 Description=[Description of the application]
@@ -277,11 +316,11 @@ RestartSec=5
 [Install]
 WantedBy=multi-user.target
 ```
-13. Run the service by first reloading the systemctl daemon and then starting the service:
+14. Run the service by first reloading the systemctl daemon and then starting the service:
 ``` bash
 sudo systemctl daemon-reload
 sudo systemctl start [service name].service
 sudo systemctl enable [service name].service
 ```
 
-14. You're good to go.
+15. You're good to go.
