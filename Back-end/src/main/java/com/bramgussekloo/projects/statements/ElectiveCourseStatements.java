@@ -31,9 +31,9 @@ import java.util.List;
  */
 public class ElectiveCourseStatements {
     private static String fileNameVar = "kv-lijst.xlsx";
-    private static ArrayList<ElectiveCourse> electiveCourseList = new ArrayList<>();
 
     public static ArrayList<ElectiveCourse> uploadFile(MultipartFile file) throws IOException, SQLException {
+        ArrayList<ElectiveCourse> electiveCourseList;
         File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
         FileNameMap fileNameMap = URLConnection.getFileNameMap();
         System.out.println(fileNameMap);
@@ -56,7 +56,8 @@ public class ElectiveCourseStatements {
     }
 
     public static ArrayList<ElectiveCourse> getExcelContent() throws IOException, SQLException {
-            Workbook workbook = null;
+            Workbook workbook;
+            ArrayList<ElectiveCourse> electiveCourseList = new ArrayList<>();
             File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
             if (f.exists()) {
 
