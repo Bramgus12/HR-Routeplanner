@@ -100,7 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Configuration
     @Order(3)
-    public static class UserStatementsSecurity extends WebSecurityConfigurerAdapter {
+    public static class UserStatementsSecurit extends WebSecurityConfigurerAdapter {
         @Autowired
         private AuthenticationEntryPoint authEntryPoint;
 
