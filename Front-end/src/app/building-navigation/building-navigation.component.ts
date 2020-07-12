@@ -13,8 +13,8 @@ import { Observable, forkJoin } from 'rxjs';
   styleUrls: ['./building-navigation.component.scss']
 })
 export class BuildingNavigationComponent implements OnInit {
-  @ViewChild(BuildingViewerComponent) buildingViewer: BuildingViewerComponent;
-  @ViewChild(MatSlider) travelledDistanceSlider: MatSlider;
+  @ViewChild(BuildingViewerComponent, { static: true }) buildingViewer: BuildingViewerComponent;
+  @ViewChild(MatSlider, { static: true }) travelledDistanceSlider: MatSlider;
   
   private navigationStateData: BuildingStep;
   public navigationState: NavigationState;
