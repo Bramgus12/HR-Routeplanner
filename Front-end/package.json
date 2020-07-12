@@ -45,7 +45,6 @@
     "@types/node": "^10.9.4",
     "@types/offscreencanvas": "^2019.6.0",
     "@types/stats.js": "^0.17.0",
-    "codelyzer": "~4.5.0",
     "jasmine-core": "^3.1.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.0.0",
