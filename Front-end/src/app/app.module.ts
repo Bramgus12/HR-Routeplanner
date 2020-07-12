@@ -54,10 +54,6 @@ import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-
     NextStateDialog,
     ArrivalStateDialog
   ],
-  entryComponents: [
-    NextStateDialog,
-    ArrivalStateDialog
-  ],
   providers: [],
   bootstrap: [AppComponent]
 })
