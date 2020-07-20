@@ -12,7 +12,7 @@ export class GoogleMapsService {
   private directions: google.maps.DirectionsService;
   private componentRestrictions = { country: 'nl' }
 
-  constructor(private mapsAPI: MapsAPILoader) {
+  /* constructor(private mapsAPI: MapsAPILoader) {
     mapsAPI.load().then(() => {
       this.geocoder = new google.maps.Geocoder();
       this.autocomplete = new google.maps.places.AutocompleteService();
@@ -20,7 +20,7 @@ export class GoogleMapsService {
 
       console.log("Loaded MapsAPI")
     })
-  }
+  } */
 
   /**
    * Returns a list of locations
