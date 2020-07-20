@@ -26,7 +26,7 @@ public class RouteEngine {
     public void init(LocationNodeNetwork network) {
         FlagEncoder encoder = new FootFlagEncoder();
         EncodingManager em = EncodingManager.create(encoder);
-        GraphBuilder gb = new GraphBuilder(em).setLocation("graphhopper_folder").setStore(false);
+        GraphBuilder gb = new GraphBuilder(em);
         Graph graph = gb.create();
 
         this.nodeMap = new HashMap<>();

@@ -52,8 +52,7 @@ public class AddressController {
     @ApiOperation(value = "Create a new address")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created a new address in the database", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("admin/address")
     private ResponseEntity createAddress(

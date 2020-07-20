@@ -19,11 +19,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
-@EnableSwagger2
 public class SwaggerConfig extends WebMvcConfigurationSupport {
     @Bean
     public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.OAS_30)
                 .select()
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .paths(PathSelectors.any())
@@ -34,8 +33,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     private SecurityContext securityContext() {
         return SecurityContext.builder()
-                .securityReferences(Arrays.asList(basicAuthReference()))
-                .forPaths(PathSelectors.ant("/api/**"))
+                .securityReferences(Collections.singletonList(basicAuthReference()))
                 .build();
     }
 

@@ -43,12 +43,12 @@ public class LocationNodeNetworkController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PostMapping("admin/locationnodenetwork/{addressId}")
-    private ResponseEntity createLocationNodeNetwork(
-            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
+    private ResponseEntity<LocationNodeNetwork> createLocationNodeNetwork(
+            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestPart MultipartFile file,
             @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
+            return new ResponseEntity<LocationNodeNetwork>(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId), HttpStatus.OK);
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
