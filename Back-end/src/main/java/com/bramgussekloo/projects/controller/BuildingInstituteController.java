@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 // Makes it a REST-controller
 @Api(value = "Building institute controller")
@@ -25,9 +26,9 @@ public class BuildingInstituteController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("buildinginstitute")
-    private ResponseEntity getAllBuildingInstitutes() {
+    private ResponseEntity<ArrayList<BuildingInstitute>> getAllBuildingInstitutes() {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getAllBuildingInstitutes());
+            return new ResponseEntity<>(BuildingInstituteStatements.getAllBuildingInstitutes(), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -40,11 +41,11 @@ public class BuildingInstituteController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("buildinginstitute/{id}")
-    private ResponseEntity getBuildingInstitute(
+    private ResponseEntity<BuildingInstitute> getBuildingInstitute(
             @ApiParam(value = "Id of the buildingInstitute you want to get", required = true) @PathVariable Integer id
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.getBuildingInstitute(id));
+            return new ResponseEntity<>(BuildingInstituteStatements.getBuildingInstitute(id), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -58,11 +59,11 @@ public class BuildingInstituteController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PostMapping("admin/buildinginstitute")
-    private ResponseEntity createBuildingInstitute(
+    private ResponseEntity<BuildingInstitute> createBuildingInstitute(
             @ApiParam(value = "buildingInstitute that you want to add", required = true) @RequestBody BuildingInstitute buildingInstitute
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.createBuildingInstitute(buildingInstitute));
+            return new ResponseEntity<>(BuildingInstituteStatements.createBuildingInstitute(buildingInstitute), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -76,11 +77,11 @@ public class BuildingInstituteController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @DeleteMapping("admin/buildinginstitute/{id}")
-    private ResponseEntity DeleteBuildingInstitute(
+    private ResponseEntity<BuildingInstitute> DeleteBuildingInstitute(
             @ApiParam(value = "Id of the buildingInstitute that you want to delete", required = true) @PathVariable Integer id
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.deleteBuildingInstitute(id));
+            return new ResponseEntity<>(BuildingInstituteStatements.deleteBuildingInstitute(id), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -94,13 +95,13 @@ public class BuildingInstituteController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PutMapping("admin/buildinginstitute/{id}")
-    private ResponseEntity updateBuildingInstitute(
+    private ResponseEntity<BuildingInstitute> updateBuildingInstitute(
             @ApiParam(value = "Id if the buildingInstitute that you want to update", required = true) @PathVariable Integer id,
             @ApiParam(value = "BuildingInstitute that you want to update", required = true) @RequestBody BuildingInstitute buildingInstitute
     ) {
         try {
             if (id.equals(buildingInstitute.getId())) {
-                return ResponseEntity.status(HttpStatus.OK).body(BuildingInstituteStatements.updateBuildingInstitute(buildingInstitute));
+                return new ResponseEntity<>(BuildingInstituteStatements.updateBuildingInstitute(buildingInstitute), HttpStatus.OK);
             } else {
                 throw new IllegalArgumentException("Id's are different");
             }

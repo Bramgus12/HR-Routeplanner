@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @Api(value = "Institute controller")
 @RestController
@@ -28,9 +29,9 @@ public class InstituteController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("institute")
-    private ResponseEntity getInstituteList() {
+    private ResponseEntity<ArrayList<Institute>> getInstituteList() {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.getAllInstitutes());
+            return new ResponseEntity<>(InstituteStatements.getAllInstitutes(), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -48,11 +49,11 @@ public class InstituteController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("institute/{id}")
-    private ResponseEntity getInstituteById(
+    private ResponseEntity<Institute> getInstituteById(
             @ApiParam(value = "Id of the institute", required = true) @PathVariable Integer id
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.getInstituteName(id));
+            return new ResponseEntity<>(InstituteStatements.getInstituteName(id), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -71,12 +72,12 @@ public class InstituteController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PostMapping("admin/institute")
-    private ResponseEntity createInstitute(
+    private ResponseEntity<Institute> createInstitute(
             @ApiParam(value = "Institute that you want to create, leave id = null", required = true) @RequestBody Institute institute
     ) {
         try {
             Institute result = InstituteStatements.createInstitute(institute);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -95,11 +96,11 @@ public class InstituteController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @DeleteMapping("admin/institute/{id}")
-    private ResponseEntity deleteInstitute(
+    private ResponseEntity<Institute> deleteInstitute(
             @ApiParam(value = "Id of the institute that you want to delete", required = true) @PathVariable Integer id
     ) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.deleteInstitute(id));
+            return new ResponseEntity<>(InstituteStatements.deleteInstitute(id), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -119,13 +120,13 @@ public class InstituteController {
             @ApiResponse(code = 401, message = "Bad credentials")
     })
     @PutMapping("admin/institute/{id}")
-    private ResponseEntity updateInstitute(
+    private ResponseEntity<Institute> updateInstitute(
             @ApiParam(value = "The id of the institute you want to update", required = true) @PathVariable Integer id,
             @RequestBody Institute institute
     ) {
         try {
             if (id.equals(institute.getId())) {
-                return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.updateInstitute(institute));
+                return new ResponseEntity<>(InstituteStatements.updateInstitute(institute), HttpStatus.OK);
             } else {
                 throw new IllegalArgumentException("ID's does not match!");
             }

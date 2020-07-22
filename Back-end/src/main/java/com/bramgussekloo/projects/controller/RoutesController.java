@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Api(value = "RouteEngine Controller")
 @RestController
@@ -24,7 +25,7 @@ public class RoutesController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping
-    private ResponseEntity getLocationNodeNetwork(
+    private ResponseEntity<ArrayList<Node>> getLocationNodeNetwork(
             @ApiParam(value = "The value of the node you want to start at", required = true) @RequestParam Integer from,
             @ApiParam(value = "The value of the node you want to end at", required = true) @RequestParam Integer to,
             @ApiParam(value = "The name of the location you want to be routed in", required = true) @RequestParam String locationName) {
@@ -32,7 +33,7 @@ public class RoutesController {
             RouteEngine routeEngine = new RouteEngine();
             LocationNodeNetwork network = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
             routeEngine.init(network);
-            return ResponseEntity.status(HttpStatus.OK).body(routeEngine.generateRoute(from, to));
+            return new ResponseEntity<>(routeEngine.generateRoute(from, to), HttpStatus.OK);
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

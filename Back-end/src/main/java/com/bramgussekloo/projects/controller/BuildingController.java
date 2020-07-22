@@ -27,10 +27,10 @@ public class BuildingController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping
-    private ResponseEntity getAllBuildings() {
+    private ResponseEntity<ArrayList<Building>> getAllBuildings() {
         try {
             ArrayList<Building> list = BuildingStatements.getAllBuildings();
-            return ResponseEntity.status(HttpStatus.OK).body(list);
+            return new ResponseEntity<>(list, HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
@@ -43,9 +43,9 @@ public class BuildingController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/{id}")
-    private ResponseEntity getBuilding(@ApiParam(value = "Id of the building you want to retrieve", required = true) @PathVariable Integer id) {
+    private ResponseEntity<Building> getBuilding(@ApiParam(value = "Id of the building you want to retrieve", required = true) @PathVariable Integer id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(BuildingStatements.getBuilding(id));
+            return new ResponseEntity<>(BuildingStatements.getBuilding(id), HttpStatus.OK);
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
