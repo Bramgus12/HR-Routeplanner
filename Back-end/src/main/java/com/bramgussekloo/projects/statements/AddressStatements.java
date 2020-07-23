@@ -15,7 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Deprecated
 public class AddressStatements {
+    @Deprecated
     public static ArrayList<Address> getAllAddresses() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Address> list = new ArrayList<>();
@@ -30,7 +32,7 @@ public class AddressStatements {
             return list;
         }
     }
-
+    @Deprecated
     public static Address getAddress(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM address WHERE id=?");
@@ -42,7 +44,7 @@ public class AddressStatements {
             return getResult(id, resultSet);
         }
     }
-
+    @Deprecated
     public static Address getAddressByRoomCode(String code) throws SQLException, IOException {
         Connection conn = new DatabaseConnection().getConnection();
         File folder = GetPropertyValues.getResourcePath("Locations", "");
@@ -74,7 +76,7 @@ public class AddressStatements {
             }
         }
     }
-
+    @Deprecated
     public static Address getAddressByBuildingName(String buildingName) throws SQLException, IOException {
         Connection conn = new DatabaseConnection().getConnection();
         File folder = GetPropertyValues.getResourcePath("Locations", "");
@@ -104,7 +106,7 @@ public class AddressStatements {
             throw new IOException("Building does not exist");
         }
     }
-
+    @Deprecated
     public static Address createAddress(Address address) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer number = address.getNumber();
@@ -132,7 +134,7 @@ public class AddressStatements {
             return getResult(resultSet.getInt("id"), resultSet);
         }
     }
-
+    @Deprecated
     public static Address deleteAddress(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM address WHERE id=?;");
@@ -148,7 +150,7 @@ public class AddressStatements {
             return address;
         }
     }
-
+    @Deprecated
     public static Address updateAddress(Address address) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = address.getId();
@@ -174,7 +176,7 @@ public class AddressStatements {
             return getResult(id, resultSet);
         }
     }
-
+    @Deprecated
     private static Address getResult(Integer id, ResultSet resultSet) throws SQLException {
         String streetResult = resultSet.getString("street");
         Integer numberResult = resultSet.getInt("number");
