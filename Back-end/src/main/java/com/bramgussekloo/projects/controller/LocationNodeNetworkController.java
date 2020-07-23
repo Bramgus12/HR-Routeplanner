@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,7 +20,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Get a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork", response = LocationNodeNetwork.class),
+            @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork"),
             @ApiResponse(code = 400, message = "Bad request"),
     })
     @GetMapping("locationnodenetwork/{locationName}")
@@ -39,7 +37,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Create a new locationNodeNetwork")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
+            @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -57,7 +55,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Delete a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted LocationNodeNetwork", response = LocationNodeNetwork.class),
+            @ApiResponse(code = 200, message = "Successfully deleted LocationNodeNetwork"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -75,7 +73,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Get all nodes by type")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("locationnodenetwork")
@@ -92,7 +90,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Update a certain locationNodeNetwork")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork", response = LocationNodeNetwork.class),
+            @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -111,7 +109,7 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName", response = NodesAndBuildingName.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName"),
             @ApiResponse(code = 400, message = "Bad request"),
     })
     @GetMapping("locationnodenetwork/room")
@@ -122,12 +120,5 @@ public class LocationNodeNetworkController {
             e.printStackTrace();
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    // puts the Error in the right format
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

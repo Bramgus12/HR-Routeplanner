@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.Institute;
 import com.bramgussekloo.projects.statements.InstituteStatements;
 import io.swagger.annotations.*;
@@ -8,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -25,7 +22,7 @@ public class InstituteController {
      */
     @ApiOperation(value = "Get a list of all institutes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = Institute.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("institute")
@@ -45,7 +42,7 @@ public class InstituteController {
      */
     @ApiOperation(value = "Get a certain institute by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved institute object", response = Institute.class),
+            @ApiResponse(code = 200, message = "Successfully retrieved institute object"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("institute/{id}")
@@ -67,7 +64,7 @@ public class InstituteController {
      */
     @ApiOperation(value = "Create a new institute")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created institute", response = Institute.class),
+            @ApiResponse(code = 200, message = "Successfully created institute"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -91,7 +88,7 @@ public class InstituteController {
      */
     @ApiOperation(value = "Delete an institute by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted institute", response = Institute.class),
+            @ApiResponse(code = 200, message = "Successfully deleted institute"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -115,7 +112,7 @@ public class InstituteController {
      */
     @ApiOperation(value = "Update an institute")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated the institute", response = Institute.class),
+            @ApiResponse(code = 200, message = "Successfully updated the institute"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -133,18 +130,5 @@ public class InstituteController {
         } catch (SQLException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    /**
-     * puts the Error in the right format
-     *
-     * @param e
-     * @param response
-     * @throws IOException
-     */
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

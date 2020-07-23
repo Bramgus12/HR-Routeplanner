@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.statements.AddressStatements;
 import io.swagger.annotations.*;
@@ -8,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,7 +18,7 @@ public class AddressController {
     // Get all the address objects in a list
     @ApiOperation(value = "Get a list of addresses")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = Address.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("address")
@@ -36,7 +33,7 @@ public class AddressController {
     // Get a certain address object
     @ApiOperation(value = "Get a certain address")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, response = Address.class, message = "Successfully gotten the address"),
+            @ApiResponse(code = 200, message = "Successfully gotten the address"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("address/{id}")
@@ -51,7 +48,7 @@ public class AddressController {
     // Create a new address object
     @ApiOperation(value = "Create a new address")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created a new address in the database", response = Address.class),
+            @ApiResponse(code = 200, message = "Successfully created a new address in the database"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("admin/address")
@@ -68,7 +65,7 @@ public class AddressController {
 
     @ApiOperation(value = "Get an address by Roomcode")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
+            @ApiResponse(code = 200, message = "Successfully retrieved address"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("address/room")
@@ -84,7 +81,7 @@ public class AddressController {
 
     @ApiOperation(value = "Get an address by building name")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
+            @ApiResponse(code = 200, message = "Successfully retrieved address"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("address/building")
@@ -101,7 +98,7 @@ public class AddressController {
     // Delete a certain address object.
     @ApiOperation(value = "Delete an address", response = Address.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted the address", response = Address.class),
+            @ApiResponse(code = 200, message = "Successfully deleted the address"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -119,7 +116,7 @@ public class AddressController {
     // Update a certain object
     @ApiOperation(value = "Update an Address object")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated the Address object", response = Address.class),
+            @ApiResponse(code = 200, message = "Successfully updated the Address object"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -138,12 +135,5 @@ public class AddressController {
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    // puts the Error in the right format
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

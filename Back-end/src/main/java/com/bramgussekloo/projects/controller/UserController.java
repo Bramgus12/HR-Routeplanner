@@ -1,17 +1,12 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
-import com.bramgussekloo.projects.dataclasses.Address;
 import com.bramgussekloo.projects.dataclasses.User;
-import com.bramgussekloo.projects.statements.AddressStatements;
 import com.bramgussekloo.projects.statements.UserStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -21,7 +16,7 @@ import java.util.ArrayList;
 public class UserController {
     @ApiOperation(value = "Get a list of users")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = User.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Invalid credentials")
     })
@@ -36,7 +31,7 @@ public class UserController {
 
     @ApiOperation(value = "Create a new User")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = User.class),
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Invalid credentials")
     })
@@ -52,7 +47,7 @@ public class UserController {
     // Update a certain object
     @ApiOperation(value = "Update an Address object")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated the User object", response = User.class),
+            @ApiResponse(code = 200, message = "Successfully updated the User object"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -74,9 +69,9 @@ public class UserController {
     }
 
     // Delete a certain address object.
-    @ApiOperation(value = "Delete a user", response = Address.class)
+    @ApiOperation(value = "Delete a user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted the user", response = User.class),
+            @ApiResponse(code = 200, message = "Successfully deleted the user"),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Bad credentials")
     })
@@ -89,12 +84,5 @@ public class UserController {
         } catch (Exception e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    // puts the Error in the right format
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

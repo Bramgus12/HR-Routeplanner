@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
 import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
 import com.bramgussekloo.projects.dataclasses.Node;
 import com.bramgussekloo.projects.routeengine.RouteEngine;
@@ -8,9 +7,11 @@ import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class RoutesController {
 
     @ApiOperation(value = "Get the route between two nodes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created route", response = Node.class, responseContainer = "List"),
+            @ApiResponse(code = 200, message = "Successfully created route"),
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping
@@ -37,12 +38,5 @@ public class RoutesController {
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
-    }
-
-    // Puts the exceptions into a Spring certified object
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }
