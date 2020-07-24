@@ -1,7 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.dataclasses.Building;
-import com.bramgussekloo.projects.statements.BuildingStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 
@@ -27,13 +25,9 @@ public class BuildingController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping
-    private ResponseEntity<ArrayList<Building>> getAllBuildings() {
-        try {
-            ArrayList<Building> list = BuildingStatements.getAllBuildings();
-            return new ResponseEntity<>(list, HttpStatus.OK);
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<ArrayList<Building>> getAllBuildings() throws Exception {
+        ArrayList<Building> list = Building.getAllBuildingsFromDatabase();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     // Get a certain building by id
@@ -43,11 +37,11 @@ public class BuildingController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/{id}")
-    private ResponseEntity<Building> getBuilding(@ApiParam(value = "Id of the building you want to retrieve", required = true) @PathVariable Integer id) {
-        try {
-            return new ResponseEntity<>(BuildingStatements.getBuilding(id), HttpStatus.OK);
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<Building> getBuilding(
+            @ApiParam(value = "Id of the building you want to retrieve", required = true) @PathVariable Integer id
+    ) throws Exception {
+        Building building = new Building();
+        building.getBuildingFromDatabase(id);
+        return new ResponseEntity<>(building, HttpStatus.OK);
     }
 }

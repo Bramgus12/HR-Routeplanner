@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Deprecated
 public class BuildingStatements {
+    @Deprecated
     public static ArrayList<Building> getAllBuildings() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Building> list = new ArrayList<>();
@@ -24,6 +26,7 @@ public class BuildingStatements {
         }
     }
 
+    @Deprecated
     public static Building getBuilding(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building WHERE id=?");
@@ -36,6 +39,7 @@ public class BuildingStatements {
         }
     }
 
+    @Deprecated
     public static Building getBuildingByName(String name) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building WHERE name=?;");
@@ -48,6 +52,7 @@ public class BuildingStatements {
         }
     }
 
+    @Deprecated
     public static Building createBuilding(Building building) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer addressId = building.getAddress_id();
@@ -76,6 +81,7 @@ public class BuildingStatements {
         }
     }
 
+    @Deprecated
     public static Building deleteBuilding(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building WHERE id=?;");
@@ -91,6 +97,7 @@ public class BuildingStatements {
         }
     }
 
+    @Deprecated
     public static Building updateBuilding(Building building) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = building.getId();

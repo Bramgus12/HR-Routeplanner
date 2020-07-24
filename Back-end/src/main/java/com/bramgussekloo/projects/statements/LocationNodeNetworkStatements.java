@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -28,7 +27,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, Integer addressId) throws IOException, SQLException {
+    public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, Integer addressId) throws Exception {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         String mimeType = Files.probeContentType(f.toPath());
         System.out.println(mimeType);
@@ -41,7 +40,7 @@ public class LocationNodeNetworkStatements {
                     try {
                         LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
                         Building building = new Building(null, addressId, locationNodeNetwork.getLocationName());
-                        BuildingStatements.createBuilding(building);
+                        building.createInDatabase();
                         return locationNodeNetwork;
                     } catch (IOException e) {
                         if (fileRef.delete()) {
@@ -61,15 +60,16 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws IOException, SQLException {
+    public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws Exception {
         File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (file.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
             String networkName = locationNodeNetwork.getLocationName();
-            Building building = BuildingStatements.getBuildingByName(networkName);
+            Building building = new Building();
+            building.getFromDatabaseByName(networkName);
             if (file.delete()) {
-                BuildingStatements.deleteBuilding(building.getId());
+                building.deleteBuilding();
                 return locationNodeNetwork;
             } else {
                 throw new IOException("Deleting of file " + locationName + ".json has failed.");
@@ -96,7 +96,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
-    public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file, Integer addressId) throws IOException, SQLException {
+    public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file, Integer addressId) throws Exception {
         File resource = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         String mimeType = Files.probeContentType(resource.toPath());
         if (mimeType != null && mimeType.equals("application/json") && Objects.requireNonNull(file.getOriginalFilename()).startsWith(locationName)) {
@@ -107,11 +107,13 @@ public class LocationNodeNetworkStatements {
                 try {
                     LocationNodeNetwork network = mapper.readValue(tmpFile, LocationNodeNetwork.class);
                     String name = network.getLocationName();
-                    Building building = BuildingStatements.getBuildingByName(name);
+                    Building building = new Building();
+                    building.getFromDatabaseByName(name);
                     if (resource.delete() && tmpFile.delete()) {
                         FileService.uploadFile(file, "Locations", file.getOriginalFilename());
-                        Building newBuilding = new Building(building.getId(), addressId, network.getLocationName());
-                        BuildingStatements.updateBuilding(newBuilding);
+                        building.setAddress_id(addressId);
+                        building.setName(network.getLocationName());
+                        building.updateBuilding();
                         return mapper.readValue(resource, LocationNodeNetwork.class);
                     } else {
                         throw new IOException("File deletion did not go well");
