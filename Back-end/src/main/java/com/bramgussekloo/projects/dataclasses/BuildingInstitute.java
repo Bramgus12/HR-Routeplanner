@@ -1,7 +1,16 @@
 package com.bramgussekloo.projects.dataclasses;
 
+import com.bramgussekloo.projects.Exceptions.BadRequestException;
+import com.bramgussekloo.projects.Exceptions.InternalServerException;
+import com.bramgussekloo.projects.database.DatabaseConnection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 @ApiModel(description = "Model of a buildinginstitute")
 public class BuildingInstitute {
@@ -24,6 +33,42 @@ public class BuildingInstitute {
     public BuildingInstitute() {
     }
 
+    public BuildingInstitute(int id) {
+        this.id = id;
+    }
+
+    /**
+     * @return A list of all the BuildingInstitute resources in the database.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
+    public static ArrayList<BuildingInstitute> getAllFromDatabase() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        ArrayList<BuildingInstitute> list = new ArrayList<>();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM building_institute");
+        if (!result.next()) {
+            throw new BadRequestException("No data in database");
+        } else {
+            do {
+                list.add(getResult(result.getInt("id"), result));
+            } while (result.next());
+            return list;
+        }
+    }
+
+    /**
+     * Sets the values in this object based on the resultSet.
+     *
+     * @param id        The id of the object you want the values of. Can be gotten by doing resultSet.getInt("id")
+     * @param resultSet The resultSet you want the values of.
+     * @return The buildingInstitute based on the resultSet.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
+    private static BuildingInstitute getResult(int id, ResultSet resultSet) throws Exception {
+        Integer building_id = resultSet.getInt("building_id");
+        Integer institute_id = resultSet.getInt("institute_id");
+        return new BuildingInstitute(id, building_id, institute_id);
+    }
+
     public Integer getId() {
         return id;
     }
@@ -34,5 +79,97 @@ public class BuildingInstitute {
 
     public Integer getInstituteId() {
         return instituteId;
+    }
+
+    /**
+     * This will override all the existing values in the object!
+     *
+     * @param id The id you want the resource of.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
+    public void getFromDatabase(Integer id) throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building_institute WHERE id=?;");
+        preparedStatement.setInt(1, id);
+        ResultSet result = preparedStatement.executeQuery();
+        if (!result.next()) {
+            throw new BadRequestException("The buildingInstitute doesn't exist under id " + id);
+        } else {
+            setResultInObject(id, result);
+        }
+    }
+
+    /**
+     * Creates the object as a resource in the database.
+     *
+     * @throws Exception Will be handled by the HandleExceptions class
+     */
+    public void createInDatabase() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO building_institute VALUES (DEFAULT , ?, ?);");
+        ps.setInt(1, this.buildingId);
+        ps.setInt(2, this.instituteId);
+        ps.execute();
+        PreparedStatement ps1 = conn.prepareStatement("SELECT id FROM building_institute WHERE building_id=? AND institute_id=?;");
+        ps1.setInt(1, this.buildingId);
+        ps1.setInt(2, this.instituteId);
+        ResultSet resultSet = ps1.executeQuery();
+        if (!resultSet.next()) {
+            throw new InternalServerException("Can't find buildingInstitute after creating.");
+        } else {
+            this.id = resultSet.getInt("id");
+        }
+    }
+
+    /**
+     * Will delete the resource in the database. Only id is needed.
+     *
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
+    public void deleteInDatabase() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building_institute WHERE id=?;");
+        preparedStatement.setInt(1, this.id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM building_institute WHERE id=?");
+        preparedStatement1.setInt(1, this.id);
+        if (!resultSet.next()) {
+            throw new SQLException("BuildingInstitute with id " + this.id + " doesn't exist");
+        } else {
+            preparedStatement1.execute();
+            setResultInObject(id, resultSet);
+        }
+    }
+
+    /**
+     * Updated the resource in the database based on the id.
+     *
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
+    public void updateInDatabase() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("UPDATE building_institute SET building_id=?, institute_id=? WHERE id=?");
+        preparedStatement.setInt(1, this.buildingId);
+        preparedStatement.setInt(2, this.instituteId);
+        preparedStatement.setInt(3, this.id);
+        preparedStatement.execute();
+        PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM building_institute WHERE id=?;");
+        preparedStatement1.setInt(1, this.id);
+        ResultSet resultSet = preparedStatement1.executeQuery();
+        if (!resultSet.next()) {
+            throw new SQLException("BuildingInstitute with id " + this.id + " can't be found");
+        }
+    }
+
+    /**
+     * @param id        The id of the object you want the values of . Can be gotten by doing resultSet.getInt("id")
+     * @param resultSet The resultSet you want the values of.
+     * @throws Exception will be handled by the HandleExceptions class.
+     */
+    private void setResultInObject(int id, ResultSet resultSet) throws Exception {
+        this.id = id;
+        this.buildingId = resultSet.getInt("building_id");
+        this.instituteId = resultSet.getInt("institute_id");
+
     }
 }

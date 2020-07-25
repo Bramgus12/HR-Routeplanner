@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Deprecated
 public class BuildingInstituteStatements {
+    @Deprecated
     public static ArrayList<BuildingInstitute> getAllBuildingInstitutes() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<BuildingInstitute> list = new ArrayList<>();
@@ -24,6 +26,7 @@ public class BuildingInstituteStatements {
         }
     }
 
+    @Deprecated
     public static BuildingInstitute getBuildingInstitute(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building_institute WHERE id=?;");
@@ -36,6 +39,7 @@ public class BuildingInstituteStatements {
         }
     }
 
+    @Deprecated
     public static BuildingInstitute createBuildingInstitute(BuildingInstitute buildingInstitute) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer building_id = buildingInstitute.getBuildingId();
@@ -55,6 +59,7 @@ public class BuildingInstituteStatements {
         }
     }
 
+    @Deprecated
     public static BuildingInstitute deleteBuildingInstitute(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM building_institute WHERE id=?;");
@@ -70,6 +75,7 @@ public class BuildingInstituteStatements {
         }
     }
 
+    @Deprecated
     public static BuildingInstitute updateBuildingInstitute(BuildingInstitute buildingInstitute) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = buildingInstitute.getId();
@@ -90,6 +96,7 @@ public class BuildingInstituteStatements {
         }
     }
 
+    @Deprecated
     private static BuildingInstitute getResult(Integer id, ResultSet resultSet) throws SQLException {
         Integer building_id = resultSet.getInt("building_id");
         Integer institute_id = resultSet.getInt("institute_id");
