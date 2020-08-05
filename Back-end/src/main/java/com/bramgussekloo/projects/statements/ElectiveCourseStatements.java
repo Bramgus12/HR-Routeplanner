@@ -29,9 +29,11 @@ import java.util.List;
  * PDO implementation
  * source: https://javaconceptoftheday.com/statement-vs-preparedstatement-vs-callablestatement-in-java/
  */
+@Deprecated
 public class ElectiveCourseStatements {
-    private static String fileNameVar = "kv-lijst.xlsx";
+    private static final String fileNameVar = "kv-lijst.xlsx";
 
+    @Deprecated
     public static ArrayList<ElectiveCourse> uploadFile(MultipartFile file) throws IOException, SQLException {
         ArrayList<ElectiveCourse> electiveCourseList;
         File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
@@ -55,6 +57,7 @@ public class ElectiveCourseStatements {
         }
     }
 
+    @Deprecated
     public static ArrayList<ElectiveCourse> getExcelContent() throws IOException, SQLException {
             Workbook workbook;
             ArrayList<ElectiveCourse> electiveCourseList = new ArrayList<>();
@@ -116,6 +119,7 @@ public class ElectiveCourseStatements {
         return electiveCourseList;
     }
 
+    @Deprecated
     public static ArrayList<ElectiveCourse> deleteFile() throws IOException, SQLException {
         File[] files = GetPropertyValues.getResourcePath("ElectiveCourse", "").listFiles();
         ArrayList<ElectiveCourse> electiveCourses;
@@ -139,6 +143,7 @@ public class ElectiveCourseStatements {
         }
     }
 
+    @Deprecated
     public static ArrayList<ElectiveCourse> updateFile(MultipartFile file) throws IOException, SQLException {
         File[] files = GetPropertyValues.getResourcePath("ElectiveCourse", "").listFiles();
         ArrayList<ElectiveCourse> electiveCourses = new ArrayList<>();
@@ -162,6 +167,7 @@ public class ElectiveCourseStatements {
         }
     }
 
+    @Deprecated
     public static ElectiveCourseDescription createElectiveCourseDescription(ElectiveCourseDescription electiveCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
 
@@ -173,6 +179,7 @@ public class ElectiveCourseStatements {
         return getElectiveCourseDescription(electiveCourseDescription.getCourseCode());
     }
 
+    @Deprecated
     public static ArrayList<ElectiveCourseDescription> getAllElectiveCourseDescription() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<ElectiveCourseDescription> allElectiveCourseDescriptions = new ArrayList<>();
@@ -187,6 +194,7 @@ public class ElectiveCourseStatements {
         }
     }
 
+    @Deprecated
     public static ElectiveCourseDescription getElectiveCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM elective_course WHERE electivecoursecode=?;");
@@ -199,18 +207,7 @@ public class ElectiveCourseStatements {
         }
     }
 
-    public static ElectiveCourseDescription getElectiveCourseDescriptionByName(String name) throws SQLException {
-        Connection conn = new DatabaseConnection().getConnection();
-        PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM elective_course WHERE electivecoursename=?;");
-        pstmt.setString(1, name);
-        ResultSet result = pstmt.executeQuery();
-        if (!result.next()) {
-            throw new SQLException("No Description with electiveCourseName " + name + " found in the database");
-        } else {
-            return getResult(result);
-        }
-    }
-
+    @Deprecated
     public static ElectiveCourseDescription updateElectiveCourseDescription(ElectiveCourseDescription electiveCourseDescription) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement pstmt = conn.prepareStatement("UPDATE elective_course SET electivecoursename =?, description=?, electivecoursecode=? WHERE electivecoursecode=?;");
@@ -222,6 +219,7 @@ public class ElectiveCourseStatements {
         return getElectiveCourseDescription(electiveCourseDescription.getCourseCode());
     }
 
+    @Deprecated
     public static ElectiveCourseDescription deleteElectiveCourseDescription(String courseCode) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ElectiveCourseDescription deletedElectiveCourseDescription = getElectiveCourseDescription(courseCode);
@@ -231,6 +229,7 @@ public class ElectiveCourseStatements {
         return deletedElectiveCourseDescription;
     }
 
+    @Deprecated
     private static ElectiveCourseDescription getResult(ResultSet result) throws SQLException {
         String ElectiveCourseCode = result.getString("electivecoursecode");
         String ElectiveCourseName = result.getString("electivecoursename");

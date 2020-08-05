@@ -1,8 +1,28 @@
 package com.bramgussekloo.projects.dataclasses;
 
+import com.bramgussekloo.projects.Exceptions.BadRequestException;
+import com.bramgussekloo.projects.Exceptions.InternalServerException;
+import com.bramgussekloo.projects.FileHandling.FileService;
+import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.FileNameMap;
+import java.net.URLConnection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Deprecated
 @ApiModel(description = "Model for ElectiveCourse")
 public class ElectiveCourse extends ElectiveCourseDescription{
 
@@ -108,5 +128,125 @@ public class ElectiveCourse extends ElectiveCourseDescription{
 
     public void setClassroom(String classroom) {
         Classroom = classroom;
+    }
+
+    private static final String fileNameVar = "kv-lijst.xlsx";
+
+
+    public static ArrayList<ElectiveCourse> uploadFile(MultipartFile file) throws Exception {
+        ArrayList<ElectiveCourse> electiveCourseList;
+        File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
+        FileNameMap fileNameMap = URLConnection.getFileNameMap();
+        String mimeType = fileNameMap.getContentTypeFor(file.getName());
+
+        assert (mimeType).equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        if (!f.exists()) {
+            FileService.uploadFile(file, "ElectiveCourse", fileNameVar);
+            electiveCourseList = getExcelContent();
+            return electiveCourseList;
+        } else {
+            throw new BadRequestException("File already exists. Try using PUT if you want to update it.");
+        }
+    }
+
+    public static ArrayList<ElectiveCourse> deleteFile() throws Exception {
+        File[] files = GetPropertyValues.getResourcePath("ElectiveCourse", "").listFiles();
+        ArrayList<ElectiveCourse> electiveCourses;
+        electiveCourses = getExcelContent();
+
+        assert files != null;
+        for (File f : files) {
+            if (f.exists() && !f.toString().contains(".gitkeep")) {
+                if (!f.delete()) {
+                    throw new InternalServerException("Can't delete file.");
+                }
+            }
+        }
+        return electiveCourses;
+    }
+
+
+    public static ArrayList<ElectiveCourse> getExcelContent() throws Exception {
+        Workbook workbook;
+        ArrayList<ElectiveCourse> electiveCourseList = new ArrayList<>();
+        File f = GetPropertyValues.getResourcePath("ElectiveCourse", fileNameVar);
+        if (f.exists()) {
+
+            FileInputStream excelFile = new FileInputStream(f);
+            workbook = new XSSFWorkbook(excelFile);
+
+            Sheet worksheet = workbook.getSheetAt(0);
+
+            DataFormatter formatter = new DataFormatter();
+            List<ElectiveCourseDescription> ecdList = new ArrayList<>();
+            //Create a loop to get the cell values of a row for one iteration
+            for (int i = 1; i < worksheet.getPhysicalNumberOfRows(); i++) {
+                Row row = worksheet.getRow(i);
+                if (row.getLastCellNum() < row.getPhysicalNumberOfCells()) continue;
+
+                String courseCode = formatter.formatCellValue(row.getCell(0));
+                String name = formatter.formatCellValue(row.getCell(1));
+                String period = formatter.formatCellValue(row.getCell(2));
+                String groupNumber = formatter.formatCellValue(row.getCell(3));
+                String teacher = formatter.formatCellValue(row.getCell(4));
+                String dayOfTheWeek = formatter.formatCellValue(row.getCell(5));
+                String startTime = formatter.formatCellValue(row.getCell(6));
+                String endTime = formatter.formatCellValue(row.getCell(7));
+                String location = formatter.formatCellValue(row.getCell(8));
+                String classroom = formatter.formatCellValue(row.getCell(9));
+                String description = "";
+
+                electiveCourseList.add(new ElectiveCourse(
+                        courseCode,
+                        name,
+                        period,
+                        groupNumber,
+                        teacher,
+                        dayOfTheWeek,
+                        startTime,
+                        endTime,
+                        location,
+                        classroom,
+                        description
+                ));
+            }
+            excelFile.close();
+
+
+            ecdList = ElectiveCourseDescription.getAllFromDatabase();
+            for (ElectiveCourse ec : electiveCourseList){
+                for (ElectiveCourseDescription ecd : ecdList){
+                    if (ec.getCourseCode().equals(ecd.getCourseCode())){
+                        ec.setDescription(ecd.getDescription());
+                    }
+                }
+            }
+        } else {
+            throw new BadRequestException("File does not exist.");
+        }
+        return electiveCourseList;
+    }
+
+    public static ArrayList<ElectiveCourse> updateFile(MultipartFile file) throws Exception {
+        File[] files = GetPropertyValues.getResourcePath("ElectiveCourse", "").listFiles();
+        ArrayList<ElectiveCourse> electiveCourses = new ArrayList<>();
+
+        assert files != null;
+        for (File f : files) {
+            if (f.exists() && !f.toString().contains(".gitkeep")) {
+                if (f.delete()) {
+                    electiveCourses = uploadFile(file);
+                } else {
+                    throw new InternalServerException("File deletion failed");
+                }
+            } else {
+                throw new BadRequestException("There is no file to delete");
+            }
+        }
+        if (electiveCourses.isEmpty()){
+            throw new BadRequestException("File is empty");
+        } else {
+            return electiveCourses;
+        }
     }
 }

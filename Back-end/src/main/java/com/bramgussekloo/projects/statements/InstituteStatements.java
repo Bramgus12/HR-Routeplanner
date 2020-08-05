@@ -9,7 +9,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+@Deprecated
 public class InstituteStatements {
+
+    @Deprecated
     public static ArrayList<Institute> getAllInstitutes() throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<Institute> list = new ArrayList<>();
@@ -24,6 +27,7 @@ public class InstituteStatements {
         }
     }
 
+    @Deprecated
     public static Institute getInstituteName(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM institute WHERE id=?;");
@@ -36,6 +40,7 @@ public class InstituteStatements {
         }
     }
 
+    @Deprecated
     public static Institute getInstituteId(String instituteName) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM institute WHERE name=?;");
@@ -48,6 +53,7 @@ public class InstituteStatements {
         }
     }
 
+    @Deprecated
     public static Institute createInstitute(Institute institute) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement2 = conn.prepareStatement("SELECT * FROM institute WHERE name=?;");
@@ -70,6 +76,7 @@ public class InstituteStatements {
         }
     }
 
+    @Deprecated
     public static Institute deleteInstitute(Integer id) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM institute WHERE id=?;");
@@ -85,6 +92,7 @@ public class InstituteStatements {
         }
     }
 
+    @Deprecated
     public static Institute updateInstitute(Institute institute) throws SQLException {
         Connection conn = new DatabaseConnection().getConnection();
         Integer id = institute.getId();
@@ -103,6 +111,7 @@ public class InstituteStatements {
         }
     }
 
+    @Deprecated
     private static Institute getResult(Integer id, ResultSet resultSet) throws SQLException {
         String instituteName = resultSet.getString("name");
         return new Institute(id, instituteName);

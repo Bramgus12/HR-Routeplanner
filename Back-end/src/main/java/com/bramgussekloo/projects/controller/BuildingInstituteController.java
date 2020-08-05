@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.Exceptions.BadRequestException;
 import com.bramgussekloo.projects.dataclasses.BuildingInstitute;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -86,15 +87,11 @@ public class BuildingInstituteController {
             @ApiParam(value = "Id if the buildingInstitute that you want to update", required = true) @PathVariable Integer id,
             @ApiParam(value = "BuildingInstitute that you want to update", required = true) @RequestBody BuildingInstitute buildingInstitute
     ) throws Exception {
-        try {
-            if (id.equals(buildingInstitute.getId())) {
-                buildingInstitute.updateInDatabase();
-                return new ResponseEntity<>(buildingInstitute, HttpStatus.CREATED);
-            } else {
-                throw new IllegalArgumentException("Id's are different");
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
+        if (id.equals(buildingInstitute.getId())) {
+            buildingInstitute.updateInDatabase();
+            return new ResponseEntity<>(buildingInstitute, HttpStatus.CREATED);
+        } else {
+            throw new BadRequestException("Id's are different");
         }
     }
 }

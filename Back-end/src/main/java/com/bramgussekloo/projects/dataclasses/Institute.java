@@ -1,7 +1,16 @@
 package com.bramgussekloo.projects.dataclasses;
 
+import com.bramgussekloo.projects.Exceptions.BadRequestException;
+import com.bramgussekloo.projects.Exceptions.InternalServerException;
+import com.bramgussekloo.projects.database.DatabaseConnection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 @ApiModel(description = "The model of the institute")
 public class Institute {
@@ -20,11 +29,114 @@ public class Institute {
     public Institute() {
     }
 
+    public Institute(int id) {
+        this.id = id;
+    }
+
     public Integer getId() {
         return this.id;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public static ArrayList<Institute> getAllInstitutes() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        ArrayList<Institute> list = new ArrayList<>();
+        ResultSet result = conn.createStatement().executeQuery("SELECT * FROM institute");
+        if (!result.next()) {
+            throw new BadRequestException("No data in database");
+        } else {
+            do {
+                list.add(getResult(result));
+            } while (result.next());
+            return list;
+        }
+    }
+
+    public void getNameFromDatabase(Integer id) throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM institute WHERE id=?;");
+        preparedStatement.setInt(1, id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (!resultSet.next()) {
+            throw new BadRequestException("Can't find institute with id " + id);
+        } else {
+            setResultInObject(resultSet);
+        }
+    }
+
+    public void getIdFromDatabase(String instituteName) throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM institute WHERE name=?;");
+        preparedStatement.setString(1, instituteName);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (!resultSet.next()) {
+            throw new BadRequestException("Can't find institute by name " + instituteName);
+        } else {
+            setResultInObject(resultSet);
+        }
+    }
+
+    public void createInDatabase() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement2 = conn.prepareStatement("SELECT * FROM institute WHERE name=?;");
+        preparedStatement2.setString(1, this.name);
+        ResultSet result = preparedStatement2.executeQuery();
+        if (result.next()) {
+            throw new BadRequestException("The institute you want to create, already exists");
+        } else {
+            PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO institute VALUES (DEFAULT , ?);");
+            preparedStatement.setString(1, this.name);
+            preparedStatement.execute();
+            PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM institute WHERE name=?;");
+            preparedStatement1.setString(1, this.name);
+            ResultSet resultSet = preparedStatement1.executeQuery();
+            if (!resultSet.next()) {
+                throw new BadRequestException("After creating the institute it can't be found anymore.");
+            } else {
+                this.id = resultSet.getInt("id");
+            }
+        }
+    }
+
+    public void deleteInstitute() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM institute WHERE id=?;");
+        preparedStatement.setInt(1, this.id);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (!resultSet.next()) {
+            throw new BadRequestException("Institute with id " + this.id + " doesn't exist");
+        } else {
+            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM institute WHERE id =?;");
+            preparedStatement1.setInt(1, this.id);
+            preparedStatement1.execute();
+        }
+    }
+
+    public void updateInstitute() throws Exception {
+        Connection conn = new DatabaseConnection().getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement("UPDATE institute SET name =? WHERE id=?;");
+        preparedStatement.setString(1, this.name);
+        preparedStatement.setInt(2, this.id);
+        preparedStatement.execute();
+        PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM institute WHERE id=?;");
+        preparedStatement1.setInt(1, this.id);
+        ResultSet resultSet = preparedStatement1.executeQuery();
+        if (!resultSet.next()) {
+            throw new InternalServerException("Can't find institute after updating institute");
+        }
+    }
+
+    private void setResultInObject(ResultSet resultSet) throws Exception {
+        this.name = resultSet.getString("name");
+        this.id = resultSet.getInt("id");
+    }
+
+    private static Institute getResult(ResultSet resultSet) throws Exception {
+        String instituteName = resultSet.getString("name");
+        int id = resultSet.getInt("id");
+        return new Institute(id, instituteName);
     }
 }
