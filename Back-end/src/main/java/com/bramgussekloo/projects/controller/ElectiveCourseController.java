@@ -1,20 +1,18 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.Exceptions.BadRequestException;
-import com.bramgussekloo.projects.dataclasses.ElectiveCourse;
-import com.bramgussekloo.projects.dataclasses.ElectiveCourseDescription;
-import com.bramgussekloo.projects.statements.ElectiveCourseStatements;
+import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.models.ElectiveCourse;
+import com.bramgussekloo.projects.models.ElectiveCourseDescription;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 // Controller for xlsx reader
+@Deprecated
 @Api(value = "Elective Course list")
 @RestController
 @RequestMapping("/api/")

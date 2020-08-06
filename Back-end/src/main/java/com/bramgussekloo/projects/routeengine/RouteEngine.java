@@ -1,8 +1,8 @@
 package com.bramgussekloo.projects.routeengine;
 
-import com.bramgussekloo.projects.dataclasses.ConnectedNode;
-import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.models.ConnectedNode;
+import com.bramgussekloo.projects.models.LocationNodeNetwork;
+import com.bramgussekloo.projects.models.Node;
 import com.carrotsearch.hppc.IntIndexedContainer;
 import com.graphhopper.routing.Dijkstra;
 import com.graphhopper.routing.Path;

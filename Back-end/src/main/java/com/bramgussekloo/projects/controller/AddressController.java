@@ -1,7 +1,7 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.Exceptions.BadRequestException;
-import com.bramgussekloo.projects.dataclasses.Address;
+import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.models.Address;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

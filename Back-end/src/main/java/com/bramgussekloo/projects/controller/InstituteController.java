@@ -1,15 +1,12 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.Exceptions.BadRequestException;
-import com.bramgussekloo.projects.dataclasses.Institute;
-import com.bramgussekloo.projects.statements.InstituteStatements;
+import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.models.Institute;
 import io.swagger.annotations.*;
-import io.swagger.models.auth.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 @Api(value = "Institute controller")

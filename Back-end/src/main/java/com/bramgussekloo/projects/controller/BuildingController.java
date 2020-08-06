@@ -1,6 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.dataclasses.Building;
+import com.bramgussekloo.projects.models.Building;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

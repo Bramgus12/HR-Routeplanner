@@ -1,16 +1,14 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.dataclasses.Node;
-import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
-import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
+import com.bramgussekloo.projects.models.LocationNodeNetwork;
+import com.bramgussekloo.projects.models.Node;
+import com.bramgussekloo.projects.models.NodesAndBuildingName;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 @Api(value = "LocationNodeNetwork Controller")

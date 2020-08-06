@@ -1,13 +1,12 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.Exceptions.BadRequestException;
-import com.bramgussekloo.projects.dataclasses.BuildingInstitute;
+import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.models.BuildingInstitute;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 // Makes it a REST-controller
