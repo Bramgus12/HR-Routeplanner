@@ -71,6 +71,10 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
 	compile group: 'org.springframework', name: 'spring-jdbc', version: '5.2.7.RELEASE'
 
+	// https://mvnrepository.com/artifact/org.apache.tika/tika-core
+	compile group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
+
+
 }
 
 test {

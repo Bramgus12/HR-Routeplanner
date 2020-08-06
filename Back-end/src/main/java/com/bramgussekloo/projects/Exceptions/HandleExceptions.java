@@ -13,6 +13,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 
+
+/**
+ * Handles most of the Exceptions and creates a ResponseEntity of it. This will then be sent as a response to the API user.
+ */
 @ControllerAdvice
 public class HandleExceptions {
 

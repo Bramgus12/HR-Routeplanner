@@ -67,6 +67,12 @@ public class ElectiveCourseDescription {
         ps.executeUpdate();
     }
 
+    /**
+     * @return A list of all the electiveCourseDescription resources.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
+     */
     public static ArrayList<ElectiveCourseDescription> getAllFromDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
         ArrayList<ElectiveCourseDescription> allElectiveCourseDescriptions = new ArrayList<>();
@@ -81,6 +87,14 @@ public class ElectiveCourseDescription {
         }
     }
 
+    /**
+     * This will override all the existing values in the object.
+     *
+     * @param courseCode The coursecode you want the resource of.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
+     */
     public void getFromDatabase(String courseCode) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement ps = conn.prepareStatement("SELECT * FROM elective_course WHERE electivecoursecode=?;");
@@ -93,6 +107,10 @@ public class ElectiveCourseDescription {
         }
     }
 
+    /**
+     * Updates the electiveCourseDescription resource in the database.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
     public void updateInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement ps = conn.prepareStatement("UPDATE elective_course SET electivecoursename =?, description=? WHERE electivecoursecode=?;");
@@ -102,6 +120,13 @@ public class ElectiveCourseDescription {
         ps.executeUpdate();
     }
 
+    /**
+     * Deletes the resource in the database based on the electiveCourseCode.
+     *
+     * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
+     */
     public void deleteInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
         PreparedStatement deletePstmt = conn.prepareStatement("DELETE FROM elective_course WHERE electivecoursecode =?;");
@@ -109,13 +134,24 @@ public class ElectiveCourseDescription {
         deletePstmt.executeUpdate();
     }
 
-    private void setResultInObject(ResultSet result) throws SQLException {
+    /**
+     * @param result The resultSet you want the values of in the object.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     */
+    private void setResultInObject(ResultSet result) throws Exception {
         this.CourseCode = result.getString("electivecoursecode");
         this.Name = result.getString("electivecoursename");
         this.Description = result.getString("description");
     }
 
-    private static ElectiveCourseDescription getResult(ResultSet result) throws SQLException {
+    /**
+     * @param result The resultSet you want the object of.
+     * @return An ElectiveCourseDescription object with the values of the ResultSet.
+     * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
+     */
+    private static ElectiveCourseDescription getResult(ResultSet result) throws Exception {
         String ElectiveCourseCode = result.getString("electivecoursecode");
         String ElectiveCourseName = result.getString("electivecoursename");
         String ElectiveCourseDescription = result.getString("description");

@@ -17,11 +17,6 @@ import java.util.ArrayList;
 @RequestMapping("/api/")
 public class InstituteController {
 
-    /**
-     * Gets all Institutes as an Object and save them into a List
-     *
-     * @return List of Objects
-     */
     @ApiOperation(value = "Get a list of all institutes")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
@@ -32,12 +27,6 @@ public class InstituteController {
             return new ResponseEntity<>(Institute.getAllInstitutes(), HttpStatus.OK);
     }
 
-    /**
-     * Get the Institute name from the Database
-     *
-     * @param id
-     * @return Institute Object
-     */
     @ApiOperation(value = "Get a certain institute by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved institute object"),
@@ -52,12 +41,6 @@ public class InstituteController {
         return new ResponseEntity<>(institute, HttpStatus.OK);
     }
 
-    /**
-     * Creates a new Institute Object and add its value to the Database
-     *
-     * @param institute
-     * @return HttpStatus
-     */
     @ApiOperation(value = "Create a new institute")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully created institute"),
@@ -73,12 +56,7 @@ public class InstituteController {
         return new ResponseEntity<>(institute, HttpStatus.OK);
     }
 
-    /**
-     * Deletes an entry from the Database.
-     *
-     * @param id
-     * @return HttpStatus
-     */
+
     @ApiOperation(value = "Delete an institute by id")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Successfully deleted institute"),
@@ -95,13 +73,6 @@ public class InstituteController {
         return new ResponseEntity<>( HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * Updates an entry in the Database
-     *
-     * @param id
-     * @param institute
-     * @return updated Database entry
-     */
     @ApiOperation(value = "Update an institute")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated the institute"),

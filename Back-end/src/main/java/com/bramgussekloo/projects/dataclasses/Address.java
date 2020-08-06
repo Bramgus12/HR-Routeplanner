@@ -107,6 +107,8 @@ public class Address {
     /**
      * @return An arraylist with all the addresses that are in the database.
      * @throws Exception Will be handled by the HandleException class
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public static ArrayList<Address> getAllFromDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -127,6 +129,8 @@ public class Address {
      * This method will delete the Address resource which is in the object. Does not delete this object.
      *
      * @throws Exception Will be handled by the HandleException class
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void deleteFromDatabase() throws Exception {
         if (ObjectIsEmpty()) {
@@ -151,6 +155,8 @@ public class Address {
      *
      * @param id The id of the address you want to get from the database
      * @throws Exception Will be handled by the HandleException class
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void getFromDatabase(Integer id) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -169,6 +175,8 @@ public class Address {
      *
      * @param code The code you want the address from.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void getFromDatabaseByRoomCode(String code) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -207,6 +215,8 @@ public class Address {
      *
      * @param buildingName The buildingName you want to get the address of.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void getFromDatabaseByBuildingName(String buildingName) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -243,6 +253,8 @@ public class Address {
      * Creates an Address in the database by the values that are in this object. Updates id to the new value.
      *
      * @throws Exception This will be handled by the HandleException class
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void createInDatabase() throws Exception {
         ArrayList<Address> list = getAllFromDatabase();
@@ -282,6 +294,8 @@ public class Address {
      * Updates the resource in the database from this address object.
      *
      * @throws Exception Will be handled by the HandleException class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void updateInDatabase() throws Exception {
         if (this.id == null) {
@@ -306,6 +320,8 @@ public class Address {
      * @param resultSet The resultSet you want to retrieve the data from.
      * @return An Address object which contains everything from the resultSet.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     private static Address getResult(Integer id, ResultSet resultSet) throws Exception {
         String streetResult = resultSet.getString("street");
@@ -322,6 +338,8 @@ public class Address {
      * @param id        The Id you want to insert in the object.
      * @param resultSet The resultSet with the data that has to go in the Object
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     private void setResultSetInObject(int id, ResultSet resultSet) throws Exception {
         this.street = resultSet.getString("street");

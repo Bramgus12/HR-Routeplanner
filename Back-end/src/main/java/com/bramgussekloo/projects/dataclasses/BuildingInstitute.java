@@ -86,6 +86,8 @@ public class BuildingInstitute {
      *
      * @param id The id you want the resource of.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void getFromDatabase(Integer id) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -103,6 +105,8 @@ public class BuildingInstitute {
      * Creates the object as a resource in the database.
      *
      * @throws Exception Will be handled by the HandleExceptions class
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void createInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -125,6 +129,8 @@ public class BuildingInstitute {
      * Will delete the resource in the database. Only id is needed.
      *
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void deleteInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -145,6 +151,8 @@ public class BuildingInstitute {
      * Updated the resource in the database based on the id.
      *
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void updateInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -165,6 +173,8 @@ public class BuildingInstitute {
      * @param id        The id of the object you want the values of . Can be gotten by doing resultSet.getInt("id")
      * @param resultSet The resultSet you want the values of.
      * @throws Exception will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     private void setResultInObject(int id, ResultSet resultSet) throws Exception {
         this.id = id;

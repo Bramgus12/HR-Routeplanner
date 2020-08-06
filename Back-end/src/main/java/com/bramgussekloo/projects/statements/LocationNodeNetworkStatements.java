@@ -15,8 +15,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Objects;
 
+@Deprecated
 public class LocationNodeNetworkStatements {
 
+    @Deprecated
     public static LocationNodeNetwork getLocationNodeNetwork(String locationName) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
@@ -27,6 +29,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
+    @Deprecated
     public static LocationNodeNetwork createLocationNodeNetwork(MultipartFile file, Integer addressId) throws Exception {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         String mimeType = Files.probeContentType(f.toPath());
@@ -60,6 +63,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
+    @Deprecated
     public static LocationNodeNetwork deleteLocationNodeNetwork(String locationName) throws Exception {
         File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         if (file.exists()) {
@@ -79,6 +83,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
+    @Deprecated
     public static ArrayList<Node> getAllNodesByType(String locationName, String definedType) throws IOException {
         File file = GetPropertyValues.getResourcePath("Locations", locationName + ".json");
         ArrayList<Node> nodeList = new ArrayList<>();
@@ -96,6 +101,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
+    @Deprecated
     public static LocationNodeNetwork updateLocationNodeNetwork(String locationName, MultipartFile file, Integer addressId) throws Exception {
         File resource = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         String mimeType = Files.probeContentType(resource.toPath());
@@ -133,6 +139,7 @@ public class LocationNodeNetworkStatements {
         }
     }
 
+    @Deprecated
     public static ArrayList<NodesAndBuildingName> getAllRooms() throws IOException {
         File folder = GetPropertyValues.getResourcePath("Locations", "");
         File[] listOfFiles = folder.listFiles();

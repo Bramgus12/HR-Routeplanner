@@ -49,6 +49,8 @@ public class Building {
      *
      * @return A list of all the Building resources
      * @throws Exception Will be handled by the HandleExceptions class
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public static ArrayList<Building> getAllBuildingsFromDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -72,6 +74,8 @@ public class Building {
      * @param resultSet The resultSet you want to be extracted.
      * @return A Building with the values from the resultSet.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     private static Building getResult(Integer id, ResultSet resultSet) throws Exception {
         Integer address_id = resultSet.getInt("address_id");
@@ -96,6 +100,8 @@ public class Building {
      *
      * @param id The Id of the building you want to retrieve.
      * @throws Exception Will be handled by the HanldeExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void getBuildingFromDatabase(Integer id) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -114,6 +120,8 @@ public class Building {
      *
      * @param name The name of the building you want to have the building object of.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void getFromDatabaseByName(String name) throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -131,6 +139,8 @@ public class Building {
      * This will create the building object in the database and will update the id value with the new id that has been given by the database.
      *
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void createInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -163,6 +173,8 @@ public class Building {
      * This will delete the value in the database. This only has to have the id.
      *
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void deleteBuilding() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -182,6 +194,8 @@ public class Building {
      * This will update the resource in the database with the new values.
      *
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     public void updateBuilding() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
@@ -202,6 +216,8 @@ public class Building {
      * @param id This is the id you want to have in the object. Can be retrieved by using resultSet.getInt("id")
      * @param resultSet The resultSet you want o have the values of in the object.
      * @throws Exception Will be handled by the HandleExceptions class.
+     *
+     * @see com.bramgussekloo.projects.Exceptions.HandleExceptions
      */
     private void setResultInObject(Integer id, ResultSet resultSet) throws Exception {
         this.address_id = resultSet.getInt("address_id");
