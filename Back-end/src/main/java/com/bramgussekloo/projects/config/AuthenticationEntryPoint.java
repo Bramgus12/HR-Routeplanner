@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.utilities;
+package com.bramgussekloo.projects.config;
 
 import com.bramgussekloo.projects.exceptions.Error;
 import com.fasterxml.jackson.databind.ObjectMapper;

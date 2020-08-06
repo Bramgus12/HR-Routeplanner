@@ -18,22 +18,20 @@ public class AddressController {
     @ApiOperation(value = "Get a list of addresses")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @GetMapping("address")
-    private ResponseEntity<ArrayList<Address>> getAllAddresses() {
-        try {
-            return new ResponseEntity<>(Address.getAllFromDatabase(), HttpStatus.OK);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<ArrayList<Address>> getAllAddresses() throws Exception {
+        return new ResponseEntity<>(Address.getAllFromDatabase(), HttpStatus.OK);
     }
 
     // Get a certain address object
     @ApiOperation(value = "Get a certain address")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully gotten the address"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @GetMapping("address/{id}")
     private ResponseEntity<Address> getAddress(
@@ -48,7 +46,8 @@ public class AddressController {
     @ApiOperation(value = "Create a new address")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully created a new address in the database"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @PostMapping("admin/address")
     @ResponseStatus(HttpStatus.CREATED)
@@ -62,7 +61,8 @@ public class AddressController {
     @ApiOperation(value = "Get an address by Roomcode")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved address"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @GetMapping("address/room")
     private ResponseEntity<Address> getAddressByRoomCode(
@@ -77,7 +77,8 @@ public class AddressController {
     @ApiOperation(value = "Get an address by building name")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved address"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @GetMapping("address/building")
     private ResponseEntity<Address> getAddressByBuildingName(
@@ -93,7 +94,8 @@ public class AddressController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully deleted the address"),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 401, message = "Bad credentials"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @DeleteMapping("admin/address/{id}")
     private ResponseEntity<Address> deleteAddress(
@@ -109,7 +111,8 @@ public class AddressController {
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated the Address object"),
             @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 401, message = "Bad credentials"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @PutMapping("admin/address/{id}")
     @ResponseStatus(HttpStatus.CREATED)

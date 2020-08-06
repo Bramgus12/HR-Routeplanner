@@ -1,5 +1,6 @@
-package com.bramgussekloo.projects.utilities;
+package com.bramgussekloo.projects.config;
 
+import com.bramgussekloo.projects.utils.GetPropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

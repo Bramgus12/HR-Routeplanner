@@ -1,6 +1,6 @@
-package com.bramgussekloo.projects.utilities;
+package com.bramgussekloo.projects.config;
 
-import com.bramgussekloo.projects.utilities.GetPropertyValues;
+import com.bramgussekloo.projects.utils.GetPropertyValues;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

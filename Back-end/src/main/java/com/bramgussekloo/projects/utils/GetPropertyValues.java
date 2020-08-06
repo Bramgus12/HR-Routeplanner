@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.utilities;
+package com.bramgussekloo.projects.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.utilities;
+package com.bramgussekloo.projects.utils;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

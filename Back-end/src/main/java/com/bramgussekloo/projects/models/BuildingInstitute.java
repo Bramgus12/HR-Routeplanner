@@ -2,7 +2,7 @@ package com.bramgussekloo.projects.models;
 
 import com.bramgussekloo.projects.exceptions.BadRequestException;
 import com.bramgussekloo.projects.exceptions.InternalServerException;
-import com.bramgussekloo.projects.utilities.DatabaseConnection;
+import com.bramgussekloo.projects.config.DatabaseConnection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 

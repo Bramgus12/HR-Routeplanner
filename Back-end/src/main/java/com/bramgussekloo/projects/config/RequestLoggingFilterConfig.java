@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.utilities;
+package com.bramgussekloo.projects.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
