@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { AppService } from '../app.service';
 import { keys } from '../3rdparty/api_keys';
-import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
+// import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { TimeMode, TimeModeOption } from '../shared/dataclasses';
 import { NavigationState, MapsStep } from '../shared/navigation-state';
