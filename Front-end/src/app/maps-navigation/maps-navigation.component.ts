@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { GoogleMap } from '@angular/google-maps';
 
 import { AppService } from '../app.service';
-import { keys } from '../3rdparty/api_keys';
-// import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
+import { GoogleMapsService, TransitMode, TravelMode } from '../3rdparty/google-maps.service';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { TimeMode, TimeModeOption } from '../shared/dataclasses';
 import { NavigationState, MapsStep } from '../shared/navigation-state';
@@ -14,6 +14,7 @@ import { NavigationState, MapsStep } from '../shared/navigation-state';
   styleUrls: ['./maps-navigation.component.scss']
 })
 export class MapsNavigationComponent implements OnInit {
+  @ViewChild(GoogleMap) googleMap: GoogleMap;
 
   navigationState: NavigationState;
   stateData: MapsStep;
@@ -46,7 +47,7 @@ export class MapsNavigationComponent implements OnInit {
 
   private directionsRenderer: google.maps.DirectionsRenderer;
 
-  constructor(private router: Router, private googleMapsService: GoogleMapsService, private appService: AppService/*, private routeService: OpenrouteserviceService*/) {
+  constructor(private router: Router, private appService: AppService, private googleMapsService: GoogleMapsService) {
     const state = this.router.getCurrentNavigation().extras.state;
 
     if(state == undefined || !(state instanceof NavigationState)) {
@@ -97,15 +98,18 @@ export class MapsNavigationComponent implements OnInit {
         clockFaceTimeInactiveColor: '#fff'
       }
     }
+
+    this.directionsRenderer.setMap(this.googleMap.googleMap);
+    this.getDirections();
   }
 
   /**
    * Gets called when google maps is loaded into the html DOM
    */
-  onMapReady(map: google.maps.Map){
+  /* onMapReady(map: google.maps.Map){
     this.directionsRenderer.setMap(map);
     this.getDirections();
-  }
+  } */
 
   /**
    * Gets called when the "Depart now" slide-toggle changed

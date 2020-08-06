@@ -1,13 +1,12 @@
 <section>
   <div class="map-container">
-    <agm-map
+      <google-map 
       [latitude]="lat"
       [longitude]="lng"
       [zoom]="zoom"
       [streetViewControl]="false"
-      [clickableIcons]="false"
-      (mapReady)="onMapReady($event)"
-      ></agm-map>
+      [clickableIcons]="false">
+      </google-map>
   </div>
   
   <!-- TODO convert to directions component -->

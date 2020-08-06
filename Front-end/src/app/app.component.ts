@@ -5,8 +5,6 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { filter, map } from 'rxjs/operators';
 
 import { AppService } from './app.service';
-import { keys } from './3rdparty/api_keys';
-import { GoogleMapsApiLoaderService } from './3rdparty/google-maps-api-loader.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +16,7 @@ export class AppComponent implements OnInit{
   @Output() title = 'No title';
   @ViewChild('sideDrawer', { static: true }) sideDrawer: MatDrawer;
 
-  constructor(private router: Router, private titleService: Title, private appService: AppService, private mapsApiLoader: GoogleMapsApiLoaderService){}
+  constructor(private router: Router, private titleService: Title, private appService: AppService){}
 
   ngOnInit(){
     /* This checks the loading route as snapshot */
@@ -49,9 +47,5 @@ export class AppComponent implements OnInit{
       else this.sideDrawer.autoFocus = true;
       this.sideDrawer.toggle();
     });
-
-    this.mapsApiLoader.loadAPI({
-      apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions']
-    }).then(() => console.log("Loaded Google Maps API")).catch(err => console.error("Error loading Google Maps API:\n" + err))
   }
 }

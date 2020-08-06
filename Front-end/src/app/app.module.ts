@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule }   from '@angular/forms';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { RoutingModule } from './routing.module';
@@ -33,7 +34,8 @@ import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-
     RoutingModule,
     MaterialModule,
     NgxMaterialTimepickerModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    GoogleMapsModule
   ],
   declarations: [
     AppComponent,
