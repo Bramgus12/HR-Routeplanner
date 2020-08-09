@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GoogleMap } from '@angular/google-maps';
 
@@ -13,7 +13,7 @@ import { NavigationState, MapsStep } from '../shared/navigation-state';
   templateUrl: './maps-navigation.component.html',
   styleUrls: ['./maps-navigation.component.scss']
 })
-export class MapsNavigationComponent implements OnInit {
+export class MapsNavigationComponent implements OnInit, AfterViewInit {
   @ViewChild(GoogleMap) googleMap: GoogleMap;
 
   navigationState: NavigationState;
@@ -27,7 +27,7 @@ export class MapsNavigationComponent implements OnInit {
     { name: "Arrival by", value: TimeMode.ARRIVAL_BY },
     { name: "Depart by", value: TimeMode.DEPART_BY }
   ];
-  timeInfo = "";
+  timeInfo = "Loading...";
   fastestRoute = false;
   timepickerTheme: NgxMaterialTimepickerTheme = {
     container: {
@@ -41,9 +41,14 @@ export class MapsNavigationComponent implements OnInit {
     }
   };
 
-  lat = 51.917218;
-  lng = 4.48405;
-  zoom = 16;
+  mapOptions: google.maps.MapOptions = { 
+    center: { lat: 51.917218, lng: 4.4840 },
+    zoom: 16,
+    streetViewControl: false,
+    clickableIcons: false,
+    fullscreenControl: false,
+    mapTypeControl: false
+  };
 
   private directionsRenderer: google.maps.DirectionsRenderer;
 
@@ -98,18 +103,12 @@ export class MapsNavigationComponent implements OnInit {
         clockFaceTimeInactiveColor: '#fff'
       }
     }
+  }
 
+  ngAfterViewInit(){
     this.directionsRenderer.setMap(this.googleMap.googleMap);
     this.getDirections();
   }
-
-  /**
-   * Gets called when google maps is loaded into the html DOM
-   */
-  /* onMapReady(map: google.maps.Map){
-    this.directionsRenderer.setMap(map);
-    this.getDirections();
-  } */
 
   /**
    * Gets called when the "Depart now" slide-toggle changed

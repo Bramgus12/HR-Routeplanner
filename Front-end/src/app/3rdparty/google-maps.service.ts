@@ -17,13 +17,13 @@ export class GoogleMapsService {
     loadAPI({
       apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions']
     }).then(() => {
-      console.log("Loaded Google Maps API");
+      console.log("Loaded GMaps API");
 
       this.geocoder = new google.maps.Geocoder();
       this.autocomplete = new google.maps.places.AutocompleteService();
       this.directions = new google.maps.DirectionsService();
 
-      console.log("Loaded Maps Services")
+      console.log("Loaded GMaps Services")
     }).catch(err => console.error("Error loading Google Maps API:\n" + err))
   }
 
