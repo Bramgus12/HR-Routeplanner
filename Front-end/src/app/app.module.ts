@@ -22,8 +22,8 @@ import { MapsNavigationComponent } from './maps-navigation/maps-navigation.compo
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ElectiveCoursesComponent } from './elective-courses/elective-courses.component';
-import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-course-description/elective-course-description.component';
+// import { ElectiveCoursesComponent } from './elective-courses/elective-courses.component';
+// import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-course-description/elective-course-description.component';
 
 @NgModule({
   imports: [
@@ -47,8 +47,8 @@ import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-
     BuildingViewerComponent,
     MapsNavigationComponent,
     SafeHTMLPipe,
-    ElectiveCoursesComponent,
-    ElectiveCourseDescriptionComponent,
+    // ElectiveCoursesComponent,
+    // ElectiveCourseDescriptionComponent,
     NextStateButtonComponent,
     NextStateDialog,
     ArrivalStateDialog

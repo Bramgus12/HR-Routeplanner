@@ -9,8 +9,8 @@ import { MapsNavigationComponent } from './maps-navigation/maps-navigation.compo
 
 const routes: Routes = [
   { path: '', component: HomepageComponent, data: { title: "HR Routeplanner" } },
-  { path: 'elective-courses', component: ElectiveCoursesComponent, data: { title: "Elective Course List" } },
-  { path: 'elective-course/:code/:group', component: ElectiveCourseDescriptionComponent, data: { title: "Elective Course" } },
+  // { path: 'elective-courses', component: ElectiveCoursesComponent, data: { title: "Elective Course List" } },
+  // { path: 'elective-course/:code/:group', component: ElectiveCourseDescriptionComponent, data: { title: "Elective Course" } },
   { path: 'building-navigation', component: BuildingNavigationComponent, data: { title: "Navigation" } },
   { path: 'maps-navigation', component: MapsNavigationComponent, data: { title: "Navigation" } },
   { path: '**', redirectTo: '' }
