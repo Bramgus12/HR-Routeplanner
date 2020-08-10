@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.exceptions.Error;
 import com.bramgussekloo.projects.models.Building;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,8 @@ public class BuildingController {
     @ApiOperation(value = "Get all buildings in a list")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping
     private ResponseEntity<ArrayList<Building>> getAllBuildings() throws Exception {
@@ -34,7 +36,8 @@ public class BuildingController {
     @ApiOperation(value = "Get a certain building by id")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved building"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("/{id}")
     private ResponseEntity<Building> getBuilding(

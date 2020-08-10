@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.exceptions.Error;
 import com.bramgussekloo.projects.models.LocationNodeNetwork;
 import com.bramgussekloo.projects.models.Node;
 import com.bramgussekloo.projects.routeengine.RouteEngine;
@@ -21,7 +22,8 @@ public class RoutesController {
     @ApiOperation(value = "Get the route between two nodes")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created route"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping
     private ResponseEntity<ArrayList<Node>> getLocationNodeNetwork(

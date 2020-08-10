@@ -1,5 +1,6 @@
 package com.bramgussekloo.projects.controller;
 
+import com.bramgussekloo.projects.exceptions.Error;
 import com.bramgussekloo.projects.models.LocationNodeNetwork;
 import com.bramgussekloo.projects.models.Node;
 import com.bramgussekloo.projects.models.NodesAndBuildingName;
@@ -19,7 +20,8 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Get a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork"),
-            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("locationnodenetwork/{locationName}")
     private ResponseEntity<LocationNodeNetwork> getLocationNodeNetwork(
@@ -33,8 +35,9 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Create a new locationNodeNetwork")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully created LocationNodeNetwork"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("admin/locationnodenetwork/{addressId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -50,10 +53,12 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Delete a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Successfully deleted LocationNodeNetwork"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @DeleteMapping("admin/locationnodenetwork/{locationName}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     private ResponseEntity<Void> deleteLocationNodeNetwork(
             @ApiParam(value = "The name of the location you want to delete", required = true) @PathVariable String locationName
     ) throws Exception {
@@ -65,7 +70,8 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Get all nodes by type")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("locationnodenetwork")
     private ResponseEntity<ArrayList<Node>> getAllNodesByType(
@@ -78,8 +84,9 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Update a certain locationNodeNetwork")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated locationNodeNetwork"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PutMapping("admin/locationnodenetwork")
     @ResponseStatus(HttpStatus.CREATED)
@@ -96,7 +103,8 @@ public class LocationNodeNetworkController {
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName"),
-            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("locationnodenetwork/room")
     private ResponseEntity<ArrayList<NodesAndBuildingName>> getAllRooms() throws Exception {

@@ -1,6 +1,7 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.exceptions.Error;
 import com.bramgussekloo.projects.models.User;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,9 @@ public class UserController {
     @ApiOperation(value = "Get a list of users")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Invalid credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Invalid credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping
     private ResponseEntity<ArrayList<User>> getAllUsers() throws Exception {
@@ -27,8 +29,9 @@ public class UserController {
     @ApiOperation(value = "Create a new User")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully retrieved list"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Invalid credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Invalid credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,8 +44,9 @@ public class UserController {
     @ApiOperation(value = "Update an Address object")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Successfully updated the User object"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -62,10 +66,12 @@ public class UserController {
     @ApiOperation(value = "Delete a user")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Successfully deleted the user"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     private ResponseEntity<Void> deleteUser(
             @ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Integer id
     ) throws Exception {
