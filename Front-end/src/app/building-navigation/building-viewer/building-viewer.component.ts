@@ -19,7 +19,7 @@ import { MeshStandardMaterial } from 'three';
   styleUrls: ['./building-viewer.component.scss']
 })
 export class BuildingViewerComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('threejscontainer') threejsContainer: ElementRef;
+  @ViewChild('threejscontainer', { static: true }) threejsContainer: ElementRef;
 
   public scene: THREE.Scene;
   public camera: THREE.PerspectiveCamera;

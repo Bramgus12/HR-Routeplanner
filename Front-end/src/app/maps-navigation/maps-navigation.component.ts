@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef  } from '@angular/core';
 import { Router } from '@angular/router';
+import { GoogleMap } from '@angular/google-maps';
 
 import { AppService } from '../app.service';
-import { keys } from '../3rdparty/api_keys';
-import { GoogleMapsService, TravelMode, TransitMode } from '../3rdparty/google-maps.service';
+import { GoogleMapsService, TransitMode, TravelMode } from '../3rdparty/google-maps.service';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
 import { TimeMode, TimeModeOption } from '../shared/dataclasses';
 import { NavigationState, MapsStep } from '../shared/navigation-state';
@@ -13,7 +13,8 @@ import { NavigationState, MapsStep } from '../shared/navigation-state';
   templateUrl: './maps-navigation.component.html',
   styleUrls: ['./maps-navigation.component.scss']
 })
-export class MapsNavigationComponent implements OnInit {
+export class MapsNavigationComponent implements OnInit, AfterViewInit {
+  @ViewChild(GoogleMap) googleMap: GoogleMap;
 
   navigationState: NavigationState;
   stateData: MapsStep;
@@ -26,7 +27,7 @@ export class MapsNavigationComponent implements OnInit {
     { name: "Arrival by", value: TimeMode.ARRIVAL_BY },
     { name: "Depart by", value: TimeMode.DEPART_BY }
   ];
-  timeInfo = "";
+  timeInfo = "Loading...";
   fastestRoute = false;
   timepickerTheme: NgxMaterialTimepickerTheme = {
     container: {
@@ -40,13 +41,18 @@ export class MapsNavigationComponent implements OnInit {
     }
   };
 
-  lat = 51.917218;
-  lng = 4.48405;
-  zoom = 16;
+  mapOptions: google.maps.MapOptions = { 
+    center: { lat: 51.917218, lng: 4.4840 },
+    zoom: 16,
+    streetViewControl: false,
+    clickableIcons: false,
+    fullscreenControl: false,
+    mapTypeControl: false
+  };
 
   private directionsRenderer: google.maps.DirectionsRenderer;
 
-  constructor(private router: Router, private googleMapsService: GoogleMapsService, private appService: AppService/*, private routeService: OpenrouteserviceService*/) {
+  constructor(private router: Router, private appService: AppService, private googleMapsService: GoogleMapsService, private cdr: ChangeDetectorRef) {
     const state = this.router.getCurrentNavigation().extras.state;
 
     if(state == undefined || !(state instanceof NavigationState)) {
@@ -99,11 +105,8 @@ export class MapsNavigationComponent implements OnInit {
     }
   }
 
-  /**
-   * Gets called when google maps is loaded into the html DOM
-   */
-  onMapReady(map: google.maps.Map){
-    this.directionsRenderer.setMap(map);
+  ngAfterViewInit(){
+    this.directionsRenderer.setMap(this.googleMap.googleMap);
     this.getDirections();
   }
 
@@ -157,6 +160,10 @@ export class MapsNavigationComponent implements OnInit {
       } else {
         this.timeInfo = "No info found";
       }
+
+      // For some stupid reason the template won't properly update without doing it manually
+      // This may have to do with Angular switching to Ivy but I can't find a proper solution
+      this.cdr.detectChanges()
     })
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BuildingViewerComponent } from './building-viewer/building-viewer.component';
-import { MatSliderChange, MatSlider } from '@angular/material';
+import { MatSliderChange, MatSlider } from '@angular/material/slider';
 import { BuildingNavigationService } from './building-navigation.service';
 import { Building, Address, Node } from '../shared/dataclasses';
 import { NavigationState, BuildingStep } from '../shared/navigation-state';
@@ -13,8 +13,8 @@ import { Observable, forkJoin } from 'rxjs';
   styleUrls: ['./building-navigation.component.scss']
 })
 export class BuildingNavigationComponent implements OnInit {
-  @ViewChild(BuildingViewerComponent) buildingViewer: BuildingViewerComponent;
-  @ViewChild(MatSlider) travelledDistanceSlider: MatSlider;
+  @ViewChild(BuildingViewerComponent, { static: true }) buildingViewer: BuildingViewerComponent;
+  @ViewChild(MatSlider, { static: true }) travelledDistanceSlider: MatSlider;
   
   private navigationStateData: BuildingStep;
   public navigationState: NavigationState;

@@ -14,7 +14,7 @@ import { AppService } from './app.service';
 export class AppComponent implements OnInit{
 
   @Output() title = 'No title';
-  @ViewChild('sideDrawer') sideDrawer: MatDrawer;
+  @ViewChild('sideDrawer', { static: true }) sideDrawer: MatDrawer;
 
   constructor(private router: Router, private titleService: Title, private appService: AppService){}
 

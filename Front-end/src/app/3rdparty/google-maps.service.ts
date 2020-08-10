@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { MapsAPILoader } from '@agm/core';
+import { loadAPI } from './google-maps-api-loader';
+import { keys } from './api_keys';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GoogleMapsService {
-  private geocoder: google.maps.Geocoder; // type is 'Geocode' from '@agm/core/map-types' when @agm/core releases an update
+  private geocoder: google.maps.Geocoder;
   private autocomplete: google.maps.places.AutocompleteService;
   private directions: google.maps.DirectionsService;
   private componentRestrictions = { country: 'nl' }
 
-  constructor(private mapsAPI: MapsAPILoader) {
-    mapsAPI.load().then(() => {
+  constructor() {
+    loadAPI({
+      apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions']
+    }).then(() => {
+      console.log("Loaded GMaps API");
+
       this.geocoder = new google.maps.Geocoder();
       this.autocomplete = new google.maps.places.AutocompleteService();
       this.directions = new google.maps.DirectionsService();
 
-      console.log("Loaded MapsAPI")
-    })
+      console.log("Loaded GMaps Services")
+    }).catch(err => console.error("Error loading Google Maps API:\n" + err))
   }
 
   /**

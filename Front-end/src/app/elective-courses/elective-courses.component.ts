@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatSort, MatTableDataSource, MatPaginator, PageEvent } from '@angular/material';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { ElectiveCourseService } from './elective-courses.service';
 import { ElectiveCourse } from '../shared/dataclasses';
@@ -13,8 +15,8 @@ export class ElectiveCoursesComponent implements OnInit {
   electiveCourses = new MatTableDataSource([]);
   errorMessage = "";
 
-  @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private service: ElectiveCourseService) { }
 

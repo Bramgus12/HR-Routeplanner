@@ -40,8 +40,8 @@ export class HomepageComponent implements OnInit {
     }
   };
 
-  @ViewChild('fromInput') fromFormControl: FormControl;
-  @ViewChild('toInput') toFormControl: FormControl;
+  @ViewChild('fromInput', { static: true }) fromFormControl: FormControl;
+  @ViewChild('toInput', { static: true }) toFormControl: FormControl;
 
   constructor(private service: HomepageService, private appService: AppService, private mapsService: GoogleMapsService, private router: Router) { }
 

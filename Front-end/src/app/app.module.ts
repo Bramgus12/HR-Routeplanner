@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule }   from '@angular/forms';
+import { GoogleMapsModule } from '@angular/google-maps';
 
-import { AgmCoreModule } from '@agm/core';
 import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
 import { RoutingModule } from './routing.module';
 import { MaterialModule } from './material.module';
@@ -19,12 +19,11 @@ import { BuildingNavigationComponent } from './building-navigation/building-navi
 import { BuildingViewerComponent } from './building-navigation/building-viewer/building-viewer.component';
 import { MapsNavigationComponent } from './maps-navigation/maps-navigation.component';
 
-import { keys } from './3rdparty/api_keys';
 import { SafeHTMLPipe } from './pipes/safe-html.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { ElectiveCoursesComponent } from './elective-courses/elective-courses.component';
-import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-course-description/elective-course-description.component';
+// import { ElectiveCoursesComponent } from './elective-courses/elective-courses.component';
+// import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-course-description/elective-course-description.component';
 
 @NgModule({
   imports: [
@@ -35,8 +34,8 @@ import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-
     RoutingModule,
     MaterialModule,
     NgxMaterialTimepickerModule,
-    AgmCoreModule.forRoot({ apiKey: keys.google_maps, region: 'NL', libraries: ['places', 'directions'] }),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    GoogleMapsModule
   ],
   declarations: [
     AppComponent,
@@ -48,13 +47,9 @@ import { ElectiveCourseDescriptionComponent } from './elective-courses/elective-
     BuildingViewerComponent,
     MapsNavigationComponent,
     SafeHTMLPipe,
-    ElectiveCoursesComponent,
-    ElectiveCourseDescriptionComponent,
+    // ElectiveCoursesComponent,
+    // ElectiveCourseDescriptionComponent,
     NextStateButtonComponent,
-    NextStateDialog,
-    ArrivalStateDialog
-  ],
-  entryComponents: [
     NextStateDialog,
     ArrivalStateDialog
   ],
