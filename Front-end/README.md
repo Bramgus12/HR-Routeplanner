@@ -1,4 +1,4 @@
-# ProjectC Front-end
+# HR-Routeplanner Front-end
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.9.
 
@@ -7,39 +7,11 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 - [File structure](#file-structure)
 - [Angular](#angular)
 - [Three.js](#threejs)
-- [Navigation APIs](#navigation-apis)
 
 ---
 
 ## Installation
-
-### Install NodeJS
-The front-end uses [NodeJS](https://nodejs.org/) to run [angular](https://angular.io/), Node also installs NPM which is the pakage manager for NodeJS
-
-
-### Install `@angular/cli`
-```
-  npm install -g @angular/cli
-```
-
-### Install node dependencies
-Make sure you are in the `Front-end` directory and run
-```
-  npm install
-```
-
-### Install `api_keys.ts`
-* Download `api_keys.ts` from google drive or other safe storage location
-* Place the file in `src/app/3rdparty`
-
-Now you are good to go
-
-### Start local development server
-```
-  ng serve
-```
-
----
+[See the wiki page](https://github.com/Bramgus12/HR-Routeplanner/wiki/Installation_Angular)
 
 ## File structure
 Important files
@@ -69,7 +41,6 @@ Important files
 :   :   |-- hro-theme.scss <-- sets the theme
 :   |-- index.html <-- main html template
 :   |-- styles.scss <-- main stylesheet (scss) file, unused
-
 ```
 
 ---
@@ -79,6 +50,8 @@ Important files
 #### Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+
+Angular will automatically try to communicate with the back-end API on `localhost:8080`
 
 #### Code scaffolding
 
@@ -131,9 +104,3 @@ For example:
 ```
 http://localhost:8080/building-navigation?locationName=Wijnhaven&from=0&to=744
 ```
-
----
-
-## Navigation APIs
-
-* Google Maps using `@agm/core` and `@types/googlemaps`
