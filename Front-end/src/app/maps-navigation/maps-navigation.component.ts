@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef  } from '@angular/core';
 import { Router } from '@angular/router';
 import { GoogleMap } from '@angular/google-maps';
 
@@ -52,7 +52,7 @@ export class MapsNavigationComponent implements OnInit, AfterViewInit {
 
   private directionsRenderer: google.maps.DirectionsRenderer;
 
-  constructor(private router: Router, private appService: AppService, private googleMapsService: GoogleMapsService) {
+  constructor(private router: Router, private appService: AppService, private googleMapsService: GoogleMapsService, private cdr: ChangeDetectorRef) {
     const state = this.router.getCurrentNavigation().extras.state;
 
     if(state == undefined || !(state instanceof NavigationState)) {
@@ -160,6 +160,10 @@ export class MapsNavigationComponent implements OnInit, AfterViewInit {
       } else {
         this.timeInfo = "No info found";
       }
+
+      // For some stupid reason the template won't properly update without doing it manually
+      // This may have to do with Angular switching to Ivy but I can't find a proper solution
+      this.cdr.detectChanges()
     })
   }
 
