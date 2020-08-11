@@ -1,6 +1,5 @@
-package com.bramgussekloo.projects.FileHandling;
+package com.bramgussekloo.projects.utils;
 
-import com.bramgussekloo.projects.Properties.GetPropertyValues;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,8 +1,8 @@
 package com.bramgussekloo.projects.routeengine;
 
-import com.bramgussekloo.projects.dataclasses.ConnectedNode;
-import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.models.ConnectedNode;
+import com.bramgussekloo.projects.models.LocationNodeNetwork;
+import com.bramgussekloo.projects.models.Node;
 import com.carrotsearch.hppc.IntIndexedContainer;
 import com.graphhopper.routing.Dijkstra;
 import com.graphhopper.routing.Path;
@@ -26,7 +26,7 @@ public class RouteEngine {
     public void init(LocationNodeNetwork network) {
         FlagEncoder encoder = new FootFlagEncoder();
         EncodingManager em = EncodingManager.create(encoder);
-        GraphBuilder gb = new GraphBuilder(em).setLocation("graphhopper_folder").setStore(false);
+        GraphBuilder gb = new GraphBuilder(em);
         Graph graph = gb.create();
 
         this.nodeMap = new HashMap<>();

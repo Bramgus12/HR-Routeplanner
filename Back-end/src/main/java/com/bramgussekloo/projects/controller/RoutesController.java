@@ -1,17 +1,18 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
-import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.dataclasses.Node;
+import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.LocationNodeNetwork;
+import com.bramgussekloo.projects.models.Node;
 import com.bramgussekloo.projects.routeengine.RouteEngine;
-import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.ArrayList;
 
 @Api(value = "RouteEngine Controller")
 @RestController
@@ -20,28 +21,20 @@ public class RoutesController {
 
     @ApiOperation(value = "Get the route between two nodes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created route", response = Node.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully created route"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping
-    private ResponseEntity getLocationNodeNetwork(
+    private ResponseEntity<ArrayList<Node>> getLocationNodeNetwork(
             @ApiParam(value = "The value of the node you want to start at", required = true) @RequestParam Integer from,
             @ApiParam(value = "The value of the node you want to end at", required = true) @RequestParam Integer to,
-            @ApiParam(value = "The name of the location you want to be routed in", required = true) @RequestParam String locationName) {
-        try {
-            RouteEngine routeEngine = new RouteEngine();
-            LocationNodeNetwork network = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
-            routeEngine.init(network);
-            return ResponseEntity.status(HttpStatus.OK).body(routeEngine.generateRoute(from, to));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    // Puts the exceptions into a Spring certified object
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
+            @ApiParam(value = "The name of the location you want to be routed in", required = true) @RequestParam String locationName
+    ) throws Exception {
+        RouteEngine routeEngine = new RouteEngine();
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork();
+        locationNodeNetwork.getLocationNodeNetwork(locationName);
+        routeEngine.init(locationNodeNetwork);
+        return new ResponseEntity<>(routeEngine.generateRoute(from, to), HttpStatus.OK);
     }
 }

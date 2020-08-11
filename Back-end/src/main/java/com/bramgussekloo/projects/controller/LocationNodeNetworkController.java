@@ -1,18 +1,16 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
-import com.bramgussekloo.projects.dataclasses.LocationNodeNetwork;
-import com.bramgussekloo.projects.dataclasses.Node;
-import com.bramgussekloo.projects.dataclasses.NodesAndBuildingName;
-import com.bramgussekloo.projects.statements.LocationNodeNetworkStatements;
+import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.LocationNodeNetwork;
+import com.bramgussekloo.projects.models.Node;
+import com.bramgussekloo.projects.models.NodesAndBuildingName;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.util.ArrayList;
 
 @Api(value = "LocationNodeNetwork Controller")
 @RestController
@@ -21,112 +19,95 @@ public class LocationNodeNetworkController {
 
     @ApiOperation(value = "Get a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("locationnodenetwork/{locationName}")
-    private ResponseEntity getLocationNodeNetwork(
+    private ResponseEntity<LocationNodeNetwork> getLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to retrieve", required = true) @PathVariable String locationName
-    ) {
-        try {
-            LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.getLocationNodeNetwork(locationName);
-            return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork();
+        locationNodeNetwork.getLocationNodeNetwork(locationName);
+        return new ResponseEntity<>(locationNodeNetwork, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Create a new locationNodeNetwork")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 201, message = "Successfully created LocationNodeNetwork"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("admin/locationnodenetwork/{addressId}")
-    private ResponseEntity createLocationNodeNetwork(
-            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestParam("file") MultipartFile file,
+    @ResponseStatus(HttpStatus.CREATED)
+    private ResponseEntity<LocationNodeNetwork> createLocationNodeNetwork(
+            @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestPart MultipartFile file,
             @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.createLocationNodeNetwork(file, addressId));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork();
+        locationNodeNetwork.createLocationNodeNetwork(file, addressId);
+        return new ResponseEntity<>(locationNodeNetwork, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Delete a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted LocationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 204, message = "Successfully deleted LocationNodeNetwork"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @DeleteMapping("admin/locationnodenetwork/{locationName}")
-    private ResponseEntity deleteLocationNodeNetwork(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private ResponseEntity<Void> deleteLocationNodeNetwork(
             @ApiParam(value = "The name of the location you want to delete", required = true) @PathVariable String locationName
-    ) {
-        try {
-            LocationNodeNetwork locationNodeNetwork = LocationNodeNetworkStatements.deleteLocationNodeNetwork(locationName);
-            return ResponseEntity.status(HttpStatus.OK).body(locationNodeNetwork);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(locationName);
+        locationNodeNetwork.deleteLocationNodeNetwork();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @ApiOperation(value = "Get all nodes by type")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = Node.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("locationnodenetwork")
-    private ResponseEntity getAllNodesByType(
+    private ResponseEntity<ArrayList<Node>> getAllNodesByType(
             @ApiParam(value = "Name of the location where you want to retrieve nodes from", required = true) @RequestParam String locationName,
             @ApiParam(value = "Type of the node where you want to have a list of", required = true) @RequestParam String type
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllNodesByType(locationName, type));
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        return new ResponseEntity<>(Node.getAllNodesByType(locationName, type), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Update a certain locationNodeNetwork")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated locationNodeNetwork", response = LocationNodeNetwork.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 201, message = "Successfully updated locationNodeNetwork"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PutMapping("admin/locationnodenetwork")
-    private ResponseEntity updateLocationNodeNetwork(
+    @ResponseStatus(HttpStatus.CREATED)
+    private ResponseEntity<LocationNodeNetwork> updateLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to update", required = true) @RequestParam String locationName,
             @ApiParam(value = "The ID of the address that you want to pair this locationNodeNetwork with", required = true) @RequestParam Integer addressId,
-            @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestParam MultipartFile file
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.updateLocationNodeNetwork(locationName, file, addressId));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+            @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestPart MultipartFile file
+    ) throws Exception {
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(locationName);
+        locationNodeNetwork.updateLocationNodeNetwork(file, addressId);
+        return new ResponseEntity<>(locationNodeNetwork, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get all nodes that are a room")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName", response = NodesAndBuildingName.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 200, message = "Successfully retrieved list of nodes with the buildingName"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("locationnodenetwork/room")
-    private ResponseEntity getAllRooms() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(LocationNodeNetworkStatements.getAllRooms());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException(e.getMessage());
-        }
-    }
-
-    // puts the Error in the right format
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
+    private ResponseEntity<ArrayList<NodesAndBuildingName>> getAllRooms() throws Exception {
+        return new ResponseEntity<>(NodesAndBuildingName.getAllRooms(), HttpStatus.OK);
     }
 }
