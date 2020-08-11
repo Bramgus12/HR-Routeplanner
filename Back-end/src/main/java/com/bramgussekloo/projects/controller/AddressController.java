@@ -1,18 +1,15 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
-import com.bramgussekloo.projects.dataclasses.Address;
-import com.bramgussekloo.projects.statements.AddressStatements;
+import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.Address;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
-//Makes it a REST-controller
 @Api(value = "Address controller")
 @RestController
 @RequestMapping("/api/")
@@ -21,130 +18,115 @@ public class AddressController {
     // Get all the address objects in a list
     @ApiOperation(value = "Get a list of addresses")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = Address.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("address")
-    private ResponseEntity getAllAddresses() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAllAddresses());
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<ArrayList<Address>> getAllAddresses() throws Exception {
+        return new ResponseEntity<>(Address.getAllFromDatabase(), HttpStatus.OK);
     }
 
     // Get a certain address object
     @ApiOperation(value = "Get a certain address")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, response = Address.class, message = "Successfully gotten the address"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully gotten the address"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("address/{id}")
-    private ResponseEntity getAddress(@ApiParam(value = "the id of the address you want", required = true) @PathVariable Integer id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddress(id));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<Address> getAddress(
+            @ApiParam(value = "the id of the address you want", required = true) @PathVariable Integer id
+    ) throws Exception {
+        Address add = new Address();
+        add.getFromDatabase(id);
+        return new ResponseEntity<>(add, HttpStatus.OK);
     }
 
     // Create a new address object
     @ApiOperation(value = "Create a new address")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created a new address in the database", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 201, message = "Successfully created a new address in the database"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("admin/address")
-    private ResponseEntity createAddress(
+    @ResponseStatus(HttpStatus.CREATED)
+    private ResponseEntity<Address> createAddress(
             @ApiParam(value = "The Address that you want to add", required = true) @RequestBody Address address
-    ) {
-        try {
-            Address result = AddressStatements.createAddress(address);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        address.createInDatabase();
+        return new ResponseEntity<>(address, HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Get an address by Roomcode")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully retrieved address"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("address/room")
-    private ResponseEntity getAddressByRoomCode(
-            @ApiParam(value = "The code of the room, you want to have the address of", required = true) @RequestParam String code
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByRoomCode(code));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<Address> getAddressByRoomCode(
+            @ApiParam(
+                    value = "The code of the room you want to have the address of", required = true) @RequestParam String code
+    ) throws Exception {
+        Address add = new Address();
+        add.getFromDatabaseByRoomCode(code);
+        return new ResponseEntity<>(add, HttpStatus.OK);
     }
 
     @ApiOperation(value = "Get an address by building name")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved address", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully retrieved address"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("address/building")
-    private ResponseEntity getAddressByBuildingName(
+    private ResponseEntity<Address> getAddressByBuildingName(
             @ApiParam(value = "The name of a building", required = true) @RequestParam String name
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.getAddressByBuildingName(name));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        Address add = new Address();
+        add.getFromDatabaseByBuildingName(name);
+        return new ResponseEntity<>(add, HttpStatus.OK);
     }
 
     // Delete a certain address object.
-    @ApiOperation(value = "Delete an address", response = Address.class)
+    @ApiOperation(value = "Delete an address")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted the address", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 204, message = "Successfully deleted the address"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @DeleteMapping("admin/address/{id}")
-    private ResponseEntity deleteAddress(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private ResponseEntity<Void> deleteAddress(
             @ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Integer id
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(AddressStatements.deleteAddress(id));
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        Address add = new Address(id);
+        add.deleteFromDatabase();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // Update a certain object
     @ApiOperation(value = "Update an Address object")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated the Address object", response = Address.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 201, message = "Successfully updated the Address object"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PutMapping("admin/address/{id}")
-    private ResponseEntity updateAddress(
+    @ResponseStatus(HttpStatus.CREATED)
+    private ResponseEntity<Address> updateAddress(
             @ApiParam(value = "Id of the address that you want to update", required = true) @PathVariable Integer id,
             @ApiParam(value = "The object with the address that you want to update", required = true) @RequestBody Address address
-    ) {
-        try {
-            if (id.equals(address.getId())) {
-                Address result = AddressStatements.updateAddress(address);
-                return ResponseEntity.status(HttpStatus.OK).body(result);
-            } else {
-                throw new IllegalArgumentException("ID's are different");
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
+    ) throws Exception {
+        if (id.equals(address.getId())) {
+            address.updateInDatabase();
+            return new ResponseEntity<>(address, HttpStatus.CREATED);
+        } else {
+            throw new BadRequestException("ID's are different");
         }
-    }
-
-    // puts the Error in the right format
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

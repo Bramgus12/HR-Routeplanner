@@ -1,6 +1,6 @@
-package com.bramgussekloo.projects.Security;
+package com.bramgussekloo.projects.config;
 
-import com.bramgussekloo.projects.dataclasses.Error401;
+import com.bramgussekloo.projects.exceptions.Error;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
@@ -23,7 +23,7 @@ public class AuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         PrintWriter writer = response.getWriter();
         System.out.println("HTTP STATUS 401 - " + authEx.getMessage() + " - URI: " + request.getRequestURI() + " - Host: " + request.getRemoteHost());
-        writer.print(objectMapper.writeValueAsString(new Error401(401, "Unathorized", authEx.getMessage(), request.getRequestURI())));
+        writer.print(objectMapper.writeValueAsString(new Error(401, "Unathorized", authEx.getMessage(), request.getRequestURI())));
     }
 
     @Override

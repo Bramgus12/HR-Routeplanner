@@ -1,7 +1,6 @@
-package com.bramgussekloo.projects.Security;
+package com.bramgussekloo.projects.config;
 
-import com.bramgussekloo.projects.Properties.GetPropertyValues;
-import com.bramgussekloo.projects.dataclasses.User;
+import com.bramgussekloo.projects.utils.GetPropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,16 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
-    public static User HashUserPassword(User user) {
-        User newUser = new User();
-        newUser.setId(user.getId());
-        newUser.setAuthority(user.getAuthority());
-        newUser.setUser_name(user.getUser_name());
-        newUser.setEnabled(user.getEnabled());
-        String newPassword = encoder().encode(user.getPassword());
-        System.out.println(newPassword);
-        newUser.setPassword(newPassword);
-        return newUser;
+    public static String HashUserPassword(String password) {
+        return encoder().encode(password);
     }
 
     @Bean

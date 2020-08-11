@@ -1,149 +1,98 @@
 package com.bramgussekloo.projects.controller;
 
-import com.bramgussekloo.projects.ProjectsApplication;
-import com.bramgussekloo.projects.dataclasses.Institute;
-import com.bramgussekloo.projects.statements.InstituteStatements;
+import com.bramgussekloo.projects.exceptions.BadRequestException;
+import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.Institute;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 @Api(value = "Institute controller")
 @RestController
 @RequestMapping("/api/")
 public class InstituteController {
 
-    /**
-     * Gets all Institutes as an Object and save them into a List
-     *
-     * @return List of Objects
-     */
     @ApiOperation(value = "Get a list of all institutes")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list", response = Institute.class, responseContainer = "List"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully retrieved list"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("institute")
-    private ResponseEntity getInstituteList() {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.getAllInstitutes());
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    private ResponseEntity<ArrayList<Institute>> getInstituteList() throws Exception {
+            return new ResponseEntity<>(Institute.getAllInstitutes(), HttpStatus.OK);
     }
 
-    /**
-     * Get the Institute name from the Database
-     *
-     * @param id
-     * @return Institute Object
-     */
     @ApiOperation(value = "Get a certain institute by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved institute object", response = Institute.class),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully retrieved institute object"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("institute/{id}")
-    private ResponseEntity getInstituteById(
+    private ResponseEntity<Institute> getInstituteById(
             @ApiParam(value = "Id of the institute", required = true) @PathVariable Integer id
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.getInstituteName(id));
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        Institute institute = new Institute();
+        institute.getNameFromDatabase(id);
+        return new ResponseEntity<>(institute, HttpStatus.OK);
     }
 
-    /**
-     * Creates a new Institute Object and add its value to the Database
-     *
-     * @param institute
-     * @return HttpStatus
-     */
     @ApiOperation(value = "Create a new institute")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created institute", response = Institute.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 201, message = "Successfully created institute"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("admin/institute")
-    private ResponseEntity createInstitute(
-            @ApiParam(value = "Institute that you want to create, leave id = null", required = true) @RequestBody Institute institute
-    ) {
-        try {
-            Institute result = InstituteStatements.createInstitute(institute);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    private ResponseEntity<Institute> createInstitute(
+            @ApiParam(value = "Institute that you want to create.", required = true) @RequestBody Institute institute
+    ) throws Exception {
+        institute.createInDatabase();
+        return new ResponseEntity<>(institute, HttpStatus.CREATED);
     }
 
-    /**
-     * Deletes an entry from the Database.
-     *
-     * @param id
-     * @return HttpStatus
-     */
+
     @ApiOperation(value = "Delete an institute by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully deleted institute", response = Institute.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 204, message = "Successfully deleted institute"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @DeleteMapping("admin/institute/{id}")
-    private ResponseEntity deleteInstitute(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private ResponseEntity<Void> deleteInstitute(
             @ApiParam(value = "Id of the institute that you want to delete", required = true) @PathVariable Integer id
-    ) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.deleteInstitute(id));
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+    ) throws Exception {
+        Institute institute = new Institute(id);
+        institute.deleteInstitute();
+        return new ResponseEntity<>( HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * Updates an entry in the Database
-     *
-     * @param id
-     * @param institute
-     * @return updated Database entry
-     */
     @ApiOperation(value = "Update an institute")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated the institute", response = Institute.class),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "Bad credentials")
+            @ApiResponse(code = 201, message = "Successfully updated the institute"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PutMapping("admin/institute/{id}")
-    private ResponseEntity updateInstitute(
+    @ResponseStatus(HttpStatus.CREATED)
+    private ResponseEntity<Institute> updateInstitute(
             @ApiParam(value = "The id of the institute you want to update", required = true) @PathVariable Integer id,
             @RequestBody Institute institute
-    ) {
-        try {
-            if (id.equals(institute.getId())) {
-                return ResponseEntity.status(HttpStatus.OK).body(InstituteStatements.updateInstitute(institute));
-            } else {
-                throw new IllegalArgumentException("ID's does not match!");
-            }
-        } catch (SQLException e) {
-            throw new IllegalArgumentException(e.getMessage());
+    ) throws Exception {
+        if (id.equals(institute.getId())) {
+            institute.updateInstitute();
+            return new ResponseEntity<>(institute, HttpStatus.CREATED);
+        } else {
+            throw new BadRequestException("ID's does not match!");
         }
-    }
-
-    /**
-     * puts the Error in the right format
-     *
-     * @param e
-     * @param response
-     * @throws IOException
-     */
-    @ExceptionHandler
-    void handleIllegalArgumentException(IllegalArgumentException e, HttpServletResponse response) throws IOException {
-        ProjectsApplication.printErrorInConsole(e.getMessage());
-        response.sendError(HttpStatus.BAD_REQUEST.value());
     }
 }

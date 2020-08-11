@@ -1,4 +1,4 @@
-package com.bramgussekloo.projects.dataclasses;
+package com.bramgussekloo.projects.models;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
