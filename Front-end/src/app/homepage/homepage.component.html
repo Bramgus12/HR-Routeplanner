@@ -3,7 +3,7 @@
     <mat-form-field>
       <input matInput name="from" placeholder="From" [(ngModel)]="navigationModel.from" [matAutocomplete]="fromAuto" required #fromInput=ngModel>
       <mat-icon matSuffix>gps_fixed</mat-icon>
-      <mat-autocomplete #fromAuto="matAutocomplete">
+      <mat-autocomplete autoActiveFirstOption #fromAuto="matAutocomplete">
         <mat-option *ngFor="let option of fromSuggestions" [value]="option">
           {{ option }}
         </mat-option>

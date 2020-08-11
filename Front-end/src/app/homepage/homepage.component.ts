@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
-import { Observable, interval, forkJoin, of } from 'rxjs';
-import { map, startWith, throttleTime, debounceTime, delay } from 'rxjs/operators';
+import { Observable, forkJoin } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { HomepageService } from './homepage.service';
 import { AppService } from '../app.service'; 
@@ -74,18 +74,22 @@ export class HomepageComponent implements OnInit {
       });
     }, error => this.errorMessage = "Failed to get classrooms from the API");
 
-    this.fromFormControl.valueChanges.pipe(debounceTime(400)).subscribe((value: string) => {
+    this.fromFormControl.valueChanges.pipe(debounceTime(300)).subscribe((value: string) => {
       if(value.length != 0){
-        this.fromSuggestions = this.buildings.map(val => val.name).filter(val => val.toLowerCase().includes(value.toLowerCase()));
-        this.fromSuggestions = this.fromSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().replace(/\./g, '').includes(value.toLowerCase().replace(/\./g, ''))));
+        var _fromSuggestions = this.buildings.map(val => val.name).filter(val => val.toLowerCase().includes(value.toLowerCase()));
+        _fromSuggestions = _fromSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().replace(/\./g, '').includes(value.toLowerCase().replace(/\./g, ''))));
 
-        // Only check if suggetions is empty
-        if(this.fromSuggestions.length == 0) this.mapsService.getPlacePredictions(value).subscribe(result => this.fromSuggestions = result.map(val => val.description));
-        this.fromSuggestions.sort();
-
-        if(this.rooms.filter(room => room.code == value).length > 0){
+        if (this.rooms.filter(room => room.code == value).length > 0) {
           this.navigationModel.fromNode = this.rooms.find(({ code }) => code == value);
-        } else if(this.navigationModel.hasOwnProperty("fromNode")) this.navigationModel.fromNode = null;
+        } else if (this.navigationModel.hasOwnProperty("fromNode")) this.navigationModel.fromNode = null;
+
+        // Only check if suggestions is empty
+        if (_fromSuggestions.length == 0) {
+            this.mapsService.getPlacePredictions(value).subscribe(result => {
+              this.fromSuggestions = result.map(val => val.description )
+            });
+        } else this.fromSuggestions = _fromSuggestions;
+        
       } else {
         this.navigationModel.from = value;
         this.fromSuggestions = [];
