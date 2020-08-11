@@ -32,8 +32,6 @@ export class HomepageService {
 
   getBuildingEntrances(name: string) {
     const params = new HttpParams().set("locationName", name).set("type", "Entrance");
-    params.append("Test", "testing");
-    console.log(params)
 
     return this.http.get<Node[]>(this.API_URL + "locationnodenetwork", { params });
   }
