@@ -164,7 +164,6 @@ public class Building {
             }
         } else {
             this.id = result.getInt("id");
-            throw new BadRequestException("Resource already exists on id: " + this.id);
         }
     }
 

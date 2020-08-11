@@ -36,7 +36,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     private SecurityContext securityContext() {
         return SecurityContext.builder()
                 .securityReferences(Collections.singletonList(basicAuthReference()))
-                .forPaths(PathSelectors.regex("/api/(user/|admin/)[a-zA-Z0-9/-{}]*"))
+                .forPaths(PathSelectors.regex("/api/(users|admin)[a-zA-Z0-9/-{}]*"))
                 .build();
     }
 

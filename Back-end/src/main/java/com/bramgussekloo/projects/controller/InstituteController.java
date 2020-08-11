@@ -54,7 +54,7 @@ public class InstituteController {
             @ApiParam(value = "Institute that you want to create.", required = true) @RequestBody Institute institute
     ) throws Exception {
         institute.createInDatabase();
-        return new ResponseEntity<>(institute, HttpStatus.OK);
+        return new ResponseEntity<>(institute, HttpStatus.CREATED);
     }
 
 
@@ -90,7 +90,7 @@ public class InstituteController {
     ) throws Exception {
         if (id.equals(institute.getId())) {
             institute.updateInstitute();
-            return new ResponseEntity<>(institute, HttpStatus.OK);
+            return new ResponseEntity<>(institute, HttpStatus.CREATED);
         } else {
             throw new BadRequestException("ID's does not match!");
         }

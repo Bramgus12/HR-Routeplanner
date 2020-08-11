@@ -77,7 +77,7 @@ public class Institute {
         if (!resultSet.next()) {
             throw new BadRequestException("Can't find institute with id " + id);
         } else {
-            setResultInObject(resultSet);
+            ResultSetInObject(resultSet);
         }
     }
 
@@ -97,7 +97,7 @@ public class Institute {
         if (!resultSet.next()) {
             throw new BadRequestException("Can't find institute by name " + instituteName);
         } else {
-            setResultInObject(resultSet);
+            ResultSetInObject(resultSet);
         }
     }
 
@@ -182,7 +182,7 @@ public class Institute {
      *
      * @see com.bramgussekloo.projects.exceptions.HandleExceptions
      */
-    private void setResultInObject(ResultSet resultSet) throws Exception {
+    private void ResultSetInObject(ResultSet resultSet) throws Exception {
         this.name = resultSet.getString("name");
         this.id = resultSet.getInt("id");
     }

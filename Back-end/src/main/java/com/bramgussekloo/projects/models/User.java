@@ -115,9 +115,10 @@ public class User {
         preparedStatement1.setInt(1, this.id);
         ResultSet resultSet = preparedStatement1.executeQuery();
         if (!resultSet.next()) {
+            System.out.println(this.id + " " + this.user_name + " " + this.authority);
             throw new InternalServerException("User doesn't exist on this id after updating");
         } else {
-            setResultInObject(resultSet);
+            ResultInObject(resultSet);
         }
     }
 
@@ -140,6 +141,12 @@ public class User {
                 preparedStatement.setString(3, this.authority);
                 preparedStatement.setBoolean(4, this.enabled);
                 preparedStatement.execute();
+                for (User user : getAllFromDatabase()) {
+                    if (user.getUser_name().equals(this.user_name)) {
+                        this.id = user.id;
+                        break;
+                    }
+                }
             } else {
                 throw new BadRequestException("Password is not long enough. It has to be at least a length of 6.");
             }
@@ -159,7 +166,7 @@ public class User {
             PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM users where id=?;");
             preparedStatement1.setInt(1, id);
             preparedStatement1.execute();
-            setResultInObject(resultSet);
+            ResultInObject(resultSet);
         }
 
     }
@@ -173,7 +180,7 @@ public class User {
         return new User(id, user_nameResult, passwordResult, authorityResult, enabledResult);
     }
 
-    private void setResultInObject(ResultSet resultSet) throws SQLException {
+    private void ResultInObject(ResultSet resultSet) throws SQLException {
         this.user_name = resultSet.getString("user_name");
         this.password = resultSet.getString("password");
         this.authority = resultSet.getString("authority");

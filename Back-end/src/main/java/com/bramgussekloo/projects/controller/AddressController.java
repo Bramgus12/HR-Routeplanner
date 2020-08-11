@@ -124,7 +124,7 @@ public class AddressController {
     ) throws Exception {
         if (id.equals(address.getId())) {
             address.updateInDatabase();
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            return new ResponseEntity<>(address, HttpStatus.CREATED);
         } else {
             throw new BadRequestException("ID's are different");
         }

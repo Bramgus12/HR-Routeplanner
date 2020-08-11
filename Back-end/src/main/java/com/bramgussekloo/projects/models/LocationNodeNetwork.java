@@ -85,8 +85,11 @@ public class LocationNodeNetwork {
     public void createLocationNodeNetwork(MultipartFile file, Integer addressId) throws Exception {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         Tika tika = new Tika();
+        System.out.println(file.getContentType());
         String mimeType = tika.detect(file.getBytes());
-        if (mimeType != null && mimeType.equals("application/json")) {
+        if (mimeType != null && mimeType.equals("text/plain")
+                && Objects.equals(file.getContentType(), "application/json")
+        ) {
             if (!f.exists()) {
                 ObjectMapper mapper = new ObjectMapper();
                 FileService.uploadFile(file, "Locations", file.getOriginalFilename());
@@ -145,7 +148,6 @@ public class LocationNodeNetwork {
     /**
      * Updates the file on the server by a new file. After the update the object will be updated with the new values.
      *
-     * @param locationName The location name which you want to change the json file of.
      * @param file The file that has to replace the old file.
      * @param addressId The id of the address of the location.
      * @throws Exception Will be handled by the HandleExceptions class.
@@ -156,7 +158,10 @@ public class LocationNodeNetwork {
         File resource = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         Tika tika = new Tika();
         String mimeType = tika.detect(file.getBytes());
-        if (mimeType != null && mimeType.equals("application/json") && Objects.requireNonNull(file.getOriginalFilename()).startsWith(this.locationName)) {
+        if (mimeType != null && mimeType.equals("text/plain")
+                && Objects.requireNonNull(file.getOriginalFilename()).startsWith(this.locationName)
+                && Objects.equals(file.getContentType(), "application/json")
+        ) {
             if (resource.exists()) {
                 ObjectMapper mapper = new ObjectMapper();
                 FileService.uploadFile(file, "Locations", Objects.requireNonNull(file.getOriginalFilename()).replace(".json", "_1.json"));
