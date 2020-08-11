@@ -8,7 +8,7 @@ import { HomepageService } from './homepage.service';
 import { AppService } from '../app.service'; 
 import { GoogleMapsService } from '../3rdparty/google-maps.service';
 import { NgxMaterialTimepickerTheme } from 'ngx-material-timepicker';
-import { Building, TimeMode, TimeModeOption, Address, Room } from '../shared/dataclasses';
+import { Building, TimeMode, TimeModeOption, Address, Room, Node } from '../shared/dataclasses';
 import { NavigationState, NavigationStep } from '../shared/navigation-state';
 
 @Component({
@@ -78,6 +78,7 @@ export class HomepageComponent implements OnInit {
       if(value.length != 0){
         var _fromSuggestions = this.buildings.map(val => val.name).filter(val => val.toLowerCase().includes(value.toLowerCase()));
         _fromSuggestions = _fromSuggestions.concat(this.rooms.map(val => val.code).filter(val => val.toLowerCase().replace(/\./g, '').includes(value.toLowerCase().replace(/\./g, ''))));
+        _fromSuggestions.sort();
 
         if (this.rooms.filter(room => room.code == value).length > 0) {
           this.navigationModel.fromNode = this.rooms.find(({ code }) => code == value);
@@ -130,7 +131,7 @@ export class HomepageComponent implements OnInit {
    * Gets called when #navigationForm is submitted
    */
   goToNavigation(){
-    const retrieveAddresses: Observable<Address>[] = [],
+    const retrieveAddresses: Observable<Address | Node[]>[] = [],
       navigationSteps: NavigationStep[] = [];
     let componentUrl = 'maps-navigation',
       fromBuilding = this.buildings.filter(building => building.name == this.navigationModel.from),
@@ -162,19 +163,30 @@ export class HomepageComponent implements OnInit {
       retrieveAddresses.push(this.service.getRoomAddress(this.navigationModel.from));
       fromLocation = this.navigationModel.fromNode.locationName;
     }
+
+    retrieveAddresses.unshift(this.service.getBuildingEntrances(toLocation));
     
     forkJoin(retrieveAddresses).subscribe(results => {
-      const toAddr = results[0];
+      const firstEntrance = (<Node[]>results[0])[0];
+      const toAddr = <Address>results[1];
       this.navigationModel.to = `${toAddr.street} ${toAddr.number}, ${toAddr.city}`;
 
-      if(results.length == 2){
-        const fromAddr = results[1];
+      if(results.length == 3){
+        const fromAddr = <Address>results[2];
         this.navigationModel.from = `${fromAddr.street} ${fromAddr.number}, ${fromAddr.city}`;
       }
 
       if(this.navigationModel.to == this.navigationModel.from){
         componentUrl = 'building-navigation';
-        navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
+
+        // Check if navigation with entrance
+        if(this.navigationModel.fromNode == null){
+          navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: firstEntrance.number, toNode: this.navigationModel.toNode.number } });
+        } else if(this.navigationModel.toNode == null){
+          navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: firstEntrance.number } });
+        } else {
+          navigationSteps.push({ componentUrl: componentUrl, data: { locationName: fromLocation, fromNode: this.navigationModel.fromNode.number, toNode: this.navigationModel.toNode.number }});
+        }
       } else {
         if(this.navigationModel.fromNode != null) {
           componentUrl = 'building-navigation';
