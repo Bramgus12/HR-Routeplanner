@@ -3,17 +3,33 @@ package com.bramgussekloo.projects.controller;
 import com.bramgussekloo.projects.exceptions.BadRequestException;
 import com.bramgussekloo.projects.exceptions.Error;
 import com.bramgussekloo.projects.models.Address;
+import com.bramgussekloo.projects.repositories.AddressRepository;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Api(value = "Address controller")
 @RestController
 @RequestMapping("/api/")
 public class AddressController {
+
+    @Autowired
+    private AddressRepository repository;
+
+    @GetMapping("address/test/{id}")
+    private ResponseEntity<Address> getAddressById(@PathVariable Long id) throws Exception {
+        try {
+            return new ResponseEntity<>(repository.findAddressById(id), HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BadRequestException("Repo is null" + e.getMessage());
+        }
+    }
 
     // Get all the address objects in a list
     @ApiOperation(value = "Get a list of addresses")
@@ -101,7 +117,7 @@ public class AddressController {
     @DeleteMapping("admin/address/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     private ResponseEntity<Void> deleteAddress(
-            @ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Integer id
+            @ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Long id
     ) throws Exception {
         Address add = new Address(id);
         add.deleteFromDatabase();
@@ -109,24 +125,24 @@ public class AddressController {
     }
 
     // Update a certain object
-    @ApiOperation(value = "Update an Address object")
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully updated the Address object"),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
-    })
-    @PutMapping("admin/address/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    private ResponseEntity<Address> updateAddress(
-            @ApiParam(value = "Id of the address that you want to update", required = true) @PathVariable Integer id,
-            @ApiParam(value = "The object with the address that you want to update", required = true) @RequestBody Address address
-    ) throws Exception {
-        if (id.equals(address.getId())) {
-            address.updateInDatabase();
-            return new ResponseEntity<>(address, HttpStatus.CREATED);
-        } else {
-            throw new BadRequestException("ID's are different");
-        }
-    }
+//    @ApiOperation(value = "Update an Address object")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 201, message = "Successfully updated the Address object"),
+//            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+//            @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
+//            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
+//    })
+//    @PutMapping("admin/address/{id}")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    private ResponseEntity<Address> updateAddress(
+//            @ApiParam(value = "Id of the address that you want to update", required = true) @PathVariable Integer id,
+//            @ApiParam(value = "The object with the address that you want to update", required = true) @RequestBody Address address
+//    ) throws Exception {
+//        if (id.equals(address.getId())) {
+//            address.updateInDatabase();
+//            return new ResponseEntity<>(address, HttpStatus.CREATED);
+//        } else {
+//            throw new BadRequestException("ID's are different");
+//        }
+//    }
 }

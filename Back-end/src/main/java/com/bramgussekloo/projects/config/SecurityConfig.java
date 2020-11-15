@@ -26,19 +26,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return encoder().encode(password);
     }
 
-    @Bean
-    public static javax.sql.DataSource createDataSource() {
-        String propFileName = "Database_config.properties";
-        String[] values = GetPropertyValues.getDatabasePropValues(propFileName);
-        org.postgresql.ds.PGPoolingDataSource ds = new org.postgresql.ds.PGPoolingDataSource();
-        ds.setDataSourceName("A Data Source");
-        ds.setServerName(values[3]);
-        ds.setDatabaseName(values[4]);
-        ds.setUser(values[1]);
-        ds.setPassword(values[2]);
-        ds.setPortNumber(5432);
-        return ds;
-    }
+//    @Bean
+//    public static javax.sql.DataSource createDataSource() {
+//        String propFileName = "Database_config.properties";
+//        String[] values = GetPropertyValues.getDatabasePropValues(propFileName);
+//        org.postgresql.ds.PGPoolingDataSource ds = new org.postgresql.ds.PGPoolingDataSource();
+//        ds.setDataSourceName("A Data Source");
+//        ds.setServerName(values[3]);
+//        ds.setDatabaseName(values[4]);
+//        ds.setUser(values[1]);
+//        ds.setPassword(values[2]);
+//        ds.setPortNumber(5432);
+//        return ds;
+//    }
 
     @Bean
     public static PasswordEncoder encoder() {
