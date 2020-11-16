@@ -2,7 +2,7 @@ package com.bramgussekloo.projects.models;
 
 import com.bramgussekloo.projects.exceptions.BadRequestException;
 import com.bramgussekloo.projects.exceptions.InternalServerException;
-import com.bramgussekloo.projects.config.SecurityConfig;
+//import com.bramgussekloo.projects.config.SecurityConfig;
 import com.bramgussekloo.projects.config.DatabaseConnection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -103,7 +103,7 @@ public class User {
 
     public void updateInDatabase() throws Exception {
         Connection conn = new DatabaseConnection().getConnection();
-        this.password = SecurityConfig.HashUserPassword(this.password);
+//        this.password = SecurityConfig.HashUserPassword(this.password);
         PreparedStatement ps = conn.prepareStatement("UPDATE users SET user_name=?, password=?, enabled=?, authority=? WHERE id=?; ");
         ps.setString(1, this.user_name);
         ps.setString(2, this.password);
@@ -134,7 +134,7 @@ public class User {
         if (!userExists) {
             if (!this.password.isEmpty() && this.password.length() > 6) {
                 Connection conn = new DatabaseConnection().getConnection();
-                this.password = SecurityConfig.HashUserPassword(this.password);
+//                this.password = SecurityConfig.HashUserPassword(this.password);
                 PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO users VALUES (DEFAULT, ?, ?, ?, ?)");
                 preparedStatement.setString(1, this.user_name);
                 preparedStatement.setString(2, this.password);

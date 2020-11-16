@@ -11,25 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 @Api(value = "Address controller")
 @RestController
 @RequestMapping("/api/")
 public class AddressController {
 
-    @Autowired
-    private AddressRepository repository;
-
-    @GetMapping("address/test/{id}")
-    private ResponseEntity<Address> getAddressById(@PathVariable Long id) throws Exception {
-        try {
-            return new ResponseEntity<>(repository.findAddressById(id), HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BadRequestException("Repo is null" + e.getMessage());
-        }
+    public AddressController(AddressRepository repository) {
+        this.repository = repository;
     }
+
+    private final AddressRepository repository;
+
 
     // Get all the address objects in a list
     @ApiOperation(value = "Get a list of addresses")
@@ -39,8 +33,9 @@ public class AddressController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @GetMapping("address")
-    private ResponseEntity<ArrayList<Address>> getAllAddresses() throws Exception {
-        return new ResponseEntity<>(Address.getAllFromDatabase(), HttpStatus.OK);
+    private ResponseEntity<Iterable<Address>> getAllAddresses() throws Exception {
+        Iterable<Address> response = repository.findAll();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Get a certain address object
@@ -52,11 +47,10 @@ public class AddressController {
     })
     @GetMapping("address/{id}")
     private ResponseEntity<Address> getAddress(
-            @ApiParam(value = "the id of the address you want", required = true) @PathVariable Integer id
+            @ApiParam(value = "the id of the address you want", required = true) @PathVariable Long id
     ) throws Exception {
-        Address add = new Address();
-        add.getFromDatabase(id);
-        return new ResponseEntity<>(add, HttpStatus.OK);
+        Address response = repository.findAddressById(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Create a new address object
@@ -116,12 +110,11 @@ public class AddressController {
     })
     @DeleteMapping("admin/address/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    private ResponseEntity<Void> deleteAddress(
+    private ResponseEntity<Address> deleteAddress(
             @ApiParam(value = "Id for the object you want to delete", required = true) @PathVariable Long id
     ) throws Exception {
-        Address add = new Address(id);
-        add.deleteFromDatabase();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Address response = repository.deleteAddressById(id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     // Update a certain object

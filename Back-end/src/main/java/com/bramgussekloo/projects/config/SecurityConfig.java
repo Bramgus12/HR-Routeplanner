@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.config;
 
-import com.bramgussekloo.projects.utils.GetPropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import com.bramgussekloo.projects.utils.GetPropertyValues;
 
 import javax.sql.DataSource;
 
@@ -26,19 +26,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return encoder().encode(password);
     }
 
-//    @Bean
-//    public static javax.sql.DataSource createDataSource() {
-//        String propFileName = "Database_config.properties";
-//        String[] values = GetPropertyValues.getDatabasePropValues(propFileName);
-//        org.postgresql.ds.PGPoolingDataSource ds = new org.postgresql.ds.PGPoolingDataSource();
-//        ds.setDataSourceName("A Data Source");
-//        ds.setServerName(values[3]);
-//        ds.setDatabaseName(values[4]);
-//        ds.setUser(values[1]);
-//        ds.setPassword(values[2]);
-//        ds.setPortNumber(5432);
-//        return ds;
-//    }
+//   @Bean
+//   public static javax.sql.DataSource createDataSource() {
+//       String propFileName = "Database_config.properties";
+//       String[] values = GetPropertyValues.getDatabasePropValues(propFileName);
+//       org.postgresql.ds.PGPoolingDataSource ds = new org.postgresql.ds.PGPoolingDataSource();
+//       ds.setDataSourceName("A Data Source");
+//       ds.setServerName(values[3]);
+//       ds.setDatabaseName(values[4]);
+//       ds.setUser(values[1]);
+//       ds.setPassword(values[2]);
+//       ds.setPortNumber(5432);
+//       return ds;
+//   }
 
     @Bean
     public static PasswordEncoder encoder() {

@@ -23,7 +23,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-@Data
 @ApiModel(description = "All details from Address")
 public class Address {
     @Id
@@ -60,6 +59,54 @@ public class Address {
 
     public Address(Long id) {
         this.id = id;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getAddition() {
+        return addition;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getPostal() {
+        return postal;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setAddition(String addition) {
+        this.addition = addition;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public void setPostal(String postal) {
+        this.postal = postal;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public boolean ObjectIsEmpty() {
@@ -112,25 +159,6 @@ public class Address {
         }
     }
 
-    /**
-     * !Overrides the data that is already in the object!
-     *
-     * @param id The id of the address you want to get from the database
-     * @throws Exception Will be handled by the HandleException class
-     *
-     * @see com.bramgussekloo.projects.exceptions.HandleExceptions
-     */
-    public void getFromDatabase(Integer id) throws Exception {
-        Connection conn = new DatabaseConnection().getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM address WHERE id=?");
-        preparedStatement.setLong(1, id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (!resultSet.next()) {
-            throw new BadRequestException("Address with id " + id + " does not exist");
-        } else {
-            setResultSetInObject(id, resultSet);
-        }
-    }
 
     /**
      * !Overrides the data that is already in the object!
