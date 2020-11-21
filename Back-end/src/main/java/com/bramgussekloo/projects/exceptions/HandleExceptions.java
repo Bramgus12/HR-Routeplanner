@@ -1,6 +1,7 @@
 package com.bramgussekloo.projects.exceptions;
 
 import com.bramgussekloo.projects.ProjectsApplication;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -44,7 +45,7 @@ public class HandleExceptions {
         response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler(PSQLException.class)
     private ResponseEntity<Error> handleSQLException(SQLException e, HttpServletRequest request) {
         ProjectsApplication.printErrorInConsole(e.getLocalizedMessage());
         return new ResponseEntity<>(new Error(400, "Bad request", e.getMessage(), request.getServletPath()), HttpStatus.BAD_REQUEST);

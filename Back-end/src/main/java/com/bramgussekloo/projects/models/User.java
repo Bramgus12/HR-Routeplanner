@@ -2,11 +2,11 @@ package com.bramgussekloo.projects.models;
 
 import com.bramgussekloo.projects.exceptions.BadRequestException;
 import com.bramgussekloo.projects.exceptions.InternalServerException;
-//import com.bramgussekloo.projects.config.SecurityConfig;
 import com.bramgussekloo.projects.config.DatabaseConnection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.persistence.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +14,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 @ApiModel(description = "All details from User")
+@Entity
+@Table(name = "\"User\"")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(notes = "Auto-assigned id of the user")
     private int id;
 
