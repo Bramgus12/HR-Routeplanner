@@ -5,9 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import javax.transaction.Transactional;
 
-public interface AddressRepository extends CrudRepository<Address, Long> {
-    Address findAddressById(long id);
-
+public interface AddressRepository extends CrudRepository<Address, Integer> {
     @Transactional
     Address deleteById(long id);
 }

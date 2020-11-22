@@ -6,11 +6,11 @@ import com.bramgussekloo.projects.services.AddressService;
 import com.bramgussekloo.projects.services.BuildingService;
 import com.bramgussekloo.projects.utils.FileService;
 import com.bramgussekloo.projects.utils.GetPropertyValues;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.tika.Tika;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @ApiModel(description = "Model of LocationNodeNetwork")
-@Service
 public class LocationNodeNetwork {
 
     @ApiModelProperty(notes = "Name of the location", required = true)
@@ -32,23 +31,25 @@ public class LocationNodeNetwork {
     @ApiModelProperty(notes = "All the connections in the locationNodeNetwork", required = true)
     private ArrayList<ConnectedNode> connections;
 
-    public LocationNodeNetwork(String locationName, ArrayList<Node> nodes, ArrayList<ConnectedNode> connections) {
+    public LocationNodeNetwork(String locationName, ArrayList<Node> nodes, ArrayList<ConnectedNode> connections, AddressService addressService, BuildingService buildingService) {
         this.locationName = locationName;
         this.connections = connections;
         this.nodes = nodes;
-    }
-
-    public LocationNodeNetwork() {
-    }
-
-    public LocationNodeNetwork(String locationName) {
-        this.locationName = locationName;
-    }
-
-    @Autowired
-    public LocationNodeNetwork(AddressService addressService, BuildingService service) {
         this.addressService = addressService;
-        this.service = service;
+        this.buildingService = buildingService;
+    }
+
+    public LocationNodeNetwork(AddressService addressService, BuildingService buildingService) {
+        this.buildingService = buildingService;
+        this.addressService = addressService;
+    }
+
+    public LocationNodeNetwork() {}
+
+    public LocationNodeNetwork(String locationName, AddressService addressService, BuildingService buildingService) {
+        this.locationName = locationName;
+        this.addressService = addressService;
+        this.buildingService = buildingService;
     }
 
     public ArrayList<ConnectedNode> getConnections() {
@@ -63,9 +64,11 @@ public class LocationNodeNetwork {
         return locationName;
     }
 
-    public AddressService addressService;
+    @JsonIgnore
+    private AddressService addressService;
 
-    public BuildingService service;
+    @JsonIgnore
+    private BuildingService buildingService;
 
     /**
      * This will override all the existing values in the object.
@@ -97,7 +100,7 @@ public class LocationNodeNetwork {
      *
      * @see com.bramgussekloo.projects.exceptions.HandleExceptions
      */
-    public void createLocationNodeNetwork(MultipartFile file, Integer addressId) throws Exception {
+    public void createLocationNodeNetwork(MultipartFile file, int addressId) throws Exception {
         File f = GetPropertyValues.getResourcePath("Locations", file.getOriginalFilename());
         Tika tika = new Tika();
         System.out.println(file.getContentType());
@@ -112,9 +115,8 @@ public class LocationNodeNetwork {
                 if (f.exists()) {
                     try {
                         LocationNodeNetwork locationNodeNetwork = mapper.readValue(fileRef, LocationNodeNetwork.class);
-                        System.out.println(addressService.findAddress(addressId));
-                        Building building = new Building(null ,addressService.findAddress(addressId), locationNodeNetwork.getLocationName());
-                        service.createBuilding(building);
+                        Building building = new Building(null, addressService.findAddress(addressId), locationNodeNetwork.getLocationName());
+                        buildingService.createBuilding(building);
                         this.locationName = locationNodeNetwork.getLocationName();
                         this.connections = locationNodeNetwork.getConnections();
                         this.nodes = locationNodeNetwork.getNodes();
@@ -147,9 +149,9 @@ public class LocationNodeNetwork {
             ObjectMapper mapper = new ObjectMapper();
             LocationNodeNetwork locationNodeNetwork = mapper.readValue(file, LocationNodeNetwork.class);
             String networkName = locationNodeNetwork.getLocationName();
-            Building building = service.getBuildingByName(networkName);
+            Building building = buildingService.getBuildingByName(networkName);
             if (file.delete()) {
-                service.deleteBuilding(building.getId());
+                buildingService.deleteBuilding(building.getId());
             } else {
                 throw new InternalServerException("Deleting of file " + this.locationName + ".json has failed.");
             }
@@ -184,12 +186,12 @@ public class LocationNodeNetwork {
                 try {
                     LocationNodeNetwork network = mapper.readValue(tmpFile, LocationNodeNetwork.class);
                     String name = network.getLocationName();
-                    Building building = service.getBuildingByName(name);
+                    Building building = buildingService.getBuildingByName(name);
                     if (resource.delete() && tmpFile.delete()) {
                         FileService.uploadFile(file, "Locations", file.getOriginalFilename());
                         building.setAddress(addressService.findAddress(addressId));
                         building.setName(network.getLocationName());
-                        service.updateBuilding(building, building.getId());
+                        buildingService.updateBuilding(building, building.getId());
                         LocationNodeNetwork locationNodeNetwork =  mapper.readValue(resource, LocationNodeNetwork.class);
                         this.connections = locationNodeNetwork.getConnections();
                         this.nodes = locationNodeNetwork.getNodes();

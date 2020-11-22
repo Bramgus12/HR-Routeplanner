@@ -1,9 +1,9 @@
 package com.bramgussekloo.projects.services;
 
 import com.bramgussekloo.projects.exceptions.NotFoundException;
-import com.bramgussekloo.projects.models.Address;
 import com.bramgussekloo.projects.models.Building;
 import com.bramgussekloo.projects.repositories.BuildingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,11 +11,10 @@ import java.util.Optional;
 @Service
 public class BuildingService {
 
-    private final BuildingRepository repository;
+    @Autowired
+    private BuildingRepository repository;
 
-    public BuildingService(BuildingRepository repository) {
-        this.repository = repository;
-    }
+    public BuildingService() { }
 
     public Iterable<Building> getAllBuildings() {
         return repository.findAll();
@@ -25,7 +24,7 @@ public class BuildingService {
         return repository.findBuildingByName(name);
     }
 
-    public Building getBuildingById(long id) {
+    public Building getBuildingById(int id) {
         return repository.findBuildingById(id);
     }
 
@@ -33,14 +32,14 @@ public class BuildingService {
         return repository.save(building);
     }
 
-    public Building deleteBuilding(long id) {
+    public Building deleteBuilding(int id) {
         return repository.deleteBuildingById(id);
     }
 
-    public Building updateBuilding(Building building, long id) throws Exception {
+    public Building updateBuilding(Building building, int id) throws Exception {
         Optional<Building> buildingOptional = repository.findById(id);
-        if (buildingOptional.isPresent()) {
-            throw new NotFoundException("Address doesn't exist");
+        if (!buildingOptional.isPresent()) {
+            throw new NotFoundException("Building doesn't exist");
         }
         building.setId(id);
         return repository.save(building);

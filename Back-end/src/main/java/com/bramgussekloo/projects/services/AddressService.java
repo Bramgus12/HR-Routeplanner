@@ -1,6 +1,5 @@
 package com.bramgussekloo.projects.services;
 
-import com.bramgussekloo.projects.config.DatabaseConnection;
 import com.bramgussekloo.projects.exceptions.BadRequestException;
 import com.bramgussekloo.projects.exceptions.NotFoundException;
 import com.bramgussekloo.projects.models.Address;
@@ -13,13 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
 public class AddressService {
 
     private final AddressRepository repository;
+
     private final BuildingService buildingService;
 
     public AddressService(AddressRepository repository, BuildingService buildingService) {
@@ -35,21 +35,22 @@ public class AddressService {
         return repository.findAll();
     }
 
-    public Address findAddress(long id) throws Exception {
-        Address address = repository.findAddressById(id);
-        if (address != null) {
-            return address;
+    public Address findAddress(int id) throws Exception {
+        Optional<Address> address = repository.findById(id);
+        try {
+            return address.orElseThrow();
+        } catch (NoSuchElementException e) {
+            throw new NotFoundException("No element found");
         }
-        throw new NotFoundException("Address not found");
     }
 
-    public Address deleteAddress(long id) {
+    public Address deleteAddress(int id) {
         return repository.deleteById(id);
     }
 
-    public Address updateAddress(Address address, long id) throws Exception {
+    public Address updateAddress(Address address, int id) throws Exception {
         Optional<Address> addressOptional = repository.findById(id);
-        if (addressOptional.isPresent()) {
+        if (!addressOptional.isPresent()) {
             throw new NotFoundException("Address doesn't exist");
         }
         address.setId(id);
@@ -76,7 +77,8 @@ public class AddressService {
         if (locationName.isEmpty()) {
             throw new IOException("Room cannot be found in the locationNodeNetworks");
         } else {
-            return repository.findAddressById(buildingService.getBuildingByName(locationName).getId());
+            Optional<Address> address = repository.findById(buildingService.getBuildingByName(locationName).getId());
+            return address.orElseThrow();
         }
     }
 
@@ -103,7 +105,8 @@ public class AddressService {
             }
         }
         if (!name.isEmpty()) {
-            return repository.findAddressById(buildingService.getBuildingByName(name).getId());
+            Optional<Address> address = repository.findById(buildingService.getBuildingByName(name).getId());
+            return address.orElseThrow();
         } else {
             throw new BadRequestException("Building does not exist");
         }

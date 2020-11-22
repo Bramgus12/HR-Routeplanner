@@ -1,10 +1,14 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.Building;
 import com.bramgussekloo.projects.models.LocationNodeNetwork;
 import com.bramgussekloo.projects.models.Node;
 import com.bramgussekloo.projects.routeengine.RouteEngine;
+import com.bramgussekloo.projects.services.AddressService;
+import com.bramgussekloo.projects.services.BuildingService;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +23,14 @@ import java.util.ArrayList;
 @RequestMapping("/api/routes")
 public class RoutesController {
 
+    private final BuildingService buildingService;
+    private final AddressService addressService;
+
+    public RoutesController(BuildingService buildingService, AddressService addressService) {
+        this.buildingService = buildingService;
+        this.addressService = addressService;
+    }
+
     @ApiOperation(value = "Get the route between two nodes")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully created route"),
@@ -32,7 +44,7 @@ public class RoutesController {
             @ApiParam(value = "The name of the location you want to be routed in", required = true) @RequestParam String locationName
     ) throws Exception {
         RouteEngine routeEngine = new RouteEngine();
-        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork();
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(addressService, buildingService);
         locationNodeNetwork.getLocationNodeNetwork(locationName);
         routeEngine.init(locationNodeNetwork);
         return new ResponseEntity<>(routeEngine.generateRoute(from, to), HttpStatus.OK);

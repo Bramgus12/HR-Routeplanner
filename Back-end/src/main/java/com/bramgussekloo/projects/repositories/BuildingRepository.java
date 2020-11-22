@@ -3,8 +3,8 @@ package com.bramgussekloo.projects.repositories;
 import com.bramgussekloo.projects.models.Building;
 import org.springframework.data.repository.CrudRepository;
 
-public interface BuildingRepository extends CrudRepository<Building, Long> {
+public interface BuildingRepository extends CrudRepository<Building, Integer> {
     Building findBuildingByName(String name);
-    Building findBuildingById(long id);
-    Building deleteBuildingById(long id);
+    Building findBuildingById(int id);
+    Building deleteBuildingById(int id);
 }

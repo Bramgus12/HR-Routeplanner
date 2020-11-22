@@ -14,13 +14,13 @@ public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(notes = "The database generated id")
-    private long id;
+    private Integer id;
 
     @ApiModelProperty(notes = "Street. You should know what a street is", required = true)
     private String street;
 
     @ApiModelProperty(notes = "How do you not know why there is a number in an address", required = true)
-    private int number;
+    private Integer number;
 
     @ApiModelProperty(notes = "https://www.youtube.com/watch?v=K1b8AhIsSYQ", required = true)
     private String city;
@@ -31,7 +31,7 @@ public class Address {
     @ApiModelProperty(notes = "The addition (dutch = \"toevoeging\") of the address")
     private String addition;
 
-    public Address(long id, String street, int number, String city, String postal, String addition) {
+    public Address(Integer id, String street, Integer number, String city, String postal, String addition) {
         this.id = id;
         this.street = street;
         this.number = number;
@@ -43,15 +43,15 @@ public class Address {
     public Address() {
     }
 
-    public Address(long id) {
+    public Address(Integer id) {
         this.id = id;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -79,11 +79,11 @@ public class Address {
         this.city = city;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 

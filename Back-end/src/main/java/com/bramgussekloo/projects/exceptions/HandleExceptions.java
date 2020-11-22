@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -26,7 +27,7 @@ public class HandleExceptions {
         response.sendError(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler({NotFoundException.class, NoSuchElementException.class})
     private void handleNotFoundExceptions(NotFoundException e, HttpServletResponse response) throws IOException {
         ProjectsApplication.printErrorInConsole(e.getLocalizedMessage());
         response.sendError(HttpStatus.NOT_FOUND.value(), e.getMessage());
