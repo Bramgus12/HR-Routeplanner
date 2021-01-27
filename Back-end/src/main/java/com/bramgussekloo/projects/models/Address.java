@@ -1,12 +1,11 @@
 package com.bramgussekloo.projects.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @ApiModel(description = "All details from Address")
@@ -30,6 +29,10 @@ public class Address {
 
     @ApiModelProperty(notes = "The addition (dutch = \"toevoeging\") of the address")
     private String addition;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "address")
+    private List<Building> buildings;
+
 
     public Address(Integer id, String street, Integer number, String city, String postal, String addition) {
         this.id = id;

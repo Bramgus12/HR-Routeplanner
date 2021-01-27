@@ -19,11 +19,13 @@ public class Institute {
     @ApiModelProperty(notes = "Name of the institute")
     private String name;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "BuildingInstitute",
-        joinColumns = @JoinColumn(name = "instituteId"),
-        inverseJoinColumns = @JoinColumn(name = "buildingId")
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "institutes"
     )
     private Set<Building> buildings;
 
@@ -49,5 +51,13 @@ public class Institute {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Set<Building> getBuildings() {
+        return buildings;
+    }
+
+    public void setBuildings(Set<Building> buildings) {
+        this.buildings = buildings;
     }
 }

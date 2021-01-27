@@ -21,11 +21,11 @@ public class BuildingService {
     }
 
     public Building getBuildingByName(String name) {
-        return repository.findBuildingByName(name);
+        return repository.findByName(name);
     }
 
     public Building getBuildingById(int id) {
-        return repository.findBuildingById(id);
+        return repository.findById(id);
     }
 
     public Building createBuilding(Building building) {
@@ -37,8 +37,8 @@ public class BuildingService {
     }
 
     public Building updateBuilding(Building building, int id) throws Exception {
-        Optional<Building> buildingOptional = repository.findById(id);
-        if (!buildingOptional.isPresent()) {
+        Building buildingOptional = repository.findById(id);
+        if (buildingOptional == null) {
             throw new NotFoundException("Building doesn't exist");
         }
         building.setId(id);

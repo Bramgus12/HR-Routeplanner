@@ -67,7 +67,7 @@ public class AddressService {
                 ObjectMapper mapper = new ObjectMapper();
                 LocationNodeNetwork network = mapper.readValue(file, LocationNodeNetwork.class);
                 for (Node node : network.getNodes()) {
-                    if (node.getType().equals("Room") && node.getCode().toLowerCase().equals(code.toLowerCase())) {
+                    if (node.getType().equals("Room") && node.getCode().equalsIgnoreCase(code)) {
                         locationName = network.getLocationName();
                         break;
                     }
@@ -77,8 +77,7 @@ public class AddressService {
         if (locationName.isEmpty()) {
             throw new IOException("Room cannot be found in the locationNodeNetworks");
         } else {
-            Optional<Address> address = repository.findById(buildingService.getBuildingByName(locationName).getId());
-            return address.orElseThrow();
+            return buildingService.getBuildingByName(locationName).getAddress();
         }
     }
 
@@ -105,8 +104,7 @@ public class AddressService {
             }
         }
         if (!name.isEmpty()) {
-            Optional<Address> address = repository.findById(buildingService.getBuildingByName(name).getId());
-            return address.orElseThrow();
+            return buildingService.getBuildingByName(name).getAddress();
         } else {
             throw new BadRequestException("Building does not exist");
         }
