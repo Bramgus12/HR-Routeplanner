@@ -7,7 +7,7 @@ For Installation instructions visit the [wiki](https://github.com/Bramgus12/HR-R
 
 ## Current maintainers
 ### Front-end by
-* [M. Booman](https://github.com/Matthbo)
+* [Matt](https://github.com/Matthbo)
 
 ### Back-end by
 * [B. Gussekloo](https://github.com/Bramgus12)
