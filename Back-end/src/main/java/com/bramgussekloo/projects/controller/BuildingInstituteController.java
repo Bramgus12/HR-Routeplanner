@@ -2,13 +2,17 @@ package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.exceptions.BadRequestException;
 import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.Building;
 import com.bramgussekloo.projects.models.BuildingInstitute;
+import com.bramgussekloo.projects.models.Institute;
+import com.bramgussekloo.projects.services.BuildingInstituteService;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 // Makes it a REST-controller
 @Api(value = "Building institute controller")
@@ -16,88 +20,59 @@ import java.util.ArrayList;
 @RequestMapping("/api/")
 public class BuildingInstituteController {
 
-    // Get all the buildingInstitute objects in a list
-    @ApiOperation(value = "Get a list of all the buildingInstitutes")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved list"),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
-    })
-    @GetMapping("buildinginstitute")
-    private ResponseEntity<ArrayList<BuildingInstitute>> getAllBuildingInstitutes() throws Exception {
-        return new ResponseEntity<>(BuildingInstitute.getAllFromDatabase(), HttpStatus.OK);
-    }
+    BuildingInstituteService buildingInstituteService;
 
-    // Get a certain buildingInstitute object
-    @ApiOperation(value = "Get a certain buildingInstitute by id")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved buildingInstitute"),
-            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
-            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
-    })
-    @GetMapping("buildinginstitute/{id}")
-    private ResponseEntity<BuildingInstitute> getBuildingInstitute(
-            @ApiParam(value = "Id of the buildingInstitute you want to get", required = true) @PathVariable Integer id
-    ) throws Exception {
-        BuildingInstitute bi = new BuildingInstitute();
-        bi.getFromDatabase(id);
-        return new ResponseEntity<>(bi, HttpStatus.OK);
+    public BuildingInstituteController(BuildingInstituteService buildingInstituteService) {
+        this.buildingInstituteService = buildingInstituteService;
     }
 
     // Create a new BuildingInstitute object
-    @ApiOperation(value = "Create a new buildingInstitute")
+    @ApiOperation(value = "Link building to institute")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully created new buildingInstitute"),
+            @ApiResponse(code = 204, message = "Successfully created new buildingInstitute"),
             @ApiResponse(code = 400, message = "Bad request", response = Error.class),
             @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("admin/buildinginstitute")
-    @ResponseStatus(HttpStatus.CREATED)
-    private ResponseEntity<BuildingInstitute> createBuildingInstitute(
-            @ApiParam(value = "buildingInstitute that you want to add", required = true) @RequestBody BuildingInstitute buildingInstitute
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    private ResponseEntity<Void> createBuildingInstitute(
+            @ApiParam(value = "buildingInstitute that you want to add", required = true) @RequestBody Integer buildingId, Integer instituteId
     ) throws Exception {
-        buildingInstitute.createInDatabase();
-        return new ResponseEntity<>(buildingInstitute, HttpStatus.CREATED);
+        buildingInstituteService.linkBuildingInstitute(buildingId, instituteId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     // Delete a certain buildingInstitute object
     @ApiOperation(value = "Delete a certain buildingInstitute by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "Successfully deleted the buildingInstitute"),
+            @ApiResponse(code = 200, message = "Successfully deleted the buildingInstitute"),
             @ApiResponse(code = 400, message = "Bad request", response = Error.class),
             @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
-    @DeleteMapping("admin/buildinginstitute/{id}")
-    private ResponseEntity<Void> DeleteBuildingInstitute(
-            @ApiParam(value = "Id of the buildingInstitute that you want to delete", required = true) @PathVariable Integer id
-    ) throws Exception {
-        BuildingInstitute bi = new BuildingInstitute(id);
-        bi.deleteInDatabase();
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @DeleteMapping("admin/buildinginstitute/{buildingId}")
+    @ResponseStatus(HttpStatus.OK)
+    private ResponseEntity<Set<Institute>> DeleteBuildingFromInstitutes(
+            @ApiParam(value = "Id of the buildingInstitute that you want to delete", required = true) @PathVariable Integer buildingId
+    ) {
+        return new ResponseEntity<>(buildingInstituteService.deleteBuildingFromInstitutes(buildingId), HttpStatus.OK);
     }
 
-    // Update a certain buildingInstitute
-    @ApiOperation(value = "Update a certain buildingInstitute by id")
+    // Delete a certain buildingInstitute object
+    @ApiOperation(value = "Delete a certain buildingInstitute by id")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully updated the buildingInstitute"),
+            @ApiResponse(code = 200, message = "Successfully deleted the buildingInstitute"),
             @ApiResponse(code = 400, message = "Bad request", response = Error.class),
             @ApiResponse(code = 401, message = "Bad credentials", response = Error.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
-    @PutMapping("admin/buildinginstitute/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    private ResponseEntity<BuildingInstitute> updateBuildingInstitute(
-            @ApiParam(value = "Id if the buildingInstitute that you want to update", required = true) @PathVariable Integer id,
-            @ApiParam(value = "BuildingInstitute that you want to update", required = true) @RequestBody BuildingInstitute buildingInstitute
-    ) throws Exception {
-        if (id.equals(buildingInstitute.getId())) {
-            buildingInstitute.updateInDatabase();
-            return new ResponseEntity<>(buildingInstitute, HttpStatus.CREATED);
-        } else {
-            throw new BadRequestException("Id's are different");
-        }
+    @DeleteMapping("admin/buildinginstitute/{instituteId}")
+    @ResponseStatus(HttpStatus.OK)
+    private ResponseEntity<Set<Building>> DeleteInstituteFromBuildings(
+            @ApiParam(value = "Id of the buildingInstitute that you want to delete", required = true) @PathVariable Integer instituteId
+    ) {
+        return new ResponseEntity<>(buildingInstituteService.deleteInstituteFromBuildings(instituteId), HttpStatus.OK);
     }
 }
 

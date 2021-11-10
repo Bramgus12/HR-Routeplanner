@@ -1,6 +1,7 @@
 package com.bramgussekloo.projects.exceptions;
 
 import com.bramgussekloo.projects.ProjectsApplication;
+import org.postgresql.util.PSQLException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -25,7 +27,7 @@ public class HandleExceptions {
         response.sendError(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
     }
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler({NotFoundException.class, NoSuchElementException.class})
     private void handleNotFoundExceptions(NotFoundException e, HttpServletResponse response) throws IOException {
         ProjectsApplication.printErrorInConsole(e.getLocalizedMessage());
         response.sendError(HttpStatus.NOT_FOUND.value(), e.getMessage());
@@ -44,7 +46,7 @@ public class HandleExceptions {
         response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
-    @ExceptionHandler(SQLException.class)
+    @ExceptionHandler(PSQLException.class)
     private ResponseEntity<Error> handleSQLException(SQLException e, HttpServletRequest request) {
         ProjectsApplication.printErrorInConsole(e.getLocalizedMessage());
         return new ResponseEntity<>(new Error(400, "Bad request", e.getMessage(), request.getServletPath()), HttpStatus.BAD_REQUEST);

@@ -1,21 +1,17 @@
 package com.bramgussekloo.projects.models;
 
-import com.bramgussekloo.projects.exceptions.BadRequestException;
-import com.bramgussekloo.projects.exceptions.InternalServerException;
-import com.bramgussekloo.projects.config.SecurityConfig;
-import com.bramgussekloo.projects.config.DatabaseConnection;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import javax.persistence.*;
 
 @ApiModel(description = "All details from User")
+@Entity
+@Table(name = "\"User\"")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @ApiModelProperty(notes = "Auto-assigned id of the user")
     private int id;
 
@@ -85,109 +81,4 @@ public class User {
     public void setUser_name(String user_name) {
         this.user_name = user_name;
     }
-
-    public static ArrayList<User> getAllFromDatabase() throws Exception {
-        Connection conn = new DatabaseConnection().getConnection();
-        ArrayList<User> list = new ArrayList<>();
-        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM users");
-        ResultSet result = preparedStatement.executeQuery();
-        if (!result.next()) {
-            throw new BadRequestException("No data in database");
-        } else {
-            do {
-                list.add(getResult(result));
-            } while (result.next());
-            return list;
-        }
-    }
-
-    public void updateInDatabase() throws Exception {
-        Connection conn = new DatabaseConnection().getConnection();
-        this.password = SecurityConfig.HashUserPassword(this.password);
-        PreparedStatement ps = conn.prepareStatement("UPDATE users SET user_name=?, password=?, enabled=?, authority=? WHERE id=?; ");
-        ps.setString(1, this.user_name);
-        ps.setString(2, this.password);
-        ps.setBoolean(3, this.enabled);
-        ps.setString(4, this.authority);
-        ps.setInt(5, this.id);
-        ps.executeUpdate();
-        PreparedStatement preparedStatement1 = conn.prepareStatement("SELECT * FROM users WHERE id=?;");
-        preparedStatement1.setInt(1, this.id);
-        ResultSet resultSet = preparedStatement1.executeQuery();
-        if (!resultSet.next()) {
-            System.out.println(this.id + " " + this.user_name + " " + this.authority);
-            throw new InternalServerException("User doesn't exist on this id after updating");
-        } else {
-            ResultInObject(resultSet);
-        }
-    }
-
-    public void createInDatabase() throws Exception {
-        boolean userExists = false;
-        ArrayList<User> users = getAllFromDatabase();
-        for (User userFromList : users) {
-            if (this.user_name.equals(userFromList.getUser_name())) {
-                userExists = true;
-                break;
-            }
-        }
-        if (!userExists) {
-            if (!this.password.isEmpty() && this.password.length() > 6) {
-                Connection conn = new DatabaseConnection().getConnection();
-                this.password = SecurityConfig.HashUserPassword(this.password);
-                PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO users VALUES (DEFAULT, ?, ?, ?, ?)");
-                preparedStatement.setString(1, this.user_name);
-                preparedStatement.setString(2, this.password);
-                preparedStatement.setString(3, this.authority);
-                preparedStatement.setBoolean(4, this.enabled);
-                preparedStatement.execute();
-                for (User user : getAllFromDatabase()) {
-                    if (user.getUser_name().equals(this.user_name)) {
-                        this.id = user.id;
-                        break;
-                    }
-                }
-            } else {
-                throw new BadRequestException("Password is not long enough. It has to be at least a length of 6.");
-            }
-        } else {
-            throw new BadRequestException("User already exists.");
-        }
-    }
-
-    public void deleteInDatabase() throws SQLException{
-        Connection conn = new DatabaseConnection().getConnection();
-        PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM users WHERE id=?;");
-        preparedStatement.setInt(1, this.id);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (!resultSet.next()) {
-            throw new SQLException("User doesn't exist.");
-        } else {
-            PreparedStatement preparedStatement1 = conn.prepareStatement("DELETE FROM users where id=?;");
-            preparedStatement1.setInt(1, id);
-            preparedStatement1.execute();
-            ResultInObject(resultSet);
-        }
-
-    }
-
-    private static User getResult(ResultSet resultSet) throws SQLException {
-        String user_nameResult = resultSet.getString("user_name");
-        String passwordResult = resultSet.getString("password");
-        String authorityResult = resultSet.getString("authority");
-        Boolean enabledResult = resultSet.getBoolean("enabled");
-        int id = resultSet.getInt("id");
-        return new User(id, user_nameResult, passwordResult, authorityResult, enabledResult);
-    }
-
-    private void ResultInObject(ResultSet resultSet) throws SQLException {
-        this.user_name = resultSet.getString("user_name");
-        this.password = resultSet.getString("password");
-        this.authority = resultSet.getString("authority");
-        this.enabled = resultSet.getBoolean("enabled");
-        this.id = resultSet.getInt("id");
-    }
-
-
-
 }

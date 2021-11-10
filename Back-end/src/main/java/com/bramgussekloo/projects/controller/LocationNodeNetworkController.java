@@ -1,10 +1,14 @@
 package com.bramgussekloo.projects.controller;
 
 import com.bramgussekloo.projects.exceptions.Error;
+import com.bramgussekloo.projects.models.Address;
 import com.bramgussekloo.projects.models.LocationNodeNetwork;
 import com.bramgussekloo.projects.models.Node;
 import com.bramgussekloo.projects.models.NodesAndBuildingName;
+import com.bramgussekloo.projects.services.AddressService;
+import com.bramgussekloo.projects.services.BuildingService;
 import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +21,16 @@ import java.util.ArrayList;
 @RequestMapping("/api/")
 public class LocationNodeNetworkController {
 
+    private final AddressService addressService;
+
+    private final BuildingService buildingService;
+
+    public LocationNodeNetworkController(AddressService addressService, BuildingService buildingService) {
+        this.addressService = addressService;
+        this.buildingService = buildingService;
+    }
+
+
     @ApiOperation(value = "Get a certain LocationNodeNetwork by locationName")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved LocationNodeNetwork"),
@@ -27,7 +41,7 @@ public class LocationNodeNetworkController {
     private ResponseEntity<LocationNodeNetwork> getLocationNodeNetwork(
             @ApiParam(value = "Name of the location you want to retrieve", required = true) @PathVariable String locationName
     ) throws Exception {
-        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork();
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(addressService, buildingService);
         locationNodeNetwork.getLocationNodeNetwork(locationName);
         return new ResponseEntity<>(locationNodeNetwork, HttpStatus.OK);
     }
@@ -45,7 +59,7 @@ public class LocationNodeNetworkController {
             @ApiParam(value = "LocationNodeNetwork you want to add", required = true) @RequestPart MultipartFile file,
             @ApiParam(value = "Address that corresponds with the locationNodeNetwork", required = true) @PathVariable Integer addressId
     ) throws Exception {
-        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork();
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(addressService, buildingService);
         locationNodeNetwork.createLocationNodeNetwork(file, addressId);
         return new ResponseEntity<>(locationNodeNetwork, HttpStatus.CREATED);
     }
@@ -62,7 +76,7 @@ public class LocationNodeNetworkController {
     private ResponseEntity<Void> deleteLocationNodeNetwork(
             @ApiParam(value = "The name of the location you want to delete", required = true) @PathVariable String locationName
     ) throws Exception {
-        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(locationName);
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(locationName, addressService, buildingService);
         locationNodeNetwork.deleteLocationNodeNetwork();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -95,7 +109,7 @@ public class LocationNodeNetworkController {
             @ApiParam(value = "The ID of the address that you want to pair this locationNodeNetwork with", required = true) @RequestParam Integer addressId,
             @ApiParam(value = "The updated locationNodeNetwork", required = true) @RequestPart MultipartFile file
     ) throws Exception {
-        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(locationName);
+        LocationNodeNetwork locationNodeNetwork = new LocationNodeNetwork(locationName, addressService, buildingService);
         locationNodeNetwork.updateLocationNodeNetwork(file, addressId);
         return new ResponseEntity<>(locationNodeNetwork, HttpStatus.CREATED);
     }
